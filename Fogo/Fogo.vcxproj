@@ -20,9 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Fogo.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Fogo.cpp" />
+    <ClInclude Include="src\Fogo\MappedStore.h" />
+    <ClInclude Include="src\Fogo\Matches.h" />
+    <ClInclude Include="src\Fogo\PubSub.h" />
+    <ClInclude Include="src\Fogo\SingletonWrapper.h" />
+    <ClInclude Include="src\Fogo\Subject.h" />
+    <ClInclude Include="src\Fogo\Time.h" />
+    <ClInclude Include="src\Fogo\TreeStore.h" />
+    <ClInclude Include="src\Fogo\TypeTraitsHelper.h" />
+    <ClInclude Include="src\Fogo\VectoredStore.h" />
+    <ClInclude Include="src\Fogo\Window.h" />
+    <ClInclude Include="src\Fogo\WRLTypeTraitsHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -3,12 +3,11 @@
 
 auto main(int argc, char ** argv) -> int
 {
+	const auto & window = Fogo::Window::GetInstance(800, 640);
 
-	for (auto i = 0; i < 100; ++i)
-	{
-		if (const auto & s = Fogo::fizzbuzz(i)) std::cout << s << std::endl;
-		else std::cout << i << std::endl;
-	}
+	window.hideConsole();
+
+	window.run();
 
 	return 0;
 }
