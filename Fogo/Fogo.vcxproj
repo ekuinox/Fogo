@@ -32,6 +32,9 @@
     <ClInclude Include="src\Fogo\Window.h" />
     <ClInclude Include="src\Fogo\WRLTypeTraitsHelper.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Fogo\Window.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{F7A7D040-42A0-47F1-947D-F2FAAAE057D3}</ProjectGuid>

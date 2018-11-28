@@ -3,9 +3,9 @@
 
 auto main(int argc, char ** argv) -> int
 {
-	const auto & window = Fogo::Window::GetInstance(800, 640);
+	const auto & window = Fogo::Window(800, 640);
 
-	window.hideConsole();
+	Fogo::Window::HideConsole();
 
 	window.run();
 
