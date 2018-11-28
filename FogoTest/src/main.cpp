@@ -1,9 +1,17 @@
 #include <Fogo.h>
+#include <iostream>
 
 auto main(int argc, char ** argv) -> int {
-	const auto & window = Fogo::Window(800, 640);
+	
+	using namespace Fogo;
 
-	Fogo::Window::HideConsole();
+	Time::Start();
 
-	return window.run();
+	getchar();
+
+	Time::Stop();
+
+	printf("%f", Time::GetSeconds());
+
+	return 0;
 }

@@ -33,6 +33,7 @@
     <ClInclude Include="src\Fogo\WRLTypeTraitsHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Fogo\Time.cpp" />
     <ClCompile Include="src\Fogo\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

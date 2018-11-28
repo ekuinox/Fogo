@@ -3,67 +3,30 @@
 #include <chrono>
 
 namespace Fogo {
-	namespace chrono = std::chrono;
-
-	class Time
-	{
-	public:
-		class Timer
-		{
-		private:
-			using clock = chrono::system_clock;
-			using time_point = chrono::time_point<clock>;
-
-			time_point __started_time;
-			time_point __ended_time;
-
-		public:
-			const time_point now() const
-			{
-				return clock::now();
-			}
-
-			void start()
-			{
-				__started_time = now();
-			}
-
-			void end()
-			{
-				__ended_time = now();
-			}
-
-			float getSeconds() const
-			{
-				return static_cast<float>(chrono::duration_cast<chrono::nanoseconds>(__ended_time - __started_time).count()) / std::nano::den;
-			}
-		};
-
+	
+	class Time {
 	private:
-		static Timer __timer;
+		using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
+		
+		TimePoint __begun_time;
+		TimePoint __ended_time;
+
+		Time();
+		
+		float getSeconds() const;
+		void start();
+		void stop();
+		
+		static Time & getInstance();
 
 	public:
-		static Timer CreateTimer()
-		{
-			return Timer();
-		}
+		Time(const Time &) = delete;
+		Time& operator=(const Time &) = delete;
 
-		static void Start()
-		{
-			__timer.start();
-		}
-
-		static void End()
-		{
-			__timer.end();
-		}
-
-		static float GetSeconds()
-		{
-			return __timer.getSeconds();
-		}
+		static float GetSeconds();
+		static void Start();
+		static void Stop();
+		static TimePoint GetCurrent();
 	};
-
-	Time::Timer Time::__timer = Time::Timer();
 
 } // namespace Fogo
