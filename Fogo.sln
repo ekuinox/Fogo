@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fogo", "Fogo\Fogo.vcxproj", "{F7A7D040-42A0-47F1-947D-F2FAAAE057D3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FogoTest", "FogoTest\FogoTest.vcxproj", "{CB6DD265-A596-404F-AC3C-447C87F1ED06}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F7A7D040-42A0-47F1-947D-F2FAAAE057D3} = {F7A7D040-42A0-47F1-947D-F2FAAAE057D3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
