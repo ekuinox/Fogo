@@ -7,7 +7,5 @@ auto main(int argc, char ** argv) -> int
 
 	Fogo::Window::HideConsole();
 
-	window.run();
-
-	return 0;
+	return window.run();
 }

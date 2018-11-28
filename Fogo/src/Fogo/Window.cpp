@@ -12,15 +12,15 @@ auto Fogo::Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & 
 		0,
 		0,
 		__instance,
-		LoadIcon((HINSTANCE)NULL, IDI_APPLICATION),
-		LoadCursor((HINSTANCE)NULL, IDC_ARROW),
-		(HBRUSH)GetStockObject(WHITE_BRUSH),
-		0,
+		LoadIcon(static_cast<HINSTANCE>(nullptr), IDI_APPLICATION),
+		LoadCursor(static_cast<HINSTANCE>(nullptr), IDC_ARROW),
+		static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH)),
+		nullptr,
 		className,
-		LoadIcon((HINSTANCE)NULL, IDI_WINLOGO)
+		LoadIcon(static_cast<HINSTANCE>(nullptr), IDI_WINLOGO)
 	};
 
-	if (!RegisterClassEx(&windowClass)) throw create_window_class_exeption();
+	if (!RegisterClassEx(&windowClass)) throw create_window_class_exception();
 
 	return windowClass;
 }
@@ -36,9 +36,9 @@ auto Fogo::Window::createWindow(const LPCWSTR & title) const -> HWND
 		__window_size.width,
 		__window_size.height,
 		HWND_DESKTOP,
-		(HMENU)NULL,
+		static_cast<HMENU>(nullptr),
 		__instance,
-		(LPVOID)NULL
+		static_cast<LPVOID>(nullptr)
 	);
 }
 
@@ -52,7 +52,7 @@ auto Fogo::Window::moveWindowCenter() const -> void
 
 	SetWindowPos(
 		__window_handle,
-		NULL,
+		nullptr,
 		GetSystemMetrics(SM_CXSCREEN) / 2 - width / 2,
 		GetSystemMetrics(SM_CYSCREEN) / 2 - height / 2,
 		width - 1,
@@ -62,7 +62,7 @@ auto Fogo::Window::moveWindowCenter() const -> void
 }
 
 Fogo::Window::Window(const int width, const int height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
-	: __instance(GetModuleHandle(0)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
+	: __instance(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
 {
 	__window_handle = createWindow(title);
 
@@ -77,7 +77,7 @@ auto Fogo::Window::run() const -> int
 	MSG msg;
 	while (true)
 	{
-		if (!GetMessage(&msg, NULL, 0, 0)) break;
+		if (!GetMessage(&msg, nullptr, 0, 0)) break;
 		
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
