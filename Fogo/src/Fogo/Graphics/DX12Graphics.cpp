@@ -157,7 +157,7 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 		IID_PPV_ARGS(&depthBuffer)
 	)))
 	{
-		throw exception("[DX12Graphics] createDepthSencilBuffer error");
+		throw exception("[DX12Graphics] createDepthStencilBuffer error");
 	}
 
 	auto dsvDesc = D3D12_DEPTH_STENCIL_VIEW_DESC {
