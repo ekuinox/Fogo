@@ -1,5 +1,6 @@
 #include <Fogo.h>
 #include <iostream>
+#include "Plain.h"
 
 auto main(int argc, char ** argv) -> int {
 	
@@ -12,6 +13,16 @@ auto main(int argc, char ** argv) -> int {
 	}, L"TITLE", L"CLASS");
 
 	Window::HideConsole();
+
+	DX12Graphics::Create(Window::GetInstance().getHandle(), { 800, 640 });
+
+	const auto & plain = PlainSquare(DX12Graphics::GetDevice(), PlainSquare::SquareDetail {});
+
+	DX12Graphics::Render({
+		[&](ID3D12GraphicsCommandList * commandList) {
+			plain.render(commandList);
+		}
+	});
 
 	Window::GetInstance().run();
 
