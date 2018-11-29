@@ -18,45 +18,48 @@
     <ClInclude Include="src\Fogo.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\MappedStore.h">
+    <ClInclude Include="src\Fogo\Utility.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Matches.h">
+    <ClInclude Include="src\Fogo\Utility\MappedStore.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\PubSub.h">
+    <ClInclude Include="src\Fogo\Utility\Matches.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\SingletonWrapper.h">
+    <ClInclude Include="src\Fogo\Utility\PubSub.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Subject.h">
+    <ClInclude Include="src\Fogo\Utility\SingletonWrapper.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Time.h">
+    <ClInclude Include="src\Fogo\Utility\Subject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\TreeStore.h">
+    <ClInclude Include="src\Fogo\Utility\Time.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\TypeTraitsHelper.h">
+    <ClInclude Include="src\Fogo\Utility\TreeStore.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\VectoredStore.h">
+    <ClInclude Include="src\Fogo\Utility\TypeTraitsHelper.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Window.h">
+    <ClInclude Include="src\Fogo\Utility\VectoredStore.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\WRLTypeTraitsHelper.h">
+    <ClInclude Include="src\Fogo\Utility\Window.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Utility\WRLTypeTraitsHelper.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Fogo\Window.cpp">
+    <ClCompile Include="src\Fogo\Utility\Time.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Fogo\Time.cpp">
+    <ClCompile Include="src\Fogo\Utility\Window.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
