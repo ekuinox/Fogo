@@ -119,7 +119,7 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 
 	if (FAILED(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&dsvDescriptorHeap))))
 	{
-		throw exception("[DX12Graphics] createDepthSencilBuffer error");
+		throw exception("[DX12Graphics] createDepthStencilBuffer error");
 	}
 
 	static constexpr auto heapProperties = D3D12_HEAP_PROPERTIES {
