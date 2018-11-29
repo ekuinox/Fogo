@@ -17,7 +17,7 @@ namespace Fogo {
 		HINSTANCE __instance;
 		HWND __window_handle;
 		WNDCLASSEX __window_class;
-		struct { int width, height; } __window_size;
+		struct { UINT width, height; } __window_size;
 
 		static Window * instance;
 
@@ -26,8 +26,8 @@ namespace Fogo {
 		auto moveWindowCenter() const -> void;
 
 		Window(
-			const int width,
-			const int height,
+			const UINT width,
+			const UINT height,
 			const WNDPROC & procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
 				if (message == WM_DESTROY) PostQuitMessage(0);
 				return DefWindowProc(handle, message, wParam, lParam);
@@ -39,11 +39,10 @@ namespace Fogo {
 		Window(const Window &) = delete;
 		auto operator=(const Window &) -> Window & = delete;
 		auto run() const -> int;
-		auto getHandle() const -> HWND;
 		static auto HideConsole() -> void;
 		static auto Create(
-			const int width,
-			const int height,
+			const UINT width,
+			const UINT height,
 			const WNDPROC & procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
 				if (message == WM_DESTROY) PostQuitMessage(0);
 				return DefWindowProc(handle, message, wParam, lParam);
@@ -52,6 +51,9 @@ namespace Fogo {
 			const LPCWSTR & className = DEFAULT_CLASS_NAME
 		) -> Window &;
 		static auto Destroy() -> void;
+		static auto GetWidth() -> UINT;
+		static auto GetHeight() -> UINT;
+		static auto GetHandle() -> HWND;
 		static auto GetInstance() -> Window &;
 	};
 

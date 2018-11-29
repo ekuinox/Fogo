@@ -63,7 +63,7 @@ auto Fogo::Window::moveWindowCenter() const -> void
 	);
 }
 
-Fogo::Window::Window(const int width, const int height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
+Fogo::Window::Window(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
 	: __instance(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
 {
 	__window_handle = createWindow(title);
@@ -88,17 +88,12 @@ auto Fogo::Window::run() const -> int
 	return static_cast<int>(msg.wParam);
 }
 
-auto Fogo::Window::getHandle() const -> HWND
-{
-	return __window_handle;
-}
-
 auto Fogo::Window::HideConsole() -> void
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
 
-auto Fogo::Window::Create(const int width, const int height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
+auto Fogo::Window::Create(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
 	if (instance == nullptr) instance = new Window(width, height, procedure, title, className);
 	return * instance;
 }
@@ -106,6 +101,21 @@ auto Fogo::Window::Create(const int width, const int height, const WNDPROC & pro
 auto Fogo::Window::Destroy() -> void {
 	delete instance;
 	instance = nullptr;
+}
+
+auto Fogo::Window::GetWidth() -> UINT
+{
+	return GetInstance().__window_size.width;
+}
+
+auto Fogo::Window::GetHeight() -> UINT
+{
+	return GetInstance().__window_size.height;
+}
+
+auto Fogo::Window::GetHandle() -> HWND
+{
+	return GetInstance().__window_handle;
 }
 
 auto Fogo::Window::GetInstance() -> Window & {

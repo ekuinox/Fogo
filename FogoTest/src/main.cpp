@@ -14,7 +14,7 @@ auto main(int argc, char ** argv) -> int {
 
 	Window::HideConsole();
 
-	DX12Graphics::Create(Window::GetInstance().getHandle(), { 800, 640 });
+	DX12Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
 	const auto & square = Square(DX12Graphics::GetDevice(), Square::Option { });
 
