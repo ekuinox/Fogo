@@ -5,13 +5,15 @@ auto main(int argc, char ** argv) -> int {
 	
 	using namespace Fogo;
 
-	Time::Start();
+	Window::Create(800, 640, [](HWND handle, UINT message, const WPARAM wParam, const LPARAM lParam) -> HRESULT {
+		if (message == WM_DESTROY) PostQuitMessage(0);
+		if (message == WM_KEYDOWN && wParam == VK_ESCAPE) DestroyWindow(handle);
+		return DefWindowProc(handle, message, wParam, lParam);
+	}, L"TITLE", L"CLASS");
 
-	getchar();
+	Window::HideConsole();
 
-	Time::Stop();
-
-	printf("%f", Time::GetSeconds());
+	Window::GetInstance().run();
 
 	return 0;
 }

@@ -2,6 +2,8 @@
 
 #pragma comment(lib, "winmm.lib")	
 
+Fogo::Window * Fogo::Window::instance = nullptr;
+
 auto Fogo::Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX
 {
 	auto windowClass = WNDCLASSEX
@@ -94,4 +96,18 @@ auto Fogo::Window::getHandle() const -> HWND
 auto Fogo::Window::HideConsole() -> void
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
+}
+
+auto Fogo::Window::Create(const int width, const int height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
+	if (instance == nullptr) instance = new Window(width, height, procedure, title, className);
+	return * instance;
+}
+
+auto Fogo::Window::Destroy() -> void {
+	delete instance;
+	instance = nullptr;
+}
+
+auto Fogo::Window::GetInstance() -> Window & {
+	return * instance;
 }
