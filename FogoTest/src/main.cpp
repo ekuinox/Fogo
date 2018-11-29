@@ -1,6 +1,6 @@
 #include <Fogo.h>
 #include <iostream>
-#include "Plain.h"
+#include "Square.h"
 
 auto main(int argc, char ** argv) -> int {
 	
@@ -16,11 +16,11 @@ auto main(int argc, char ** argv) -> int {
 
 	DX12Graphics::Create(Window::GetInstance().getHandle(), { 800, 640 });
 
-	const auto & plain = PlainSquare(DX12Graphics::GetDevice(), PlainSquare::SquareDetail {});
+	const auto & square = Square(DX12Graphics::GetDevice(), Square::Option { });
 
 	DX12Graphics::Render({
 		[&](ID3D12GraphicsCommandList * commandList) {
-			plain.render(commandList);
+			square.render(commandList);
 		}
 	});
 

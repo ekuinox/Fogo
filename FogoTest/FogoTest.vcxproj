@@ -20,9 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Plain.h" />
+    <ClInclude Include="src\Square.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
