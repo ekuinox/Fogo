@@ -35,7 +35,6 @@ namespace Fogo {
 		UINT rtvIndex;
 
 		ComPtr<IDXGIFactory4> factory;
-		ComPtr<IDXGIAdapter3> adapter;
 		ComPtr<ID3D12Device> device;
 		ComPtr<ID3D12CommandQueue> commandQueue;
 

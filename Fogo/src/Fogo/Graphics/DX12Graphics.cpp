@@ -14,6 +14,7 @@ auto Fogo::DX12Graphics::createFactory() -> void {
 }
 
 auto Fogo::DX12Graphics::createDevice() -> void {
+	ComPtr<IDXGIAdapter3> adapter;
 	if (FAILED(factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(adapter.GetAddressOf()))))
 	{
 		throw exception("[DX12Graphics] createDevice error");
