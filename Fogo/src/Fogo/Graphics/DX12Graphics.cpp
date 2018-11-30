@@ -84,30 +84,7 @@ auto Fogo::DX12Graphics::createSwapChain() -> void {
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
 auto Fogo::DX12Graphics::createRenderTargetView() -> void {
-	static constexpr auto heapDesc = D3D12_DESCRIPTOR_HEAP_DESC {
-		D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV,
-		RTV_NUM,
-		D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
-		0
-	};
-
-	if (FAILED(device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(rtvDescriptorHeap.GetAddressOf()))))
-	{
-		throw exception("[DX12Graphics] createRenderTargetView error");
-	}
-
-	const auto size = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	for (auto i = 0; i < RTV_NUM; ++i)
-	{
-		if (FAILED(swapChain->GetBuffer(i, IID_PPV_ARGS(&renderTarget[i]))))
-		{
-			throw exception("[DX12Graphics] createRenderTargetView error");
-		}
-
-		rtvHandle[i] = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvHandle[i].ptr += size * i;
-		device->CreateRenderTargetView(renderTarget[i].Get(), nullptr, rtvHandle[i]);
-	}
+	renderTargetView = std::make_unique<DX12RenderTargetView>(device, swapChain, RTV_NUM);
 }
 
 auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
@@ -218,7 +195,7 @@ auto Fogo::DX12Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D
 		D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
 		D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE,
 		D3D12_RESOURCE_TRANSITION_BARRIER {
-			renderTarget[rtvIndex].Get(),
+			renderTargetView->getTarget(rtvIndex).Get(),
 			D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES,
 			beforeState,
 			afterState
@@ -236,7 +213,7 @@ auto Fogo::DX12Graphics::populateCommandList(const std::vector<std::function<voi
 
 	//深度バッファとレンダーターゲットのクリア
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	commandList->ClearRenderTargetView(rtvHandle[rtvIndex], clearColor, 0, nullptr);
+	commandList->ClearRenderTargetView(renderTargetView->getTargetHandle(rtvIndex), clearColor, 0, nullptr);
 
 	// この辺から
 
@@ -245,7 +222,7 @@ auto Fogo::DX12Graphics::populateCommandList(const std::vector<std::function<voi
 	commandList->RSSetScissorRects(1, &scissorRect);
 
 	//レンダーターゲットの設定
-	commandList->OMSetRenderTargets(1, &rtvHandle[rtvIndex], TRUE, &dsvHandle);
+	commandList->OMSetRenderTargets(1, &renderTargetView->getTargetHandle(rtvIndex), TRUE, &dsvHandle);
 
 	for (const auto & renderer : renderers) renderer(commandList.Get());
 

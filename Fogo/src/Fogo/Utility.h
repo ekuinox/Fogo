@@ -13,3 +13,4 @@
 #include "./Utility/VectoredStore.h"
 #include "./Utility/Window.h"
 #include "./Utility/WRLTypeTraitsHelper.h"
+#include "./Utility/Exception.h"
