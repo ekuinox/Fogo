@@ -47,11 +47,6 @@ namespace Fogo {
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 		ComPtr<ID3D12CommandAllocator> commandAllocator;
 
-		/*
-		ComPtr<ID3D12Resource> renderTarget[RTV_NUM];
-		ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap;
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle[RTV_NUM];
-		*/
 		std::unique_ptr<DX12RenderTargetView> renderTargetView;
 
 		ComPtr<ID3D12Resource> depthBuffer;
