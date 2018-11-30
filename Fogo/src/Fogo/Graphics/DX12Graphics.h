@@ -22,7 +22,10 @@ namespace Fogo {
 
 	public: // Types
 		struct WindowSize { UINT width, height; };
-		struct exception : public std::exception { exception(const char * message) : std::exception(message) {} };
+		struct exception : public std::exception {
+			exception(const char * message) : std::exception(message) {}
+			exception() : exception("[DX12Graphics] error") {}
+		};
 
 	private: // private variables
 		static constexpr unsigned char RTV_NUM = 2;
