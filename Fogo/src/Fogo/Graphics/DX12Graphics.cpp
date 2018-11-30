@@ -1,4 +1,5 @@
 #include "DX12Graphics.h"
+#include "../Utility/Exception.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -7,23 +8,13 @@
 Fogo::DX12Graphics * Fogo::DX12Graphics::instance = nullptr;
 
 auto Fogo::DX12Graphics::createFactory() -> void {
-	if (FAILED(CreateDXGIFactory2(enableDebug, IID_PPV_ARGS(factory.GetAddressOf()))))
-	{
-		throw exception("[DX12Graphics] createFactory error");
-	}
+	ExecOrFail<exception>(CreateDXGIFactory2(enableDebug, IID_PPV_ARGS(factory.GetAddressOf())));
 }
 
 auto Fogo::DX12Graphics::createDevice() -> void {
 	ComPtr<IDXGIAdapter3> adapter;
-	if (FAILED(factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(adapter.GetAddressOf()))))
-	{
-		throw exception("[DX12Graphics] createDevice error");
-	}
-
-	if (FAILED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1, IID_PPV_ARGS(&device))))
-	{
-		throw exception("[DX12Graphics] createDevice error");
-	}
+	ExecOrFail<exception>(factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(adapter.GetAddressOf())));
+	ExecOrFail<exception>(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1, IID_PPV_ARGS(&device)));
 }
 
 auto Fogo::DX12Graphics::createCommandQueue() -> void {
@@ -34,20 +25,9 @@ auto Fogo::DX12Graphics::createCommandQueue() -> void {
 		0
 	};
 
-	if (FAILED(device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(commandQueue.GetAddressOf()))))
-	{
-		throw exception("[DX12Graphics] createCommandQueue error");
-	}
-
-	if ((CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS)) == NULL)
-	{
-		throw std::exception("[DX12Graphics] createCommandQueue error");
-	}
-
-	if (FAILED(device->CreateFence(0, D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(queueFence.GetAddressOf()))))
-	{
-		throw exception("[DX12Graphics] createCommandQueue error");
-	}
+	ExecOrFail<exception>(device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(commandQueue.GetAddressOf())));
+	ExecOrFail<exception>(CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS));
+	ExecOrFail<exception>(device->CreateFence(0, D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(queueFence.GetAddressOf())));
 }
 
 auto Fogo::DX12Graphics::createSwapChain() -> void {
@@ -70,16 +50,8 @@ auto Fogo::DX12Graphics::createSwapChain() -> void {
 	};
 
 	ComPtr<IDXGISwapChain> swap_chain;
-
-	if (FAILED(factory->CreateSwapChain(commandQueue.Get(), &swapChainDesc, swap_chain.GetAddressOf())))
-	{
-		throw exception("[DX12Graphics] createSwapChain error");
-	}
-
-	if (FAILED(swap_chain->QueryInterface(swapChain.GetAddressOf())))
-	{
-		throw exception("[DX12Graphics] createSwapChain error");
-	}
+	ExecOrFail<exception>(factory->CreateSwapChain(commandQueue.Get(), &swapChainDesc, swap_chain.GetAddressOf()));
+	ExecOrFail<exception>(swap_chain->QueryInterface(swapChain.GetAddressOf()));
 
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
@@ -95,10 +67,7 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 		0
 	};
 
-	if (FAILED(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&dsvDescriptorHeap))))
-	{
-		throw exception("[DX12Graphics] createDepthStencilBuffer error");
-	}
+	ExecOrFail<exception>(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&dsvDescriptorHeap)));
 
 	static constexpr auto heapProperties = D3D12_HEAP_PROPERTIES {
 		D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_DEFAULT,
@@ -126,17 +95,14 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 	};
 	clearValue.DepthStencil = D3D12_DEPTH_STENCIL_VALUE { 1.0f, 0 };
 
-	if (FAILED(device->CreateCommittedResource(
+	ExecOrFail<exception>(device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
 		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&clearValue,
 		IID_PPV_ARGS(&depthBuffer)
-	)))
-	{
-		throw exception("[DX12Graphics] createDepthStencilBuffer error");
-	}
+	));
 
 	auto dsvDesc = D3D12_DEPTH_STENCIL_VIEW_DESC {
 		DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT,
@@ -151,41 +117,29 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 }
 
 auto Fogo::DX12Graphics::createCommandList() -> void {
-	if (FAILED(device->CreateCommandAllocator(
+	ExecOrFail<exception>(device->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
 		IID_PPV_ARGS(&commandAllocator)
-	)))
-	{
-		throw exception("[DX12Graphics] createCommandList");
-	}
-
-	if (FAILED(device->CreateCommandList(
+	));
+	ExecOrFail<exception>(device->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
 		commandAllocator.Get(),
 		nullptr,
 		IID_PPV_ARGS(&commandList)
-	)))
-	{
-		throw exception("[DX12Graphics] createCommandList");
-	}
+	));
 }
 
 auto Fogo::DX12Graphics::waitForPreviousFrame() -> void {
 	const UINT64 fence = frames;
-	if (FAILED(commandQueue->Signal(queueFence.Get(), fence)))
-	{
-		throw exception("[DX12Graphics] waitForPreviousFrame");
-	}
+
+	ExecOrFail<exception>(commandQueue->Signal(queueFence.Get(), fence));
 
 	++frames;
 
 	if (queueFence->GetCompletedValue() >= fence) return;
 
-	if (FAILED(queueFence->SetEventOnCompletion(fence, fenceEvent)))
-	{
-		throw exception("[DX12Graphics] waitForPreviousFrame");
-	}
+	ExecOrFail<exception>(queueFence->SetEventOnCompletion(fence, fenceEvent));
 
 	WaitForSingleObject(fenceEvent, INFINITE);
 }
@@ -231,10 +185,7 @@ auto Fogo::DX12Graphics::populateCommandList(const std::vector<std::function<voi
 	//リソースの状態をレンダーターゲットからプレゼント用に変更
 	setResourceBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
-	if (FAILED(commandList->Close()))
-	{
-		throw exception("[DX12Graphics] populateCommandList error");
-	}
+	ExecOrFail<exception>(commandList->Close());
 }
 
 auto Fogo::DX12Graphics::getDevice() const -> ID3D12Device * {
@@ -255,20 +206,9 @@ auto Fogo::DX12Graphics::render(const std::vector<std::function<void(ID3D12Graph
 	//実行したコマンドの終了待ち
 	waitForPreviousFrame();
 
-	if (FAILED(commandAllocator->Reset()))
-	{
-		throw exception("[DX12Graphics] render error");
-	}
-
-	if (FAILED(commandList->Reset(commandAllocator.Get(), nullptr)))
-	{
-		throw exception("[DX12Graphics] render error");
-	}
-
-	if (FAILED(swapChain->Present(1, 0)))
-	{
-		throw exception("[DX12Graphics] render error");
-	}
+	ExecOrFail<exception>(commandAllocator->Reset());
+	ExecOrFail<exception>(commandList->Reset(commandAllocator.Get(), nullptr));
+	ExecOrFail<exception>(swapChain->Present(1, 0));
 
 	//カレントのバックバッファのインデックスを取得する
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
