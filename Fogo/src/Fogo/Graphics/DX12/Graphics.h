@@ -28,7 +28,7 @@ namespace Fogo::Graphics::DX12 {
 		};
 
 	private: // private variables
-		static constexpr unsigned char RTV_NUM = 2;
+		static constexpr unsigned char RENDER_TARGET_VIEW_NUMBER = 2;
 		static constexpr UINT enableDebug = 0;
 
 		static Graphics * instance;

@@ -45,7 +45,7 @@ auto Graphics::createSwapChain() -> void {
 		},
 		DXGI_SAMPLE_DESC { 1, 0	},
 		DXGI_USAGE_RENDER_TARGET_OUTPUT,
-		RTV_NUM,
+		RENDER_TARGET_VIEW_NUMBER,
 		windowHandle,
 		TRUE,
 		DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD,
@@ -59,7 +59,7 @@ auto Graphics::createSwapChain() -> void {
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
 auto Graphics::createRenderTargetView() -> void {
-	renderTargetView = std::make_unique<RenderTargetView>(device, swapChain, RTV_NUM);
+	renderTargetView = std::make_unique<RenderTargetView>(device, swapChain, RENDER_TARGET_VIEW_NUMBER);
 }
 
 auto Graphics::createDepthStencilBuffer() -> void {
