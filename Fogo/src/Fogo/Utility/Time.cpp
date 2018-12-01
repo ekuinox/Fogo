@@ -2,41 +2,42 @@
 
 using namespace std;
 using namespace std::chrono;
+using namespace Fogo::Utility;
 
-float Fogo::Time::getSeconds() const {
+float Time::getSeconds() const {
 	return static_cast<float>(duration_cast<nanoseconds>(__ended_time - __begun_time).count()) / nano::den;
 }
 
-void Fogo::Time::start() {
+void Time::start() {
 	__begun_time = GetCurrent();
 }
 
-void Fogo::Time::stop() {
+void Time::stop() {
 	__ended_time = GetCurrent();
 }
 
-Fogo::Time & Fogo::Time::getInstance() {
+Time & Time::getInstance() {
 	static Time time;
 	return time;
 }
 
-Fogo::Time::Time() : __begun_time({}), __ended_time({}) {
+Time::Time() : __begun_time({}), __ended_time({}) {
 
 }
 
-float Fogo::Time::GetSeconds() {
+float Time::GetSeconds() {
 	return getInstance().getSeconds();
 }
 
-void Fogo::Time::Start() {
+void Time::Start() {
 	getInstance().start();
 }
 
-void Fogo::Time::Stop() {
+void Time::Stop() {
 	getInstance().stop();
 }
 
-time_point<system_clock> Fogo::Time::GetCurrent()
+time_point<system_clock> Time::GetCurrent()
 {
 	return system_clock::now();
 }

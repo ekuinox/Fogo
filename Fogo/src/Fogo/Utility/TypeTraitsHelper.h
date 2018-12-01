@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-namespace Fogo::TypeTraitsHelper
+namespace Fogo::Utility::TypeTraitsHelper
 {
 	template <typename T1, typename T2, typename ... Pairs>
 	constexpr bool hasContained()

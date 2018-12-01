@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Fogo {
+namespace Fogo::Utility {
 
 	template <class T>
 	class SingletonWrapper

@@ -5,8 +5,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace Fogo
-{
+namespace Fogo::Utility {
 	template <typename EventType, typename EventDetail>
 	class PubSub
 	{

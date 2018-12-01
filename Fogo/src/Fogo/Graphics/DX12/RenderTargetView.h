@@ -6,8 +6,8 @@
 #include <vector>
 #include <stdexcept>
 
-namespace Fogo {
-	class DX12RenderTargetView {
+namespace Fogo::Graphics::DX12 {
+	class RenderTargetView {
 	public:
 		struct exception : std::exception { exception() : std::exception("[DX12RenderTargetView] error") { } };
 
@@ -22,7 +22,7 @@ namespace Fogo {
 		std::vector<Target> __targets;
 
 	public:
-		DX12RenderTargetView(
+		RenderTargetView(
 			const Microsoft::WRL::ComPtr<ID3D12Device> & device,
 			const Microsoft::WRL::ComPtr<IDXGISwapChain3> & swapChain,
 			const unsigned char count

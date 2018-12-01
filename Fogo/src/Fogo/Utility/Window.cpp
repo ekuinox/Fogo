@@ -2,9 +2,11 @@
 
 #pragma comment(lib, "winmm.lib")	
 
-Fogo::Window * Fogo::Window::instance = nullptr;
+using namespace Fogo::Utility;
 
-auto Fogo::Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX
+Window * Window::instance = nullptr;
+
+auto Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX
 {
 	auto windowClass = WNDCLASSEX
 	{
@@ -27,7 +29,7 @@ auto Fogo::Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & 
 	return windowClass;
 }
 
-auto Fogo::Window::createWindow(const LPCWSTR & title) const -> HWND
+auto Window::createWindow(const LPCWSTR & title) const -> HWND
 {
 	return CreateWindow(
 		__window_class.lpszClassName,
@@ -44,7 +46,7 @@ auto Fogo::Window::createWindow(const LPCWSTR & title) const -> HWND
 	);
 }
 
-auto Fogo::Window::moveWindowCenter() const -> void
+auto Window::moveWindowCenter() const -> void
 {
 	RECT windowRect, clientRect;
 	GetWindowRect(__window_handle, &windowRect);
@@ -63,7 +65,7 @@ auto Fogo::Window::moveWindowCenter() const -> void
 	);
 }
 
-Fogo::Window::Window(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
+Window::Window(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
 	: __instance(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
 {
 	__window_handle = createWindow(title);
@@ -71,7 +73,7 @@ Fogo::Window::Window(const UINT width, const UINT height, const WNDPROC & proced
 	moveWindowCenter();
 }
 
-auto Fogo::Window::run() const -> int
+auto Window::run() const -> int
 {
 	ShowWindow(__window_handle, SW_NORMAL);
 	UpdateWindow(__window_handle);
@@ -88,36 +90,36 @@ auto Fogo::Window::run() const -> int
 	return static_cast<int>(msg.wParam);
 }
 
-auto Fogo::Window::HideConsole() -> void
+auto Window::HideConsole() -> void
 {
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
 
-auto Fogo::Window::Create(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
+auto Window::Create(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
 	if (instance == nullptr) instance = new Window(width, height, procedure, title, className);
 	return * instance;
 }
 
-auto Fogo::Window::Destroy() -> void {
+auto Window::Destroy() -> void {
 	delete instance;
 	instance = nullptr;
 }
 
-auto Fogo::Window::GetWidth() -> UINT
+auto Window::GetWidth() -> UINT
 {
 	return GetInstance().__window_size.width;
 }
 
-auto Fogo::Window::GetHeight() -> UINT
+auto Window::GetHeight() -> UINT
 {
 	return GetInstance().__window_size.height;
 }
 
-auto Fogo::Window::GetHandle() -> HWND
+auto Window::GetHandle() -> HWND
 {
 	return GetInstance().__window_handle;
 }
 
-auto Fogo::Window::GetInstance() -> Window & {
+auto Window::GetInstance() -> Window & {
 	return * instance;
 }

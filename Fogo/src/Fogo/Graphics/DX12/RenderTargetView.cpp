@@ -1,9 +1,11 @@
-#include "DX12RenderTargetView.h"
-#include "../Utility/Exception.h"
+#include "RenderTargetView.h"
+#include "../../Utility/Exception.h"
 
 using namespace Microsoft::WRL;
+using namespace Fogo::Graphics::DX12;
+using namespace Fogo::Utility;
 
-Fogo::DX12RenderTargetView::DX12RenderTargetView(
+RenderTargetView::RenderTargetView(
 	const ComPtr<ID3D12Device> & device,
 	const ComPtr<IDXGISwapChain3> & swapChain,
 	const unsigned char count
@@ -31,10 +33,10 @@ Fogo::DX12RenderTargetView::DX12RenderTargetView(
 	}
 }
 
-auto Fogo::DX12RenderTargetView::getTarget(const UINT index) const -> const Microsoft::WRL::ComPtr<ID3D12Resource> {
+auto RenderTargetView::getTarget(const UINT index) const -> const Microsoft::WRL::ComPtr<ID3D12Resource> {
 	return __targets.at(index).resource;
 }
 
-auto Fogo::DX12RenderTargetView::getTargetHandle(const UINT index) const -> const D3D12_CPU_DESCRIPTOR_HANDLE {
+auto RenderTargetView::getTargetHandle(const UINT index) const -> const D3D12_CPU_DESCRIPTOR_HANDLE {
 	return __targets.at(index).handle;
 }

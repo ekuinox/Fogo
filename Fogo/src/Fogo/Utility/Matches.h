@@ -3,8 +3,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Fogo
-{
+namespace Fogo::Utility {
 	template <typename State>
 	void match(State state, std::unordered_map<State, std::function<void(void)>> matches)
 	{

@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace Fogo {
+namespace Fogo::Utility {
 	
 	class Time {
 	private:

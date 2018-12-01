@@ -1,23 +1,26 @@
-#include "DX12Graphics.h"
-#include "../Utility/Exception.h"
+#include "Graphics.h"
+#include "../../Utility/Exception.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-Fogo::DX12Graphics * Fogo::DX12Graphics::instance = nullptr;
+using namespace Fogo::Graphics::DX12;
+using namespace Fogo::Utility;
 
-auto Fogo::DX12Graphics::createFactory() -> void {
+Graphics * Graphics::instance = nullptr;
+
+auto Graphics::createFactory() -> void {
 	ExecOrFail<exception>(CreateDXGIFactory2(enableDebug, IID_PPV_ARGS(factory.GetAddressOf())));
 }
 
-auto Fogo::DX12Graphics::createDevice() -> void {
+auto Graphics::createDevice() -> void {
 	ComPtr<IDXGIAdapter3> adapter;
 	ExecOrFail<exception>(factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(adapter.GetAddressOf())));
 	ExecOrFail<exception>(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1, IID_PPV_ARGS(&device)));
 }
 
-auto Fogo::DX12Graphics::createCommandQueue() -> void {
+auto Graphics::createCommandQueue() -> void {
 	static constexpr auto commandQueueDesc = D3D12_COMMAND_QUEUE_DESC {
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
 		0,
@@ -30,7 +33,7 @@ auto Fogo::DX12Graphics::createCommandQueue() -> void {
 	ExecOrFail<exception>(device->CreateFence(0, D3D12_FENCE_FLAGS::D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(queueFence.GetAddressOf())));
 }
 
-auto Fogo::DX12Graphics::createSwapChain() -> void {
+auto Graphics::createSwapChain() -> void {
 	auto swapChainDesc = DXGI_SWAP_CHAIN_DESC {
 		DXGI_MODE_DESC {
 			windowSize.width,
@@ -55,11 +58,11 @@ auto Fogo::DX12Graphics::createSwapChain() -> void {
 
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
-auto Fogo::DX12Graphics::createRenderTargetView() -> void {
-	renderTargetView = std::make_unique<DX12RenderTargetView>(device, swapChain, RTV_NUM);
+auto Graphics::createRenderTargetView() -> void {
+	renderTargetView = std::make_unique<RenderTargetView>(device, swapChain, RTV_NUM);
 }
 
-auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
+auto Graphics::createDepthStencilBuffer() -> void {
 	static constexpr auto descriptorHeapDesc = D3D12_DESCRIPTOR_HEAP_DESC {
 		D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
 		1,
@@ -116,7 +119,7 @@ auto Fogo::DX12Graphics::createDepthStencilBuffer() -> void {
 	device->CreateDepthStencilView(depthBuffer.Get(), &dsvDesc, dsvHandle);
 }
 
-auto Fogo::DX12Graphics::createCommandList() -> void {
+auto Graphics::createCommandList() -> void {
 	ExecOrFail<exception>(device->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT,
 		IID_PPV_ARGS(&commandAllocator)
@@ -130,7 +133,7 @@ auto Fogo::DX12Graphics::createCommandList() -> void {
 	));
 }
 
-auto Fogo::DX12Graphics::waitForPreviousFrame() -> void {
+auto Graphics::waitForPreviousFrame() -> void {
 	const UINT64 fence = frames;
 
 	ExecOrFail<exception>(commandQueue->Signal(queueFence.Get(), fence));
@@ -144,7 +147,7 @@ auto Fogo::DX12Graphics::waitForPreviousFrame() -> void {
 	WaitForSingleObject(fenceEvent, INFINITE);
 }
 
-auto Fogo::DX12Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) -> void {
+auto Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) -> void {
 	const auto & resourceBarrier = D3D12_RESOURCE_BARRIER {
 		D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION,
 		D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE,
@@ -159,7 +162,7 @@ auto Fogo::DX12Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D
 	commandList->ResourceBarrier(1, &resourceBarrier);
 }
 
-auto Fogo::DX12Graphics::populateCommandList(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
+auto Graphics::populateCommandList(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
 	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	//リソースの状態をプレゼント用からレンダーターゲット用に変更
@@ -188,16 +191,16 @@ auto Fogo::DX12Graphics::populateCommandList(const std::vector<std::function<voi
 	ExecOrFail<exception>(commandList->Close());
 }
 
-auto Fogo::DX12Graphics::getDevice() const -> ID3D12Device * {
+auto Graphics::getDevice() const -> ID3D12Device * {
 	return device.Get();
 
 }
 
-auto Fogo::DX12Graphics::getCommandList() const -> ID3D12GraphicsCommandList * {
+auto Graphics::getCommandList() const -> ID3D12GraphicsCommandList * {
 	return commandList.Get();
 }
 
-auto Fogo::DX12Graphics::render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
+auto Graphics::render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
 	populateCommandList(renderers);
 
 	ID3D12CommandList * const commandLists = commandList.Get();
@@ -214,7 +217,7 @@ auto Fogo::DX12Graphics::render(const std::vector<std::function<void(ID3D12Graph
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
 
-Fogo::DX12Graphics::DX12Graphics(HWND hwnd, const WindowSize & windowSize)
+Graphics::Graphics(HWND hwnd, const WindowSize & windowSize)
 	: windowHandle(hwnd), windowSize(windowSize), frames(0), rtvIndex(0) {
 	createFactory();
 	createDevice();
@@ -238,28 +241,27 @@ Fogo::DX12Graphics::DX12Graphics(HWND hwnd, const WindowSize & windowSize)
 	};
 }
 
-auto Fogo::DX12Graphics::Create(HWND hwnd, const WindowSize & windowSize) -> DX12Graphics &
+auto Graphics::Create(HWND hwnd, const WindowSize & windowSize) -> Graphics &
 {
-	if (instance == nullptr) instance = new DX12Graphics(hwnd, windowSize);
+	if (instance == nullptr) instance = new Graphics(hwnd, windowSize);
 	return * instance;
 }
 
-auto Fogo::DX12Graphics::Destroy() -> void
+auto Graphics::Destroy() -> void
 {
 	delete instance;
 	instance = nullptr;
 }
 
-auto Fogo::DX12Graphics::GetInstance() -> DX12Graphics &
+auto Graphics::GetInstance() -> Graphics &
 {
 	return * instance;
 }
 
-auto Fogo::DX12Graphics::Render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>>& renderers) -> void {
+auto Graphics::Render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>>& renderers) -> void {
 	GetInstance().render(renderers);
 }
 
-auto Fogo::DX12Graphics::GetDevice() -> ID3D12Device * {
+auto Graphics::GetDevice() -> ID3D12Device * {
 	return GetInstance().getDevice();
 }
-

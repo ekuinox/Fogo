@@ -11,10 +11,10 @@
 #include <vector>
 #include <functional>
 #include <memory>
-#include "DX12RenderTargetView.h"
+#include "RenderTargetView.h"
 
-namespace Fogo {
-	class DX12Graphics
+namespace Fogo::Graphics::DX12 {
+	class Graphics
 	{
 	private:
 		template <typename T>
@@ -31,7 +31,7 @@ namespace Fogo {
 		static constexpr unsigned char RTV_NUM = 2;
 		static constexpr UINT enableDebug = 0;
 
-		static DX12Graphics * instance;
+		static Graphics * instance;
 
 		HWND windowHandle;
 		WindowSize windowSize;
@@ -50,7 +50,7 @@ namespace Fogo {
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 		ComPtr<ID3D12CommandAllocator> commandAllocator;
 
-		std::unique_ptr<DX12RenderTargetView> renderTargetView;
+		std::unique_ptr<RenderTargetView> renderTargetView;
 
 		ComPtr<ID3D12Resource> depthBuffer;
 		ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
@@ -76,14 +76,14 @@ namespace Fogo {
 		auto getDevice() const -> ID3D12Device *;
 		auto getCommandList() const -> ID3D12GraphicsCommandList *;
 		auto render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void;
-		DX12Graphics(HWND hwnd, const WindowSize & windowSize);
+		Graphics(HWND hwnd, const WindowSize & windowSize);
 
 	public: // functions
-		DX12Graphics(const DX12Graphics &) = delete;
-		auto operator=(const DX12Graphics &) -> DX12Graphics & = delete;
-		static auto Create(HWND hwnd, const WindowSize & windowSize) -> DX12Graphics &;
+		Graphics(const Graphics &) = delete;
+		auto operator=(const Graphics &) -> Graphics & = delete;
+		static auto Create(HWND hwnd, const WindowSize & windowSize) -> Graphics &;
 		static auto Destroy() -> void;
-		static auto GetInstance() -> DX12Graphics &;
+		static auto GetInstance() -> Graphics &;
 		static auto Render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void;
 		static auto GetDevice() -> ID3D12Device *;
 	};

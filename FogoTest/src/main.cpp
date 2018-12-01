@@ -4,7 +4,8 @@
 
 auto main(int argc, char ** argv) -> int {
 	
-	using namespace Fogo;
+	using namespace Fogo::Utility;
+	using namespace Fogo::Graphics::DX12;
 
 	Window::Create(800, 640, [](HWND handle, UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
 		if (message == WM_DESTROY) PostQuitMessage(0);
@@ -14,11 +15,11 @@ auto main(int argc, char ** argv) -> int {
 
 	Window::HideConsole();
 
-	DX12Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
+	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	const auto & square = Square(DX12Graphics::GetDevice(), Square::Option { });
+	const auto & square = Square(Graphics::GetDevice(), Square::Option { });
 
-	DX12Graphics::Render({
+	Graphics::Render({
 		[&](ID3D12GraphicsCommandList * commandList) {
 			square.render(commandList);
 		}

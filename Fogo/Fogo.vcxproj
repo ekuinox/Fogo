@@ -21,8 +21,9 @@
   <ItemGroup>
     <ClInclude Include="src\Fogo.h" />
     <ClInclude Include="src\Fogo\Graphics.h" />
-    <ClInclude Include="src\Fogo\Graphics\DX12Graphics.h" />
-    <ClInclude Include="src\Fogo\Graphics\DX12RenderTargetView.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\Graphics.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\RenderTargetView.h" />
     <ClInclude Include="src\Fogo\Utility.h" />
     <ClInclude Include="src\Fogo\Utility\Exception.h" />
     <ClInclude Include="src\Fogo\Utility\MappedStore.h" />
@@ -38,8 +39,8 @@
     <ClInclude Include="src\Fogo\Utility\WRLTypeTraitsHelper.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Fogo\Graphics\DX12Graphics.cpp" />
-    <ClCompile Include="src\Fogo\Graphics\DX12RenderTargetView.cpp" />
+    <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
+    <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Utility\Time.cpp" />
     <ClCompile Include="src\Fogo\Utility\Window.cpp" />
   </ItemGroup>

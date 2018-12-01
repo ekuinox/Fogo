@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <functional>
 
-namespace Fogo {
+namespace Fogo::Utility {
 
 	class Window
 	{
