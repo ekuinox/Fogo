@@ -12,6 +12,7 @@
 #include <functional>
 #include <memory>
 #include "RenderTargetView.h"
+#include "DepthStencilView.h"
 
 namespace Fogo::Graphics::DX12 {
 	class Graphics
@@ -52,9 +53,7 @@ namespace Fogo::Graphics::DX12 {
 
 		std::unique_ptr<RenderTargetView> renderTargetView;
 
-		ComPtr<ID3D12Resource> depthBuffer;
-		ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+		std::unique_ptr<DepthStencilView> depthStencilView;
 
 		D3D12_RECT scissorRect;
 		D3D12_VIEWPORT viewport;

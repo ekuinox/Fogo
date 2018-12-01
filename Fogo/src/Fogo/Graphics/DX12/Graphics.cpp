@@ -63,60 +63,7 @@ auto Graphics::createRenderTargetView() -> void {
 }
 
 auto Graphics::createDepthStencilBuffer() -> void {
-	static constexpr auto descriptorHeapDesc = D3D12_DESCRIPTOR_HEAP_DESC {
-		D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
-		1,
-		D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
-		0
-	};
-
-	ExecOrFail<exception>(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&dsvDescriptorHeap)));
-
-	static constexpr auto heapProperties = D3D12_HEAP_PROPERTIES {
-		D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_DEFAULT,
-		D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
-		D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN,
-		0,
-		0
-	};
-
-	const auto & resourceDesc = D3D12_RESOURCE_DESC {
-		D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE2D,
-		0,
-		windowSize.width,
-		windowSize.height,
-		1,
-		0,
-		DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS,
-		DXGI_SAMPLE_DESC { 1, 0 },
-		D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_UNKNOWN,
-		D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
-	};
-
-	auto clearValue = D3D12_CLEAR_VALUE {
-		DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT,
-	};
-	clearValue.DepthStencil = D3D12_DEPTH_STENCIL_VALUE { 1.0f, 0 };
-
-	ExecOrFail<exception>(device->CreateCommittedResource(
-		&heapProperties,
-		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
-		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_DEPTH_WRITE,
-		&clearValue,
-		IID_PPV_ARGS(&depthBuffer)
-	));
-
-	auto dsvDesc = D3D12_DEPTH_STENCIL_VIEW_DESC {
-		DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT,
-		D3D12_DSV_DIMENSION::D3D12_DSV_DIMENSION_TEXTURE2D,
-		D3D12_DSV_FLAGS::D3D12_DSV_FLAG_NONE
-	};
-	dsvDesc.Texture2D.MipSlice = 0;
-
-	dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
-	device->CreateDepthStencilView(depthBuffer.Get(), &dsvDesc, dsvHandle);
+	depthStencilView = std::make_unique<DepthStencilView>(device, windowSize.width, windowSize.height);
 }
 
 auto Graphics::createCommandList() -> void {
@@ -169,7 +116,7 @@ auto Graphics::populateCommandList(const std::vector<std::function<void(ID3D12Gr
 	setResourceBarrier(D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	//深度バッファとレンダーターゲットのクリア
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	commandList->ClearDepthStencilView(depthStencilView->getHandle(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	commandList->ClearRenderTargetView(renderTargetView->getTargetHandle(rtvIndex), clearColor, 0, nullptr);
 
 	// この辺から
@@ -179,7 +126,7 @@ auto Graphics::populateCommandList(const std::vector<std::function<void(ID3D12Gr
 	commandList->RSSetScissorRects(1, &scissorRect);
 
 	//レンダーターゲットの設定
-	commandList->OMSetRenderTargets(1, &renderTargetView->getTargetHandle(rtvIndex), TRUE, &dsvHandle);
+	commandList->OMSetRenderTargets(1, &renderTargetView->getTargetHandle(rtvIndex), TRUE, &depthStencilView->getHandle());
 
 	for (const auto & renderer : renderers) renderer(commandList.Get());
 
