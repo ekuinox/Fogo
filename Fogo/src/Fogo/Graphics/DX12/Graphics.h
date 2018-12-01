@@ -56,9 +56,6 @@ namespace Fogo::Graphics::DX12 {
 		ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap;
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 
-		ComPtr<ID3D12PipelineState> pipelineState;
-		ComPtr<ID3D12RootSignature> rootSignature;
-
 		D3D12_RECT scissorRect;
 		D3D12_VIEWPORT viewport;
 
