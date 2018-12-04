@@ -24,14 +24,17 @@ auto main(int argc, char ** argv) -> int {
 
 	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/b.png"));
 
-	Square square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
+	std::vector<std::unique_ptr<Square>> squares;
+
+	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f } }));
+	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f } }));
 
 	bool isLoop = true;
 	std::thread th([&] {
 		while(isLoop) {
 			Time::Start();
-			square.update();
-			Graphics::Render({ [&](ID3D12GraphicsCommandList * commandList) { square.render(commandList); } });
+			for (const auto & square : squares) square->update();
+			Graphics::Render({ [&](ID3D12GraphicsCommandList * commandList) { for (const auto & square : squares) square->render(commandList); } });
 			Time::Stop();
 		}
 	});
