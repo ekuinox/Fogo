@@ -12,9 +12,9 @@ namespace Fogo::Graphics::DX12 {
 		Microsoft::WRL::ComPtr<ID3D12Resource> __resource;
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heap;
 
-		auto load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const char * filename) -> void;
+		auto load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename) -> void;
 	public:
-		Texture(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const char * filename);
+		Texture(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename);
 		auto getDescriptorHeap() const -> const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> &;
 	};
 }

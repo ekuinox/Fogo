@@ -23,10 +23,10 @@ auto main(int argc, char ** argv) -> int {
 
 	using ResourceStore = MappedStore<TextureType, std::shared_ptr<Texture>>;
 
-	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Fogo::Graphics::DX12::Texture>(Graphics::GetDevice(), "resources/b.png"));
+	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Fogo::Graphics::DX12::Texture>(Graphics::GetDevice(), L"resources/b.png"));
 
 	const auto & square = Square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
-	
+
 	Graphics::Render({
 		[&](ID3D12GraphicsCommandList * commandList) {
 			square.render(commandList);

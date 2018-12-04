@@ -1,14 +1,14 @@
 #include "Texture.h"
 #include "../../Utility.h"
+#include <DirectXTex.h>
 
 using namespace Fogo::Graphics::DX12;
 using namespace Fogo::Utility;
 
-auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const char * filename) -> void {
-	std::vector<byte> image;
-	unsigned width, height;
-
-	const auto a = lodepng::decode(image, width, height, filename);
+auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename) -> void {
+	DirectX::TexMetadata metadata {};
+	DirectX::ScratchImage scratch;
+	LoadFromWICFile(filename, 0, &metadata, scratch, [&](IWICMetadataQueryReader * reader) { });
 
 	//テクスチャ用のリソースの作成
 	constexpr D3D12_HEAP_PROPERTIES textureHeapProperties {
@@ -20,15 +20,15 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const ch
 	};
 
 	const D3D12_RESOURCE_DESC textureResourceDesc {
-		D3D12_RESOURCE_DIMENSION_TEXTURE2D,
+		static_cast<D3D12_RESOURCE_DIMENSION>(metadata.dimension),
 		0,
-		static_cast<UINT64>(width),
-		static_cast<UINT64>(height),
-		1,
-		1,
-		DXGI_FORMAT_R8G8B8A8_UNORM,
+		static_cast<UINT64>(metadata.width),
+		static_cast<UINT64>(metadata.height),
+		metadata.arraySize,
+		metadata.mipLevels,
+		metadata.format,
 		DXGI_SAMPLE_DESC { 1, 0 },
-		D3D12_TEXTURE_LAYOUT_UNKNOWN
+		D3D12_TEXTURE_LAYOUT_UNKNOWN,
 	};
 
 	ExecOrFail<exception>(device->CreateCommittedResource(
@@ -51,7 +51,7 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const ch
 	ExecOrFail<exception>(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&__descriptor_heap)));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC resourceViewDesc {
-		DXGI_FORMAT_R8G8B8A8_UNORM,
+		metadata.format,
 		D3D12_SRV_DIMENSION_TEXTURE2D,
 		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING
 	};
@@ -60,11 +60,11 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const ch
 	device->CreateShaderResourceView(__resource.Get(), &resourceViewDesc, __descriptor_heap->GetCPUDescriptorHandleForHeapStart());
 
 	//画像データの書き込み
-	const auto & box = D3D12_BOX{ 0, 0, 0, static_cast<UINT>(width), static_cast<UINT>(height), 1 };
-	ExecOrFail<exception>(__resource->WriteToSubresource(0, &box, image.data(), 4 * width, 4 * width * height));
+	const auto & box = D3D12_BOX { 0, 0, 0, static_cast<UINT>(metadata.width), static_cast<UINT>(metadata.height), 1 };
+	ExecOrFail<exception>(__resource->WriteToSubresource(0, &box, scratch.GetPixels(), sizeof(UINT) * metadata.width, sizeof(UINT) * metadata.width * metadata.height));
 }
 
-Texture::Texture(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const char* filename) {
+Texture::Texture(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename) {
 	load(device, filename);
 }
 
