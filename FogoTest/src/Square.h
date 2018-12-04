@@ -19,6 +19,8 @@ private:
 	ComPtr<ID3D12PipelineState> pipelineState;
 	ComPtr<ID3D12RootSignature> rootSignature;
 
+	DirectX::XMMATRIX matrix;
+
 	struct TexturedVertex3D
 	{
 		DirectX::XMFLOAT3 position;
@@ -41,5 +43,6 @@ public:
 	};
 
 	Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Texture> texture, const Option & option);
+	auto update() -> void;
 	auto render(ID3D12GraphicsCommandList * commandList) const -> void;
 };

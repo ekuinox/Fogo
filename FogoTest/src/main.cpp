@@ -1,6 +1,7 @@
 #include <Fogo.h>
 #include <iostream>
 #include "Square.h"
+#include <thread>
 
 auto main(int argc, char ** argv) -> int {
 	
@@ -13,8 +14,6 @@ auto main(int argc, char ** argv) -> int {
 		return DefWindowProc(handle, message, wParam, lParam);
 	}, L"TITLE", L"CLASS");
 
-	Window::HideConsole();
-
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
 	enum class TextureType {
@@ -25,7 +24,7 @@ auto main(int argc, char ** argv) -> int {
 
 	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Fogo::Graphics::DX12::Texture>(Graphics::GetDevice(), L"resources/b.png"));
 
-	const auto & square = Square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
+	Square square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
 
 	Graphics::Render({
 		[&](ID3D12GraphicsCommandList * commandList) {
@@ -33,7 +32,20 @@ auto main(int argc, char ** argv) -> int {
 		}
 	});
 
+	bool isLoop = true;
+	std::thread th([&] {
+		while(isLoop) {
+			Time::Start();
+			square.update();
+			Graphics::Render({ [&](ID3D12GraphicsCommandList * commandList) { square.render(commandList); } });
+			Time::Stop();
+		}
+	});
+
 	Window::GetInstance().run();
+
+	isLoop = false;
+	th.join();
 
 	return 0;
 }

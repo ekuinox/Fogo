@@ -14,6 +14,7 @@ void Time::start() {
 
 void Time::stop() {
 	__ended_time = GetCurrent();
+	__elapsed_time = getSeconds();
 }
 
 Time & Time::getInstance() {
@@ -40,4 +41,9 @@ void Time::Stop() {
 time_point<system_clock> Time::GetCurrent()
 {
 	return system_clock::now();
+}
+
+float Fogo::Utility::Time::GetElapsedTime()
+{
+	return getInstance().__elapsed_time;
 }

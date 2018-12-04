@@ -10,6 +10,7 @@ namespace Fogo::Utility {
 		
 		TimePoint __begun_time;
 		TimePoint __ended_time;
+		float __elapsed_time;
 
 		Time();
 		
@@ -27,6 +28,7 @@ namespace Fogo::Utility {
 		static void Start();
 		static void Stop();
 		static TimePoint GetCurrent();
+		static float GetElapsedTime();
 	};
 
 } // namespace Fogo

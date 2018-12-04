@@ -260,6 +260,14 @@ Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Text
 
 	vertexBuffer->Unmap(0, nullptr);
 	buffer = nullptr;
+
+	matrix = DirectX::XMMatrixIdentity();
+}
+
+auto Square::update() -> void {
+	using namespace DirectX;
+
+	matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
 }
 
 auto Square::render(ID3D12GraphicsCommandList * commandList) const -> void {
@@ -273,21 +281,15 @@ auto Square::render(ID3D12GraphicsCommandList * commandList) const -> void {
 	const XMMATRIX view = XMMatrixLookAtLH({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
 	const XMMATRIX projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 640.0f / 480.0f, 1.0f, 20.0f);
 
-	//オブジェクトの回転の設定
-	const XMMATRIX rotate
-		= XMMatrixRotationY(XMConvertToRadians(static_cast<float>(0 % 360)))
-		* XMMatrixRotationX(XMConvertToRadians(static_cast<float>((0 % 1080)) / 3.0f))
-		* XMMatrixRotationZ(XMConvertToRadians(static_cast<float>(0 % 1800)) / 5.0f);
-
-	XMFLOAT4X4 Mat;
-	XMStoreFloat4x4(&Mat, XMMatrixTranspose(rotate * view * projection));
+	XMFLOAT4X4 out;
+	XMStoreFloat4x4(&out, XMMatrixTranspose(matrix * view * projection));
 
 	XMFLOAT4X4 * buffer { };
 
 	if (FAILED(constantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&buffer)))) return;
 
 	//行列を定数バッファに書き込み
-	*buffer = Mat;
+	*buffer = out;
 
 	constantBuffer->Unmap(0, nullptr);
 	buffer = nullptr;
