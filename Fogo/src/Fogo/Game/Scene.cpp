@@ -1,6 +1,7 @@
 #include "./Scene.h"
 
 using namespace Fogo::Game;
+using namespace Fogo::Graphics::DX12;
 
 auto Scene::update() -> void {
 	for (const auto & component : components) {
@@ -9,10 +10,8 @@ auto Scene::update() -> void {
 }
 
 auto Scene::render() const -> void {
-	std::vector<std::function<void(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>)>> renderers;
-	renderers.clear();
 	for (const auto & component : components) {
-		renderers.emplace_back([&](Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) { component->render(commandList); });
+		component->render();
 	}
-	Graphics::DX12::Graphics::Render(renderers);
+	::Graphics::Render();
 }

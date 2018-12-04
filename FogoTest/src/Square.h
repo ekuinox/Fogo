@@ -26,5 +26,5 @@ public:
 
 	Square(ID3D12Device * device, const Option & option);
 	auto update() -> void override;
-	auto render(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) const -> void override;
+	auto render() const -> void override;
 };

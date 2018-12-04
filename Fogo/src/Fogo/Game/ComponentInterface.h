@@ -7,6 +7,6 @@ namespace Fogo::Game {
 	public:
 		virtual ~ComponentInterface() = default;
 		virtual auto update() -> void = 0;
-		virtual auto render(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>) const -> void = 0;
+		virtual auto render() const -> void = 0;
 	};
 }

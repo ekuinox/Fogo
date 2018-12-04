@@ -109,7 +109,7 @@ auto Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOU
 	commandList->ResourceBarrier(1, &resourceBarrier);
 }
 
-auto Graphics::populateCommandList(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>> & renderers) -> void {
+auto Graphics::populateCommandList() -> void {
 	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	//リソースの状態をプレゼント用からレンダーターゲット用に変更
@@ -147,8 +147,8 @@ auto Graphics::getCommandList() const -> ID3D12GraphicsCommandList * {
 	return commandList.Get();
 }
 
-auto Graphics::render(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>> & renderers) -> void {
-	populateCommandList(renderers);
+auto Graphics::render() -> void {
+	populateCommandList();
 
 	ID3D12CommandList * const commandLists = commandList.Get();
 	commandQueue->ExecuteCommandLists(1, &commandLists);
@@ -162,6 +162,8 @@ auto Graphics::render(const std::vector<std::function<void(ComPtr<ID3D12Graphics
 
 	//カレントのバックバッファのインデックスを取得する
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
+
+	renderers.clear();
 }
 
 Graphics::Graphics(HWND hwnd, const WindowSize & windowSize)
@@ -205,8 +207,12 @@ auto Graphics::GetInstance() -> Graphics &
 	return * instance;
 }
 
-auto Graphics::Render(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>>& renderers) -> void {
-	GetInstance().render(renderers);
+auto Graphics::Render(const std::function<void(ComPtr<ID3D12GraphicsCommandList>)> & renderer) -> void {
+	GetInstance().renderers.emplace_back(renderer);
+}
+
+auto Graphics::Render() -> void {
+	GetInstance().render();
 }
 
 auto Graphics::GetDevice() -> ID3D12Device * {
