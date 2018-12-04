@@ -15,8 +15,8 @@ private:
 	std::unique_ptr<Fogo::Graphics::DX12::DrawObject::Plain> __plain;
 
 
-	auto createRootSignature(ID3D12Device * device) -> void;
-	auto createPipelineStateObject(ID3D12Device * device) -> void;
+	auto createRootSignature() -> void;
+	auto createPipelineStateObject() -> void;
 
 public:
 	struct Option {
@@ -24,7 +24,7 @@ public:
 		std::shared_ptr<Fogo::Graphics::DX12::Texture> texture;
 	};
 
-	Square(ID3D12Device * device, const Option & option);
+	Square(const Option & option);
 	auto update() -> void override;
 	auto render() const -> void override;
 };

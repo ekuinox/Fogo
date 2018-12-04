@@ -32,11 +32,11 @@ auto main(int argc, char ** argv) -> int {
 	using ResourceStore = MappedStore<Textures, std::shared_ptr<Texture>>;
 	using ComponentStore = TreeStore<void, Components, std::shared_ptr<Square>>;
 
-	ResourceStore::Insert(Textures::HIROYUKI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/b.png"));
-	ResourceStore::Insert(Textures::FUTARI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/a.png"));
+	ResourceStore::Insert(Textures::HIROYUKI, std::make_shared<Texture>(L"resources/b.png"));
+	ResourceStore::Insert(Textures::FUTARI, std::make_shared<Texture>(L"resources/a.png"));
 
-	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
-	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
+	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
+	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
 
 	auto scene = std::make_shared<Fogo::Game::Scene>();
 	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE1));

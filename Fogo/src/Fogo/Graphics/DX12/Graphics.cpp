@@ -138,15 +138,6 @@ auto Graphics::populateCommandList() -> void {
 	ExecOrFail<exception>(commandList->Close());
 }
 
-auto Graphics::getDevice() const -> ID3D12Device * {
-	return device.Get();
-
-}
-
-auto Graphics::getCommandList() const -> ID3D12GraphicsCommandList * {
-	return commandList.Get();
-}
-
 auto Graphics::render() -> void {
 	populateCommandList();
 
@@ -215,8 +206,8 @@ auto Graphics::Render() -> void {
 	GetInstance().render();
 }
 
-auto Graphics::GetDevice() -> ID3D12Device * {
-	return GetInstance().getDevice();
+auto Graphics::GetDevice() -> ComPtr<ID3D12Device> {
+	return GetInstance().device;
 }
 
 auto Graphics::CompileVertexShader(LPCWSTR fileName, UINT compileFlag, const char * entryFunc, const char * target) -> ComPtr<ID3DBlob> {

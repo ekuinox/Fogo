@@ -71,8 +71,6 @@ namespace Fogo::Graphics::DX12 {
 		auto waitForPreviousFrame() -> void;
 		auto setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) -> void;
 		auto populateCommandList() -> void;
-		auto getDevice() const -> ID3D12Device *;
-		auto getCommandList() const -> ID3D12GraphicsCommandList *;
 		auto render() -> void;
 		Graphics(HWND hwnd, const WindowSize & windowSize);
 
@@ -84,7 +82,7 @@ namespace Fogo::Graphics::DX12 {
 		static auto GetInstance() -> Graphics &;
 		static auto Render(const std::function<void(ComPtr<ID3D12GraphicsCommandList>)> & renderer) -> void;
 		static auto Render() -> void;
-		static auto GetDevice() -> ID3D12Device *;
+		static auto GetDevice() -> ComPtr<ID3D12Device>;
 		static auto CompileVertexShader(LPCWSTR fileName, UINT compileFlag = 0, const char * entryFunc = "VSMain", const char * target = "vs_5_0") ->ComPtr<ID3DBlob>;
 		static auto CompilePixelShader(LPCWSTR fileName, UINT compileFlag = 0, const char * entryFunc = "PSMain", const char * target = "ps_5_0") -> ComPtr<ID3DBlob>;
 	};

@@ -5,8 +5,9 @@
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
+using namespace Fogo::Graphics::DX12;
 
-auto Square::createRootSignature(ID3D12Device * device) -> void {
+auto Square::createRootSignature() -> void {
 	static constexpr D3D12_DESCRIPTOR_RANGE range[1] = { D3D12_DESCRIPTOR_RANGE {
 		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
 		1,
@@ -58,7 +59,7 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 		nullptr
 	));
 
-	Fogo::Utility::ExecOrFail(device->CreateRootSignature(
+	Fogo::Utility::ExecOrFail(Graphics::GetDevice()->CreateRootSignature(
 		0,
 		blob->GetBufferPointer(),
 		blob->GetBufferSize(),
@@ -66,7 +67,7 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 	));
 }
 
-auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
+auto Square::createPipelineStateObject() -> void {
 	const auto & vertexShader = Fogo::Graphics::DX12::Graphics::CompileVertexShader(L"resources/shaders.hlsl");
 	const auto & pixelShader = Fogo::Graphics::DX12::Graphics::CompilePixelShader(L"resources/shaders.hlsl");
 
@@ -146,14 +147,14 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 		D3D12_PIPELINE_STATE_FLAGS::D3D12_PIPELINE_STATE_FLAG_NONE
 	};
 
-	Fogo::Utility::ExecOrFail(device->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
+	Fogo::Utility::ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
 }
 
-Square::Square(ID3D12Device * device, const Option & option) {
-	createRootSignature(device);
-	createPipelineStateObject(device);
+Square::Square(const Option & option) {
+	createRootSignature();
+	createPipelineStateObject();
 
-	__plain = std::make_unique<Fogo::Graphics::DX12::DrawObject::Plain>(device, option.texture, pipelineState, rootSignature);
+	__plain = std::make_unique<Fogo::Graphics::DX12::DrawObject::Plain>(Graphics::GetDevice(), option.texture, pipelineState, rootSignature);
 	__plain->matrix = XMMatrixIdentity();
 	__plain->matrix *= XMMatrixScaling(option.size.x, option.size.y, 0);
 	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);

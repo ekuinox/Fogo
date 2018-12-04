@@ -1,11 +1,12 @@
 #include "Texture.h"
 #include "../../Utility.h"
 #include <DirectXTex.h>
+#include "../DX12.h"
 
 using namespace Fogo::Graphics::DX12;
 using namespace Fogo::Utility;
 
-auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename) -> void {
+auto Texture::load(LPCWSTR filename) -> void {
 	DirectX::TexMetadata metadata {};
 	DirectX::ScratchImage scratch;
 	LoadFromWICFile(filename, 0, &metadata, scratch, [&](IWICMetadataQueryReader * reader) { });
@@ -31,7 +32,7 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR 
 		D3D12_TEXTURE_LAYOUT_UNKNOWN,
 	};
 
-	ExecOrFail<exception>(device->CreateCommittedResource(
+	ExecOrFail<exception>(Graphics::GetDevice()->CreateCommittedResource(
 		&textureHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -48,7 +49,7 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR 
 		0
 	};
 
-	ExecOrFail<exception>(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&__descriptor_heap)));
+	ExecOrFail<exception>(Graphics::GetDevice()->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&__descriptor_heap)));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC resourceViewDesc {
 		metadata.format,
@@ -57,15 +58,15 @@ auto Texture::load(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR 
 	};
 	resourceViewDesc.Texture2D = D3D12_TEX2D_SRV { 0, 1, 0,	0.0F };
 
-	device->CreateShaderResourceView(__resource.Get(), &resourceViewDesc, __descriptor_heap->GetCPUDescriptorHandleForHeapStart());
+	Graphics::GetDevice()->CreateShaderResourceView(__resource.Get(), &resourceViewDesc, __descriptor_heap->GetCPUDescriptorHandleForHeapStart());
 
 	//âÊëúÉfÅ[É^ÇÃèëÇ´çûÇ›
 	const auto & box = D3D12_BOX { 0, 0, 0, static_cast<UINT>(metadata.width), static_cast<UINT>(metadata.height), 1 };
 	ExecOrFail<exception>(__resource->WriteToSubresource(0, &box, scratch.GetPixels(), sizeof(UINT) * metadata.width, sizeof(UINT) * metadata.width * metadata.height));
 }
 
-Texture::Texture(const Microsoft::WRL::ComPtr<ID3D12Device> & device, LPCWSTR filename) {
-	load(device, filename);
+Texture::Texture(LPCWSTR filename) {
+	load(filename);
 }
 
 auto Texture::getDescriptorHeap() const -> const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&
