@@ -22,15 +22,9 @@ auto main(int argc, char ** argv) -> int {
 
 	using ResourceStore = MappedStore<TextureType, std::shared_ptr<Texture>>;
 
-	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Fogo::Graphics::DX12::Texture>(Graphics::GetDevice(), L"resources/b.png"));
+	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/b.png"));
 
 	Square square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
-
-	Graphics::Render({
-		[&](ID3D12GraphicsCommandList * commandList) {
-			square.render(commandList);
-		}
-	});
 
 	bool isLoop = true;
 	std::thread th([&] {
