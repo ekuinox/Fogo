@@ -155,8 +155,8 @@ Square::Square(ID3D12Device * device, const Option & option) {
 
 	__plain = std::make_unique<Fogo::Graphics::DX12::DrawObject::Plain>(device, option.texture, pipelineState, rootSignature);
 	__plain->matrix = XMMatrixIdentity();
-	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
 	__plain->matrix *= XMMatrixScaling(option.size.x, option.size.y, 0);
+	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
 }
 
 auto Square::update() const -> void {
