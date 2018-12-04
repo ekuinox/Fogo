@@ -54,7 +54,7 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 		nullptr
 	)))
 	{
-		throw std::exception("[DX12Graphics] createRootSigature error");
+		throw std::exception("[DX12Graphics] createRootSignature error");
 	}
 
 	if (FAILED(device->CreateRootSignature(
@@ -64,7 +64,7 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 		IID_PPV_ARGS(&rootSignature)
 	)))
 	{
-		throw std::exception("[DX12Graphics] createRootSigature error");
+		throw std::exception("[DX12Graphics] createRootSignature error");
 	}
 }
 
@@ -276,7 +276,7 @@ Square::Square(ID3D12Device * device, const Option & option)
 	fs.close();
 
 	//テクスチャ用のリソースの作成
-	constexpr auto texuteHeapProperties = D3D12_HEAP_PROPERTIES {
+	constexpr auto textuteHeapProperties = D3D12_HEAP_PROPERTIES {
 		D3D12_HEAP_TYPE_CUSTOM,
 		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
 		D3D12_MEMORY_POOL_L0,
@@ -297,7 +297,7 @@ Square::Square(ID3D12Device * device, const Option & option)
 	};
 
 	if (FAILED(device->CreateCommittedResource(
-		&texuteHeapProperties,
+		&textuteHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
