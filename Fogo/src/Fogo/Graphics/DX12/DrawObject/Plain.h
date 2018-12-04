@@ -18,7 +18,6 @@ namespace Fogo::Graphics::DX12::DrawObject {
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> __pipeline_state;
 		Microsoft::WRL::ComPtr<ID3D12RootSignature> __root_signature;
 
-
 		struct TexturedVertex3D
 		{
 			DirectX::XMFLOAT3 position;
@@ -38,7 +37,7 @@ namespace Fogo::Graphics::DX12::DrawObject {
 
 		Plain(
 			const Microsoft::WRL::ComPtr<ID3D12Device> & device,
-			std::shared_ptr<Fogo::Graphics::DX12::Texture> texture,
+			std::shared_ptr<Texture> texture,
 			Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState,
 			Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature
 		);

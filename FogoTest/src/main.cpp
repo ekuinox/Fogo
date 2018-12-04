@@ -16,25 +16,35 @@ auto main(int argc, char ** argv) -> int {
 
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	enum class TextureType {
-		HIROYUKI
+	enum class Textures {
+		HIROYUKI,
+		FUTARI
 	};
 
-	using ResourceStore = MappedStore<TextureType, std::shared_ptr<Texture>>;
+	enum class Components {
+		NOTHING,
+		SQUARE1,
+		SQUARE2,
 
-	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/b.png"));
+	};
 
-	std::vector<std::unique_ptr<Square>> squares;
+	using ResourceStore = MappedStore<Textures, std::shared_ptr<Texture>>;
+	using ComponentStore = TreeStore<void, Components, std::shared_ptr<Square>>;
 
-	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI) }));
-	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI) }));
+	ResourceStore::Insert(Textures::HIROYUKI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/b.png"));
+	ResourceStore::Insert(Textures::FUTARI, std::make_shared<Texture>(Graphics::GetDevice(), L"resources/a.png"));
+
+	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
+	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
 
 	bool isLoop = true;
 	std::thread th([&] {
 		while(isLoop) {
 			Time::Start();
-			for (const auto & square : squares) square->update();
-			Graphics::Render({ [&](Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) { for (const auto & square : squares) square->render(commandList); } });
+			ComponentStore::Execute<std::shared_ptr<Square>>([&](std::shared_ptr<Square> square) { square->update(); });
+			Graphics::Render({ [&](Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) {
+				ComponentStore::Execute<std::shared_ptr<Square>>([&](std::shared_ptr<Square> square) { square->render(commandList); });
+			} });
 			Time::Stop();
 		}
 	});
