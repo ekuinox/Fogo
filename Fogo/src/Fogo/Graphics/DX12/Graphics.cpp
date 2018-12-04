@@ -212,3 +212,35 @@ auto Graphics::Render(const std::vector<std::function<void(ID3D12GraphicsCommand
 auto Graphics::GetDevice() -> ID3D12Device * {
 	return GetInstance().getDevice();
 }
+
+auto Graphics::CompileVertexShader(LPCWSTR fileName, UINT compileFlag, const char * entryFunc, const char * target) -> ComPtr<ID3DBlob> {
+	ComPtr<ID3DBlob> shader;
+	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
+		fileName,
+		nullptr,
+		nullptr,
+		entryFunc,
+		target,
+		compileFlag,
+		0,
+		shader.GetAddressOf(),
+		nullptr
+	));
+	return shader;
+}
+
+auto Graphics::CompilePixelShader(LPCWSTR fileName, UINT compileFlag, const char * entryFunc, const char * target) -> ComPtr<ID3DBlob> {
+	ComPtr<ID3DBlob> shader;
+	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
+		fileName,
+		nullptr,
+		nullptr,
+		entryFunc,
+		target,
+		compileFlag,
+		0,
+		shader.GetAddressOf(),
+		nullptr
+	));
+	return shader;
+}

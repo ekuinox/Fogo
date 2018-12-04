@@ -64,41 +64,16 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 }
 
 auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
-	static constexpr UINT compileFlag = 0;
+	const auto & vertexShader = Fogo::Graphics::DX12::Graphics::CompileVertexShader(L"resources/shaders.hlsl");
+	const auto & pixelShader = Fogo::Graphics::DX12::Graphics::CompilePixelShader(L"resources/shaders.hlsl");
 
-	ComPtr<ID3DBlob> vertexShader;
-	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
-		L"resources/shaders.hlsl",
-		nullptr,
-		nullptr,
-		"VSMain",
-		"vs_5_0",
-		compileFlag,
-		0,
-		vertexShader.GetAddressOf(),
-		nullptr
-	));
-
-	ComPtr<ID3DBlob> pixelShader;
-	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
-		L"resources/shaders.hlsl",
-		nullptr,
-		nullptr,
-		"PSMain",
-		"ps_5_0",
-		compileFlag,
-		0,
-		pixelShader.GetAddressOf(),
-		nullptr
-	));
-
-	constexpr D3D12_INPUT_ELEMENT_DESC inputElementDesc[3] = {
+	constexpr D3D12_INPUT_ELEMENT_DESC inputElementDesc[3] {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
-	const auto & pipelineStateDesc = D3D12_GRAPHICS_PIPELINE_STATE_DESC {
+	const D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc {
 		rootSignature.Get(),
 		D3D12_SHADER_BYTECODE { vertexShader->GetBufferPointer(), vertexShader->GetBufferSize() },
 		D3D12_SHADER_BYTECODE { pixelShader->GetBufferPointer(), pixelShader->GetBufferSize() },
