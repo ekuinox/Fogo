@@ -22,7 +22,7 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameters[1].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE{ 1, &range[0] };
 
-	static constexpr auto samplerDesc = D3D12_STATIC_SAMPLER_DESC {
+	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC {
 		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
 		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
@@ -42,38 +42,32 @@ auto Square::createRootSignature(ID3D12Device * device) -> void {
 		_countof(rootParameters),
 		rootParameters,
 		1,
-		&samplerDesc,
-		D3D12_ROOT_SIGNATURE_FLAGS::D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+		&SAMPLER_DESC,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
 	};
 
 	ComPtr<ID3DBlob> blob;
 
-	if (FAILED(D3D12SerializeRootSignature(
+	Fogo::Utility::ExecOrFail(D3D12SerializeRootSignature(
 		&rootSignatureDesc,
-		D3D_ROOT_SIGNATURE_VERSION::D3D_ROOT_SIGNATURE_VERSION_1,
+		D3D_ROOT_SIGNATURE_VERSION_1,
 		&blob,
 		nullptr
-	)))
-	{
-		throw std::exception("[DX12Graphics] createRootSignature error");
-	}
+	));
 
-	if (FAILED(device->CreateRootSignature(
+	Fogo::Utility::ExecOrFail(device->CreateRootSignature(
 		0,
 		blob->GetBufferPointer(),
 		blob->GetBufferSize(),
 		IID_PPV_ARGS(&rootSignature)
-	)))
-	{
-		throw std::exception("[DX12Graphics] createRootSignature error");
-	}
+	));
 }
 
 auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 	static constexpr UINT compileFlag = 0;
 
 	ComPtr<ID3DBlob> vertexShader;
-	if (FAILED(D3DCompileFromFile(
+	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
 		L"resources/shaders.hlsl",
 		nullptr,
 		nullptr,
@@ -83,13 +77,10 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 		0,
 		vertexShader.GetAddressOf(),
 		nullptr
-	)))
-	{
-		throw std::exception("[DX12Graphics] createPipelineStateObject error");
-	}
+	));
 
 	ComPtr<ID3DBlob> pixelShader;
-	if (FAILED(D3DCompileFromFile(
+	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
 		L"resources/shaders.hlsl",
 		nullptr,
 		nullptr,
@@ -99,15 +90,12 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 		0,
 		pixelShader.GetAddressOf(),
 		nullptr
-	)))
-	{
-		throw std::exception("[DX12Graphics] createPipelineStateObject error");
-	}
+	));
 
 	constexpr D3D12_INPUT_ELEMENT_DESC inputElementDesc[3] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,  0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	const auto & pipelineStateDesc = D3D12_GRAPHICS_PIPELINE_STATE_DESC {
@@ -180,10 +168,7 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 		D3D12_PIPELINE_STATE_FLAGS::D3D12_PIPELINE_STATE_FLAG_NONE
 	};
 
-	if (FAILED(device->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState))))
-	{
-		throw std::exception("[DX12Graphics] createPipelineStateObject error");
-	}
+	Fogo::Utility::ExecOrFail(device->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
 }
 
 Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Texture> texture, const Option & option)
@@ -192,7 +177,7 @@ Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Text
 	createRootSignature(device);
 	createPipelineStateObject(device);
 
-	constexpr auto heapProperties = D3D12_HEAP_PROPERTIES {
+	static constexpr D3D12_HEAP_PROPERTIES HEAP_PROPERTIES {
 		D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_UPLOAD,
 		D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
 		D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN,
@@ -200,7 +185,7 @@ Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Text
 		0
 	};
 
-	constexpr auto resourceDesc = D3D12_RESOURCE_DESC {
+	static constexpr D3D12_RESOURCE_DESC RESOURCE_DESC {
 		D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER,
 		0,
 		256,
@@ -212,29 +197,23 @@ Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Text
 		D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR
 	};
 
-	if (FAILED(device->CreateCommittedResource(
-		&heapProperties,
+	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
+		&HEAP_PROPERTIES,
 		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
+		&RESOURCE_DESC,
 		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&vertexBuffer)
-	)))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
+	));
 
-	if (FAILED(device->CreateCommittedResource(
-		&heapProperties,
+	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
+		&HEAP_PROPERTIES,
 		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
+		&RESOURCE_DESC,
 		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constantBuffer)
-	)))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
+	));
 
 	TexturedVertex3D * buffer{ };
 

@@ -7,7 +7,7 @@
 namespace Fogo::Graphics::DX12 {
 	class Texture {
 	public:
-		struct exception : std::exception { exception() : std::exception("[DX12RenderTargetView] error") { } };
+		struct exception : std::exception { exception() : std::exception("[DX12Texture] error") { } };
 	private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> __resource;
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heap;
