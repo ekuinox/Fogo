@@ -17,8 +17,16 @@ auto main(int argc, char ** argv) -> int {
 
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	const auto & square = Square(Graphics::GetDevice(), Square::Option { });
+	enum class TextureType {
+		HIROYUKI
+	};
 
+	using ResourceStore = MappedStore<TextureType, std::shared_ptr<Texture>>;
+
+	ResourceStore::Insert(TextureType::HIROYUKI, std::make_shared<Fogo::Graphics::DX12::Texture>(Graphics::GetDevice(), "resources/b.png"));
+
+	const auto & square = Square(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { });
+	
 	Graphics::Render({
 		[&](ID3D12GraphicsCommandList * commandList) {
 			square.render(commandList);

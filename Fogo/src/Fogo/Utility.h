@@ -14,3 +14,4 @@
 #include "./Utility/Window.h"
 #include "./Utility/WRLTypeTraitsHelper.h"
 #include "./Utility/Exception.h"
+#include "./Utility/lodepng.h"

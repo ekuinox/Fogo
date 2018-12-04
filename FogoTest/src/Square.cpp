@@ -1,4 +1,5 @@
 #include "Square.h"
+#include <utility>
 #include <vector>
 #include <d3dcompiler.h>
 
@@ -185,8 +186,8 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 	}
 }
 
-Square::Square(ID3D12Device * device, const Option & option)
-	: vertexBuffer({}), constantBuffer({})
+Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Texture> texture, const Option & option)
+	: vertexBuffer({}), constantBuffer({}), texture(std::move(texture))
 {
 	createRootSignature(device);
 	createPipelineStateObject(device);
@@ -244,8 +245,8 @@ Square::Square(ID3D12Device * device, const Option & option)
 
 	buffer[0].position = { option.left(), option.top(), 0.0f };
 	buffer[1].position = { option.right(), option.top(), 0.0f };
-	buffer[2].position = { option.left(), option.buttom(), 0.0f };
-	buffer[3].position = { option.right(), option.buttom(), 0.0f };
+	buffer[2].position = { option.left(), option.bottom(), 0.0f };
+	buffer[3].position = { option.right(), option.bottom(), 0.0f };
 
 	for (auto i = 0; i < Option::vertexesCount; ++i)
 	{
@@ -259,85 +260,6 @@ Square::Square(ID3D12Device * device, const Option & option)
 
 	vertexBuffer->Unmap(0, nullptr);
 	buffer = nullptr;
-
-	std::vector<byte> img;
-	std::fstream fs("resources/earth", std::ios_base::in | std::ios_base::binary);
-	if (!fs)
-	{
-		throw std::exception("[PlainSquare] error");
-	}
-
-	int width;
-	int height;
-	fs.read(reinterpret_cast<char*>(&width), sizeof(width));
-	fs.read(reinterpret_cast<char*>(&height), sizeof(height));
-	img.resize(width * height * 4);
-	fs.read(reinterpret_cast<char*>(img.data()), img.size());
-	fs.close();
-
-	//テクスチャ用のリソースの作成
-	constexpr auto textureHeapProperties = D3D12_HEAP_PROPERTIES {
-		D3D12_HEAP_TYPE_CUSTOM,
-		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
-		D3D12_MEMORY_POOL_L0,
-		0,
-		0
-	};
-
-	const auto & textureResourceDesc = D3D12_RESOURCE_DESC {
-		D3D12_RESOURCE_DIMENSION_TEXTURE2D,
-		0,
-		static_cast<UINT64>(width),
-		static_cast<UINT64>(height),
-		1,
-		1,
-		DXGI_FORMAT_B8G8R8A8_UNORM,
-		DXGI_SAMPLE_DESC { 1, 0 },
-		D3D12_TEXTURE_LAYOUT_UNKNOWN
-	};
-
-	if (FAILED(device->CreateCommittedResource(
-		&textureHeapProperties,
-		D3D12_HEAP_FLAG_NONE,
-		&textureResourceDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&texture)
-	)))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
-
-	//テクスチャ用のデスクリプタヒープの作成
-	constexpr auto descriptorHeapDesc = D3D12_DESCRIPTOR_HEAP_DESC {
-		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
-		1,
-		D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
-		0
-	};
-	if (FAILED(device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&textureDescriptorHeap))))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
-
-	//シェーダリソースビューの作成
-	const auto srvHandle = textureDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
-	auto resourceViewDesc = D3D12_SHADER_RESOURCE_VIEW_DESC {
-		DXGI_FORMAT_B8G8R8A8_UNORM,
-		D3D12_SRV_DIMENSION_TEXTURE2D,
-		D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING
-	};
-	resourceViewDesc.Texture2D = D3D12_TEX2D_SRV { 0, 1, 0,	0.0F };
-
-	device->CreateShaderResourceView(texture.Get(), &resourceViewDesc, srvHandle);
-
-	//画像データの書き込み
-	const auto & box = D3D12_BOX { 0, 0, 0, static_cast<UINT>(width), static_cast<UINT>(height), 1 };
-	if (FAILED(texture->WriteToSubresource(0, &box, img.data(), 4 * width, 4 * width * height)))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
 }
 
 auto Square::render(ID3D12GraphicsCommandList * commandList) const -> void {
@@ -380,9 +302,9 @@ auto Square::render(ID3D12GraphicsCommandList * commandList) const -> void {
 	commandList->SetGraphicsRootConstantBufferView(0, constantBuffer->GetGPUVirtualAddress());
 
 	//テクスチャをシェーダのレジスタにセット
-	ID3D12DescriptorHeap * heaps[] = { textureDescriptorHeap.Get() };
+	ID3D12DescriptorHeap * heaps[] = { texture->getDescriptorHeap().Get() };
 	commandList->SetDescriptorHeaps(_countof(heaps), heaps);
-	commandList->SetGraphicsRootDescriptorTable(1, textureDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	commandList->SetGraphicsRootDescriptorTable(1, texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 
 	//インデックスを使用しないトライアングルストリップで描画
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
