@@ -4,8 +4,9 @@
 #include <wrl/client.h>
 #include <DirectXMath.h>
 #include <Fogo.h>
+#include "Fogo/Game/ComponentInterface.h"
 
-class Square
+class Square : public Fogo::Game::ComponentInterface
 {
 private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
@@ -24,6 +25,6 @@ public:
 	};
 
 	Square(ID3D12Device * device, const Option & option);
-	auto update() const -> void;
-	auto render(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) const -> void;
+	auto update() -> void override;
+	auto render(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) const -> void override;
 };

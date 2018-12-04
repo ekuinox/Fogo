@@ -159,7 +159,7 @@ Square::Square(ID3D12Device * device, const Option & option) {
 	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
 }
 
-auto Square::update() const -> void {
+auto Square::update() -> void {
 
 	__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
 }

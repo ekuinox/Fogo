@@ -20,6 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Fogo.h" />
+    <ClInclude Include="src\Fogo\Game\GameController.h" />
+    <ClInclude Include="src\Fogo\Game\ComponentInterface.h" />
+    <ClInclude Include="src\Fogo\Game\Scene.h" />
     <ClInclude Include="src\Fogo\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
@@ -43,6 +46,8 @@
     <ClInclude Include="src\Fogo\Utility\WRLTypeTraitsHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Fogo\Game\GameController.cpp" />
+    <ClCompile Include="src\Fogo\Game\Scene.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />

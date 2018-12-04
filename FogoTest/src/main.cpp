@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Square.h"
 #include <thread>
+#include "Fogo/Game/GameController.h"
 
 auto main(int argc, char ** argv) -> int {
 	
@@ -37,22 +38,13 @@ auto main(int argc, char ** argv) -> int {
 	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
 	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Graphics::GetDevice(), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
 
-	bool isLoop = true;
-	std::thread th([&] {
-		while(isLoop) {
-			Time::Start();
-			ComponentStore::Execute<std::shared_ptr<Square>>([&](std::shared_ptr<Square> square) { square->update(); });
-			Graphics::Render({ [&](Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) {
-				ComponentStore::Execute<std::shared_ptr<Square>>([&](std::shared_ptr<Square> square) { square->render(commandList); });
-			} });
-			Time::Stop();
-		}
-	});
+	auto scene = std::make_shared<Fogo::Game::Scene>();
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE1));
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE2));
+
+	const auto gameController = Fogo::Game::GameController({ scene });
 
 	Window::GetInstance().run();
-
-	isLoop = false;
-	th.join();
 
 	return 0;
 }
