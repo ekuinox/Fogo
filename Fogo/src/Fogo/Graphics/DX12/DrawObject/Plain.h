@@ -26,9 +26,6 @@ namespace Fogo::Graphics::DX12::DrawObject {
 			DirectX::XMFLOAT2 uv;
 		};
 
-		auto createRootSignature(ID3D12Device * device) -> void;
-		auto createPipelineStateObject(ID3D12Device * device) -> void;
-
 	public:
 		struct Option {
 			static constexpr DirectX::XMFLOAT2 CENTER = { 0.0f, 0.0f }, SIZE = { 1.0f, 1.0f };
