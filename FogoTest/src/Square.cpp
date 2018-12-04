@@ -276,7 +276,7 @@ Square::Square(ID3D12Device * device, const Option & option)
 	fs.close();
 
 	//テクスチャ用のリソースの作成
-	constexpr auto textuteHeapProperties = D3D12_HEAP_PROPERTIES {
+	constexpr auto textureHeapProperties = D3D12_HEAP_PROPERTIES {
 		D3D12_HEAP_TYPE_CUSTOM,
 		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
 		D3D12_MEMORY_POOL_L0,
@@ -297,7 +297,7 @@ Square::Square(ID3D12Device * device, const Option & option)
 	};
 
 	if (FAILED(device->CreateCommittedResource(
-		&textuteHeapProperties,
+		&textureHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
