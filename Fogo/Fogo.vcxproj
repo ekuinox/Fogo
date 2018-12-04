@@ -23,6 +23,8 @@
     <ClInclude Include="src\Fogo\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject\Plain.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\RenderTargetView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Texture.h" />
@@ -42,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
+    <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />

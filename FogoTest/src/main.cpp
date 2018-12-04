@@ -26,15 +26,15 @@ auto main(int argc, char ** argv) -> int {
 
 	std::vector<std::unique_ptr<Square>> squares;
 
-	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f } }));
-	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f } }));
+	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI) }));
+	squares.emplace_back(std::make_unique<Square>(Graphics::GetDevice(), Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::HIROYUKI) }));
 
 	bool isLoop = true;
 	std::thread th([&] {
 		while(isLoop) {
 			Time::Start();
 			for (const auto & square : squares) square->update();
-			Graphics::Render({ [&](ID3D12GraphicsCommandList * commandList) { for (const auto & square : squares) square->render(commandList); } });
+			Graphics::Render({ [&](Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList) { for (const auto & square : squares) square->render(commandList); } });
 			Time::Stop();
 		}
 	});

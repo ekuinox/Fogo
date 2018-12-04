@@ -3,6 +3,9 @@
 #include <vector>
 #include <d3dcompiler.h>
 
+using Microsoft::WRL::ComPtr;
+using namespace DirectX;
+
 auto Square::createRootSignature(ID3D12Device * device) -> void {
 	static constexpr D3D12_DESCRIPTOR_RANGE range[1] = { D3D12_DESCRIPTOR_RANGE {
 		D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
@@ -146,126 +149,25 @@ auto Square::createPipelineStateObject(ID3D12Device * device) -> void {
 	Fogo::Utility::ExecOrFail(device->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
 }
 
-Square::Square(ID3D12Device * device, std::shared_ptr<Fogo::Graphics::DX12::Texture> texture, const Option & option)
-	: vertexBuffer({}), constantBuffer({}), texture(std::move(texture))
-{
+Square::Square(ID3D12Device * device, const Option & option) {
 	createRootSignature(device);
 	createPipelineStateObject(device);
 
-	static constexpr D3D12_HEAP_PROPERTIES HEAP_PROPERTIES {
-		D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_UPLOAD,
-		D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
-		D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN,
-		0,
-		0
-	};
-
-	static constexpr D3D12_RESOURCE_DESC RESOURCE_DESC {
-		D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER,
-		0,
-		256,
-		1,
-		1,
-		1,
-		DXGI_FORMAT::DXGI_FORMAT_UNKNOWN,
-		DXGI_SAMPLE_DESC { 1, 0 },
-		D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR
-	};
-
-	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
-		&HEAP_PROPERTIES,
-		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&RESOURCE_DESC,
-		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertexBuffer)
-	));
-
-	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
-		&HEAP_PROPERTIES,
-		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&RESOURCE_DESC,
-		D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constantBuffer)
-	));
-
-	TexturedVertex3D * buffer{ };
-
-	if (FAILED(vertexBuffer->Map(0, nullptr, reinterpret_cast<void**>(&buffer))))
-	{
-		throw std::exception("[PlainSquare] error");
-	}
-
-	buffer[0].position = { option.left(), option.top(), 0.0f };
-	buffer[1].position = { option.right(), option.top(), 0.0f };
-	buffer[2].position = { option.left(), option.bottom(), 0.0f };
-	buffer[3].position = { option.right(), option.bottom(), 0.0f };
-
-	for (auto i = 0; i < Option::vertexesCount; ++i)
-	{
-		buffer[i].normal = { 0.0f, 0.0f, 1.0f };
-	}
-
-	buffer[0].uv = { 0.0f, 0.0f };
-	buffer[1].uv = { 1.0f, 0.0f };
-	buffer[2].uv = { 0.0f, 1.0f };
-	buffer[3].uv = { 1.0f, 1.0f };
-
-	vertexBuffer->Unmap(0, nullptr);
-	buffer = nullptr;
-
-	matrix = DirectX::XMMatrixIdentity();
+	__plain = std::make_unique<Fogo::Graphics::DX12::DrawObject::Plain>(device, option.texture, pipelineState, rootSignature);
+	__plain->matrix = XMMatrixIdentity();
+	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
+	__plain->matrix *= XMMatrixScaling(option.size.x, option.size.y, 0);
 }
 
-auto Square::update() -> void {
-	using namespace DirectX;
+auto Square::update() const -> void {
 
-	matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
+	__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
 }
 
-auto Square::render(ID3D12GraphicsCommandList * commandList) const -> void {
-	using namespace DirectX;
-
-	//ルートシグネチャとPSOの設定
-	commandList->SetGraphicsRootSignature(rootSignature.Get());
-	commandList->SetPipelineState(pipelineState.Get());
-
-	//カメラの設定
-	const XMMATRIX view = XMMatrixLookAtLH({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
-	const XMMATRIX projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 640.0f / 480.0f, 1.0f, 20.0f);
-
-	XMFLOAT4X4 out;
-	XMStoreFloat4x4(&out, XMMatrixTranspose(matrix * view * projection));
-
-	XMFLOAT4X4 * buffer { };
-
-	if (FAILED(constantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&buffer)))) return;
-
-	//行列を定数バッファに書き込み
-	*buffer = out;
-
-	constantBuffer->Unmap(0, nullptr);
-	buffer = nullptr;
-
-	const auto & vertexView = D3D12_VERTEX_BUFFER_VIEW{
-		vertexBuffer->GetGPUVirtualAddress(),
-		sizeof(TexturedVertex3D) * Option::vertexesCount,
-		sizeof(TexturedVertex3D)
-	};
-
-	//定数バッファをシェーダのレジスタにセット
-	commandList->SetGraphicsRootConstantBufferView(0, constantBuffer->GetGPUVirtualAddress());
-
-	//テクスチャをシェーダのレジスタにセット
-	ID3D12DescriptorHeap * heaps[] = { texture->getDescriptorHeap().Get() };
-	commandList->SetDescriptorHeaps(_countof(heaps), heaps);
-	commandList->SetGraphicsRootDescriptorTable(1, texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-
-	//インデックスを使用しないトライアングルストリップで描画
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	commandList->IASetVertexBuffers(0, 1, &vertexView);
-
-	//描画
-	commandList->DrawInstanced(Option::vertexesCount, 1, 0, 0);
+auto Square::render(ComPtr<ID3D12GraphicsCommandList> commandList) const -> void {
+	__plain->render(
+		commandList,
+		XMMatrixLookAtLH({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }),
+		XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 640.0f / 480.0f, 1.0f, 20.0f)
+	);
 }

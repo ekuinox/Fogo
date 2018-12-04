@@ -109,7 +109,7 @@ auto Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOU
 	commandList->ResourceBarrier(1, &resourceBarrier);
 }
 
-auto Graphics::populateCommandList(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
+auto Graphics::populateCommandList(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>> & renderers) -> void {
 	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	//リソースの状態をプレゼント用からレンダーターゲット用に変更
@@ -147,7 +147,7 @@ auto Graphics::getCommandList() const -> ID3D12GraphicsCommandList * {
 	return commandList.Get();
 }
 
-auto Graphics::render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>> & renderers) -> void {
+auto Graphics::render(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>> & renderers) -> void {
 	populateCommandList(renderers);
 
 	ID3D12CommandList * const commandLists = commandList.Get();
@@ -205,7 +205,7 @@ auto Graphics::GetInstance() -> Graphics &
 	return * instance;
 }
 
-auto Graphics::Render(const std::vector<std::function<void(ID3D12GraphicsCommandList*)>>& renderers) -> void {
+auto Graphics::Render(const std::vector<std::function<void(ComPtr<ID3D12GraphicsCommandList>)>>& renderers) -> void {
 	GetInstance().render(renderers);
 }
 
