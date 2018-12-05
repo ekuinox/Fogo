@@ -28,6 +28,7 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject\Plain.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\FBXModel.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\RenderTargetView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Texture.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="src\Fogo\Game\Scene.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
+    <ClCompile Include="src\Fogo\Graphics\DX12\FBXModel.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />
@@ -113,15 +115,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -130,7 +140,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -145,7 +155,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -162,7 +172,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -181,7 +191,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
