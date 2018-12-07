@@ -3,6 +3,7 @@
 #include "Square.h"
 #include <thread>
 #include "Fogo/Game/GameController.h"
+#include "Car.h"
 
 auto main(int argc, char ** argv) -> int {
 	
@@ -26,21 +27,23 @@ auto main(int argc, char ** argv) -> int {
 		NOTHING,
 		SQUARE1,
 		SQUARE2,
-
+		Car1,
 	};
 
 	using ResourceStore = MappedStore<Textures, std::shared_ptr<Texture>>;
-	using ComponentStore = TreeStore<void, Components, std::shared_ptr<Square>>;
+	using ComponentStore = TreeStore<void, Components, std::shared_ptr<Square>, std::shared_ptr<Car>>;
 
 	ResourceStore::Insert(Textures::HIROYUKI, std::make_shared<Texture>(L"resources/b.png"));
 	ResourceStore::Insert(Textures::FUTARI, std::make_shared<Texture>(L"resources/a.png"));
 
 	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
 	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
+	ComponentStore::Insert(Components::Car1, Components::NOTHING, std::make_shared<Car>("resources/model/unitychan.fbx"));
 
 	auto scene = std::make_shared<Fogo::Game::Scene>();
-	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE1));
-	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE2));
+	// scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE1));
+	// scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE2));
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Car>>(Components::Car1));
 
 	const auto gameController = Fogo::Game::GameController({ scene });
 

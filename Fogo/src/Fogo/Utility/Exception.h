@@ -15,4 +15,9 @@ namespace Fogo::Utility {
 		static_assert(std::is_base_of<std::exception, exception>());
 		if (handle == nullptr) throw exception();
 	}
+	template <typename exception = std::exception>
+	void ExecOrFail(const bool & condition) {
+		static_assert(std::is_base_of<std::exception, exception>());
+		if (!condition) throw exception();
+	}
 }

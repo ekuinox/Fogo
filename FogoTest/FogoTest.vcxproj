@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Car.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Car.h" />
     <ClInclude Include="src\Square.h" />
   </ItemGroup>
   <ItemGroup>

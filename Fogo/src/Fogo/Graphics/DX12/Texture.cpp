@@ -6,10 +6,11 @@
 using namespace Fogo::Graphics::DX12;
 using namespace Fogo::Utility;
 
-auto Texture::load(LPCWSTR filename) -> void {
+auto Texture::load(LPCWSTR filename, Type type) -> void {
 	DirectX::TexMetadata metadata {};
 	DirectX::ScratchImage scratch;
-	LoadFromWICFile(filename, 0, &metadata, scratch, [&](IWICMetadataQueryReader * reader) { });
+	if (type == Type::TGA) LoadFromTGAFile(filename, &metadata, scratch);
+	else if (type == Type::ANY) LoadFromWICFile(filename, 0, &metadata, scratch, [&](IWICMetadataQueryReader * reader) { });
 
 	//テクスチャ用のリソースの作成
 	constexpr D3D12_HEAP_PROPERTIES textureHeapProperties {
@@ -65,8 +66,8 @@ auto Texture::load(LPCWSTR filename) -> void {
 	ExecOrFail<exception>(__resource->WriteToSubresource(0, &box, scratch.GetPixels(), sizeof(UINT) * metadata.width, sizeof(UINT) * metadata.width * metadata.height));
 }
 
-Texture::Texture(LPCWSTR filename) {
-	load(filename);
+Texture::Texture(LPCWSTR filename, Type type) {
+	load(filename, type);
 }
 
 auto Texture::getDescriptorHeap() const -> const Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>&

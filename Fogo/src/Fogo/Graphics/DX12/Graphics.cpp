@@ -110,7 +110,7 @@ auto Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOU
 }
 
 auto Graphics::populateCommandList() -> void {
-	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.5f, 1.0f };
 
 	//リソースの状態をプレゼント用からレンダーターゲット用に変更
 	setResourceBarrier(D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
