@@ -13,11 +13,11 @@ auto Car::createRootSignature() -> void {
 
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[0].Descriptor = D3D12_ROOT_DESCRIPTOR{ 0, 0 };
+	rootParameters[0].Descriptor = D3D12_ROOT_DESCRIPTOR { 0, 0 };
 
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[1].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE{ 1, &range[0] };
+	rootParameters[1].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE { 1, &range[0] };
 
 	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC {
 		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
@@ -79,19 +79,19 @@ auto Car::createPipelineStateObject() -> void {
 		{ "BONEINDEX",		 0,		 DXGI_FORMAT_R32G32B32A32_FLOAT,   0,	   4 * 2 + 4 * 3 + 4 * 4 + 4 * 3	,		D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },	// ボーン行列インデクッス
 		{ "BONEWEIGHT",		 0,		 DXGI_FORMAT_R32G32B32A32_FLOAT,   0,	   4 * 4 + 4 * 2 + 4 * 3 + 4 * 4 + 4 * 3,	D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },	// ボーンウェイト
 	};
+	
 
-	const D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc {
-		rootSignature.Get(),
-		D3D12_SHADER_BYTECODE { vertexShader->GetBufferPointer(), vertexShader->GetBufferSize() },
-		D3D12_SHADER_BYTECODE { pixelShader->GetBufferPointer(), pixelShader->GetBufferSize() },
-		D3D12_SHADER_BYTECODE { },
-		D3D12_SHADER_BYTECODE { },
-		D3D12_SHADER_BYTECODE { },
-		D3D12_STREAM_OUTPUT_DESC { },
-		D3D12_BLEND_DESC {
-			FALSE,
-			FALSE,
-			{ D3D12_RENDER_TARGET_BLEND_DESC {
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc { };
+	
+	pipelineStateDesc.pRootSignature = rootSignature.Get();
+
+	pipelineStateDesc.VS = { vertexShader->GetBufferPointer(), vertexShader->GetBufferSize() };
+	pipelineStateDesc.PS = { pixelShader->GetBufferPointer(), pixelShader->GetBufferSize() };
+
+	pipelineStateDesc.BlendState.AlphaToCoverageEnable = FALSE;
+	pipelineStateDesc.BlendState.IndependentBlendEnable = FALSE;
+	for (auto& render_target : pipelineStateDesc.BlendState.RenderTarget) {
+		render_target = D3D12_RENDER_TARGET_BLEND_DESC {
 				FALSE,
 				FALSE,
 				D3D12_BLEND_ONE,
@@ -102,10 +102,12 @@ auto Car::createPipelineStateObject() -> void {
 				D3D12_BLEND_OP_ADD,
 				D3D12_LOGIC_OP_CLEAR,
 				D3D12_COLOR_WRITE_ENABLE_ALL
-			}}
-		},
-		UINT_MAX,
-		D3D12_RASTERIZER_DESC {
+		};
+	}
+
+	pipelineStateDesc.SampleMask = UINT_MAX;
+
+	pipelineStateDesc.RasterizerState = D3D12_RASTERIZER_DESC{
 			D3D12_FILL_MODE_SOLID,
 			D3D12_CULL_MODE_NONE,
 			FALSE,
@@ -117,8 +119,9 @@ auto Car::createPipelineStateObject() -> void {
 			FALSE,
 			FALSE,
 			D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF
-		},
-		D3D12_DEPTH_STENCIL_DESC {
+	};
+
+	pipelineStateDesc.DepthStencilState = D3D12_DEPTH_STENCIL_DESC {
 			TRUE,
 			D3D12_DEPTH_WRITE_MASK_ALL,
 			D3D12_COMPARISON_FUNC_LESS_EQUAL,
@@ -137,18 +140,27 @@ auto Car::createPipelineStateObject() -> void {
 				D3D12_STENCIL_OP_KEEP,
 				D3D12_COMPARISON_FUNC_ALWAYS
 			}
-		},
-		D3D12_INPUT_LAYOUT_DESC { inputElementDesc,	_countof(inputElementDesc) },
-		D3D12_INDEX_BUFFER_STRIP_CUT_VALUE::D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED,
-		D3D12_PRIMITIVE_TOPOLOGY_TYPE::D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
-		1,
-		{ DXGI_FORMAT::DXGI_FORMAT_B8G8R8A8_UNORM },
-		DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT,
-		DXGI_SAMPLE_DESC { 1, 0 },
-		0,
-		D3D12_CACHED_PIPELINE_STATE { },
-		D3D12_PIPELINE_STATE_FLAGS::D3D12_PIPELINE_STATE_FLAG_NONE
 	};
+
+	pipelineStateDesc.InputLayout = D3D12_INPUT_LAYOUT_DESC { inputElementDesc,	_countof(inputElementDesc) };
+
+	pipelineStateDesc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+
+	pipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+	pipelineStateDesc.NumRenderTargets = 1;
+
+	//pipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	pipelineStateDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+	pipelineStateDesc.SampleDesc = DXGI_SAMPLE_DESC { 1, 0 };
+
+	pipelineStateDesc.NodeMask = 0;
+
+	pipelineStateDesc.CachedPSO = {};
+
+	pipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
 	Fogo::Utility::ExecOrFail(Fogo::Graphics::DX12::Graphics::GetDevice()->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
 }
