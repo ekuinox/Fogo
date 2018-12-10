@@ -210,34 +210,51 @@ auto Graphics::GetDevice() -> ComPtr<ID3D12Device> {
 	return GetInstance().device;
 }
 
+auto Graphics::GetCommandList() -> ComPtr<ID3D12GraphicsCommandList> {
+	return GetInstance().commandList;
+}
+
 auto Graphics::CompileVertexShader(LPCWSTR fileName, UINT compileFlag, const char * entryFunc, const char * target) -> ComPtr<ID3DBlob> {
 	ComPtr<ID3DBlob> shader;
-	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
-		fileName,
-		nullptr,
-		nullptr,
-		entryFunc,
-		target,
-		compileFlag,
-		0,
-		shader.GetAddressOf(),
-		nullptr
-	));
+	ComPtr<ID3DBlob> error;
+	try {
+		ExecOrFail(D3DCompileFromFile(
+			fileName,
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryFunc,
+			target,
+			compileFlag,
+			0,
+			shader.GetAddressOf(),
+			error.GetAddressOf()
+		));
+	} catch (std::exception e) {
+		throw std::exception(static_cast<LPSTR>(error->GetBufferPointer()));
+	}
+	
 	return shader;
 }
 
 auto Graphics::CompilePixelShader(LPCWSTR fileName, UINT compileFlag, const char * entryFunc, const char * target) -> ComPtr<ID3DBlob> {
 	ComPtr<ID3DBlob> shader;
-	Fogo::Utility::ExecOrFail(D3DCompileFromFile(
-		fileName,
-		nullptr,
-		nullptr,
-		entryFunc,
-		target,
-		compileFlag,
-		0,
-		shader.GetAddressOf(),
-		nullptr
-	));
+	ComPtr<ID3DBlob> error;
+	try {
+		ExecOrFail(D3DCompileFromFile(
+			fileName,
+			nullptr,
+			D3D_COMPILE_STANDARD_FILE_INCLUDE,
+			entryFunc,
+			target,
+			compileFlag,
+			0,
+			shader.GetAddressOf(),
+			error.GetAddressOf()
+		));
+	}
+	catch (std::exception e) {
+		throw std::exception(static_cast<LPSTR>(error->GetBufferPointer()));
+	}
+
 	return shader;
 }

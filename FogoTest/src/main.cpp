@@ -4,11 +4,13 @@
 #include <thread>
 #include "Fogo/Game/GameController.h"
 #include "Car.h"
+#include "FBXSample.h"
 
 auto main(int argc, char ** argv) -> int {
 	
 	using namespace Fogo::Utility;
 	using namespace Fogo::Graphics::DX12;
+	using namespace Microsoft::WRL;
 
 	Window::Create(800, 640, [](HWND handle, UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
 		if (message == WM_DESTROY) PostQuitMessage(0);
@@ -18,32 +20,27 @@ auto main(int argc, char ** argv) -> int {
 
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	enum class Textures {
-		HIROYUKI,
-		FUTARI
-	};
+	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>>;
 
-	enum class Components {
-		NOTHING,
-		SQUARE1,
-		SQUARE2,
-		Car1,
-	};
+	enum class VertexShader { BOX };
+	enum class PixelShader { BOX };
 
-	using ResourceStore = MappedStore<Textures, std::shared_ptr<Texture>>;
-	using ComponentStore = TreeStore<void, Components, std::shared_ptr<Square>, std::shared_ptr<Car>>;
+	using ShaderStore = MappedStore<
+		VertexShader, ComPtr<ID3DBlob>,
+		PixelShader, ComPtr<ID3DBlob>
+	>;
 
-	ResourceStore::Insert(Textures::HIROYUKI, std::make_shared<Texture>(L"resources/b.png"));
-	ResourceStore::Insert(Textures::FUTARI, std::make_shared<Texture>(L"resources/a.png"));
+	ShaderStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
+	ShaderStore::Insert(PixelShader::BOX, Graphics::CompilePixelShader(L"./resources/shader/PixelShader.hlsl", 0, "main", "ps_5_1"));
 
-	ComponentStore::Insert(Components::SQUARE1, Components::NOTHING, std::make_shared<Square>(Square::Option { {  1.0f, 0.0f }, { 2.0f, 2.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::HIROYUKI) }));
-	ComponentStore::Insert(Components::SQUARE2, Components::NOTHING, std::make_shared<Square>(Square::Option { { -2.0f, 0.0f }, { 1.0f, 1.0f }, ResourceStore::Get<std::shared_ptr<Texture>>(Textures::FUTARI) }));
-	ComponentStore::Insert(Components::Car1, Components::NOTHING, std::make_shared<Car>("resources/model/unitychan.fbx"));
+	ComponentStore::Insert(0, -1, std::shared_ptr<FBXSample>(new FBXSample(
+		"./resources/box.fbx",
+		ShaderStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX),
+		ShaderStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX)
+	)));
 
-	auto scene = std::make_shared<Fogo::Game::Scene>();
-	// scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE1));
-	// scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Square>>(Components::SQUARE2));
-	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<Car>>(Components::Car1));
+	const auto scene = std::make_shared<Fogo::Game::Scene>();
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<FBXSample>>(0));
 
 	const auto gameController = Fogo::Game::GameController({ scene });
 
