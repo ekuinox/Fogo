@@ -35,5 +35,5 @@ public:
 		TextureType, std::shared_ptr<Fogo::Graphics::DX12::Texture>
 	>;
 
-	MainScene();
+	void initialize() override;
 };

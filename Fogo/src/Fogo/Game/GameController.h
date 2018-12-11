@@ -6,6 +6,10 @@
 
 namespace Fogo::Game {
 	class GameController {
+	public:
+		enum class Event {
+			NextScene
+		};
 	private:
 		std::vector<std::shared_ptr<Scene>> __scenes;
 		unsigned char __current_scene_index;
@@ -14,8 +18,12 @@ namespace Fogo::Game {
 
 		auto exec() const -> void;
 		auto onDestroy() -> void;
-	public:
 		GameController(std::vector<std::shared_ptr<Scene>> scenes);
 		~GameController();
+
+		static GameController * __instance;
+	public:
+		static void Create(const std::vector<std::shared_ptr<Scene>> & scenes);
+		static void Destroy();
 	};
 }

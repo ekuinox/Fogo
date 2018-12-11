@@ -1,15 +1,11 @@
 #include "MainScene.h"
 #include <iostream>
 
-using Fogo::Utility::Input;
-using Fogo::Utility::TreeStore;
-using Fogo::Utility::MouseButton;
-using Fogo::Utility::MappedStore;
 using Fogo::Graphics::DX12::Graphics;
 using Fogo::Graphics::DX12::Texture;
 using Microsoft::WRL::ComPtr;
 
-MainScene::MainScene() {
+void MainScene::initialize() {
 	ResourceStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
 	ResourceStore::Insert(PixelShader::BOX, Graphics::CompilePixelShader(L"./resources/shader/PixelShader.hlsl", 0, "main", "ps_5_1"));
 	ResourceStore::Insert(TextureType::BOX, std::make_shared<Texture>(L"./resources/Textures/KUTIJE/M_1.jpg"));
