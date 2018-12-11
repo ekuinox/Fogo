@@ -26,6 +26,7 @@ namespace Fogo::Utility {
 		struct { UINT width, height; } __window_size;
 
 		static Window * instance;
+		static WNDPROC default_procedure;
 
 		auto createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX;
 		auto createWindow(const LPCWSTR & title) const -> HWND;
@@ -34,13 +35,7 @@ namespace Fogo::Utility {
 		Window(
 			const UINT width,
 			const UINT height,
-			const WNDPROC & procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
-				if (message == WM_DESTROY) {
-					PostQuitMessage(0);
-					Fogo::Utility::PubSub<Fogo::Utility::Window::Event, void>::Publish(Fogo::Utility::Window::Event::OnDestroy);
-				}
-				return DefWindowProc(handle, message, wParam, lParam);
-			},
+			const WNDPROC & procedure = default_procedure,
 			const LPCWSTR & title = DEFAULT_TITLE,
 			const LPCWSTR & className = DEFAULT_CLASS_NAME
 		);
@@ -48,13 +43,7 @@ namespace Fogo::Utility {
 		struct Properties {
 			UINT width;
 			UINT height;
-			WNDPROC procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
-				if (message == WM_DESTROY) {
-					PostQuitMessage(0);
-					Fogo::Utility::PubSub<Fogo::Utility::Window::Event, void>::Publish(Fogo::Utility::Window::Event::OnDestroy);
-				}
-				return DefWindowProc(handle, message, wParam, lParam);
-			};
+			WNDPROC procedure = default_procedure;
 			LPCWSTR title = DEFAULT_TITLE;
 			LPCWSTR className = DEFAULT_CLASS_NAME;
 			Properties & setWidth(const UINT & newWidth) { width = newWidth; return *this; }
@@ -72,10 +61,7 @@ namespace Fogo::Utility {
 		static auto Create(
 			const UINT width,
 			const UINT height,
-			const WNDPROC & procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
-				if (message == WM_DESTROY) PostQuitMessage(0);
-				return DefWindowProc(handle, message, wParam, lParam);
-			},
+			const WNDPROC & procedure = default_procedure,
 			const LPCWSTR & title = DEFAULT_TITLE,
 			const LPCWSTR & className = DEFAULT_CLASS_NAME
 		) -> Window &;

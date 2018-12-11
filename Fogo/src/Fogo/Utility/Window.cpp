@@ -6,6 +6,14 @@ using namespace Fogo::Utility;
 
 Window * Window::instance = nullptr;
 
+WNDPROC Window::default_procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
+	if (message == WM_DESTROY) {
+		PostQuitMessage(0);
+		Fogo::Utility::PubSub<Fogo::Utility::Window::Event, void>::Publish(Fogo::Utility::Window::Event::OnDestroy);
+	}
+	return DefWindowProc(handle, message, wParam, lParam);
+};
+
 auto Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX
 {
 	auto windowClass = WNDCLASSEX
