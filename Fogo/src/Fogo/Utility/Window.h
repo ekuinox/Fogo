@@ -13,27 +13,6 @@ namespace Fogo::Utility {
 
 		static constexpr LPCWSTR DEFAULT_TITLE = L"DEFAULT_TITLE";
 		static constexpr LPCWSTR DEFAULT_CLASS_NAME = L"DEFAULT_CLASS_NAME";
-
-		class SimplePromise {
-			std::function<void(void)> __onSuccess = [] {};
-			std::function<void(void)> __onFailure = [] {};
-			std::function<HRESULT(void)> __task = [] { return S_OK; };
-		public:
-			SimplePromise(std::function<HRESULT(void)> task) : __task(std::move(task)) { }
-			SimplePromise & then(const std::function<void(void)> & onSuccess) {
-				__onSuccess = onSuccess;
-				return * this;
-			}
-			SimplePromise & fail(const std::function<void(void)> & onFailure) {
-				__onFailure = onFailure;
-				return * this;
-			}
-			virtual ~SimplePromise() {
-				if (SUCCEEDED(__task())) __onSuccess();
-				else __onFailure();
-			}
-		};
-
 	private:
 		HINSTANCE __instance;
 		HWND __window_handle;

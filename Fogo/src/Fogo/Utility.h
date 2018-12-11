@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "./Utility/MappedStore.h"
 #include "./Utility/Matches.h"
 #include "./Utility/PubSub.h"
@@ -14,3 +12,4 @@
 #include "./Utility/Window.h"
 #include "./Utility/WRLTypeTraitsHelper.h"
 #include "./Utility/Exception.h"
+#include "./Utility/SimplePromise.h"

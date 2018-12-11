@@ -3,6 +3,7 @@
 #include "d3dx12.h"
 
 using namespace Fogo;
+using namespace Utility;
 using namespace Graphics;
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -173,7 +174,7 @@ void FBXSample::createVertexBuffer() {
 		IID_PPV_ARGS(__vertex_buffer_resource.GetAddressOf()));
 
 	UINT8 * data_begin;
-	Utility::Window::SimplePromise([&] {
+	SimplePromise([&] {
 		return __vertex_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
 	}).then([&] {
 		const auto temp = reinterpret_cast<VertexData*>(data_begin);
@@ -279,7 +280,7 @@ void FBXSample::render() const {
 		const MatrixConstantBuffer buffer { XMMatrixTranspose(__matrix * view * proj) };
 
 		UINT8 * data_begin;
-		Utility::Window::SimplePromise([&] {
+		SimplePromise([&] {
 			return __constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
 		}).then([&] {
 			memcpy(data_begin, &buffer, sizeof buffer);
