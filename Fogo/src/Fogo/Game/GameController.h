@@ -13,6 +13,7 @@ namespace Fogo::Game {
 		bool __is_thread_running;
 
 		auto exec() const -> void;
+		auto onDestroy() -> void;
 	public:
 		GameController(std::vector<std::shared_ptr<Scene>> scenes);
 		~GameController();

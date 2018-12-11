@@ -54,6 +54,7 @@
     <ClInclude Include="src\Fogo\Utility\WRLTypeTraitsHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Fogo.cpp" />
     <ClCompile Include="src\Fogo\Game\GameController.cpp" />
     <ClCompile Include="src\Fogo\Game\Scene.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />

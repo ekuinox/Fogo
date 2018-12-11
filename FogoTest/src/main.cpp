@@ -1,8 +1,7 @@
 #include <Fogo.h>
 #include <iostream>
-#include "Square.h"
 #include <thread>
-#include "Fogo/Game/GameController.h"
+#include "Square.h"
 #include "Car.h"
 #include "FBXSample.h"
 
@@ -12,13 +11,12 @@ auto main(int argc, char ** argv) -> int {
 	using namespace Fogo::Graphics::DX12;
 	using namespace Microsoft::WRL;
 
-	Window::Create(800, 640, [](HWND handle, UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
-		if (message == WM_DESTROY) PostQuitMessage(0);
-		if (message == WM_KEYDOWN && wParam == VK_ESCAPE) DestroyWindow(handle);
-		return DefWindowProc(handle, message, wParam, lParam);
-	}, L"TITLE", L"CLASS");
-
-	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
+	Fogo::Initialize(
+		Window::Properties()
+		.setWidth(800)
+		.setHeight(640)
+		.setTitle(L"FogoTest")
+	);
 
 	struct InputDebugger : Fogo::Game::ComponentInterface {
 		void update() override {
@@ -35,7 +33,7 @@ auto main(int argc, char ** argv) -> int {
 		}
 	};
 
-	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
+	using ComponentStore = TreeStore<std::shared_ptr<Fogo::Game::ComponentInterface>, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };
 	enum class TextureType { BOX };
@@ -63,8 +61,10 @@ auto main(int argc, char ** argv) -> int {
 	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<InputDebugger>>(1));
 
 	const auto gameController = Fogo::Game::GameController({ scene });
-
+	
 	Window::GetInstance().run();
+
+	Fogo::Finalize();
 
 	return 0;
 }

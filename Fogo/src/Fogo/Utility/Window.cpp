@@ -95,6 +95,12 @@ auto Window::HideConsole() -> void
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 }
 
+auto Window::Create(const Properties & properties) -> Window & {
+	if (instance == nullptr)
+		instance = new Window(properties.width, properties.height, properties.procedure, properties.title, properties.className);
+	return * instance;
+}
+
 auto Window::Create(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className) -> Window & {
 	if (instance == nullptr) instance = new Window(width, height, procedure, title, className);
 	return * instance;
