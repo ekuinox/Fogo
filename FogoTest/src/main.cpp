@@ -62,9 +62,5 @@ auto main(int argc, char ** argv) -> int {
 
 	const auto gameController = Fogo::Game::GameController({ scene });
 	
-	Window::GetInstance().run();
-
-	Fogo::Finalize();
-
-	return 0;
+	return Window::GetInstance().run();
 }

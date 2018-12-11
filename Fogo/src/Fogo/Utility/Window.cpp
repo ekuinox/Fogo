@@ -14,8 +14,7 @@ WNDPROC Window::default_procedure = [](HWND handle, const UINT message, const WP
 	return DefWindowProc(handle, message, wParam, lParam);
 };
 
-auto Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX
-{
+auto Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX {
 	auto windowClass = WNDCLASSEX
 	{
 		sizeof(WNDCLASSEX),

@@ -23,7 +23,7 @@ auto GameController::onDestroy() -> void {
 
 GameController::GameController(std::vector<std::shared_ptr<Scene>> scenes) :
 	__scenes(std::move(scenes)), __current_scene_index(0), __is_thread_running(true) {
-	PubSub<Window::Event, void>::RegisterSubscriber(Window::Event::OnDestroy, [&] { onDestroy(); });
+	Window::PubSub::RegisterSubscriber(Window::Event::OnDestroy, [&] { onDestroy(); });
 	Input::Initialize();
 	__thread = std::thread([&] {
 		while (__is_thread_running) { exec(); }

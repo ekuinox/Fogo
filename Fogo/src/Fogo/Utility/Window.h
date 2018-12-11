@@ -19,6 +19,8 @@ namespace Fogo::Utility {
 			OnDestroy
 		};
 
+		using PubSub = Utility::PubSub<Utility::Window::Event, void>;
+
 	private:
 		HINSTANCE __instance_handle;
 		HWND __window_handle;
