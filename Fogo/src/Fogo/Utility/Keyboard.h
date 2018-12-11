@@ -23,5 +23,7 @@ namespace Fogo::Utility {
 		bool getTrigger(unsigned int key) const;
 		bool getRepeat(unsigned int key) const;
 		bool getRelease(unsigned int key) const;
+		bool getAnyPress() const;
+		bool getAnyTrigger() const;
 	};
 }

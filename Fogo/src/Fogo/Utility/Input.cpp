@@ -21,26 +21,6 @@ Input::~Input() {
 	__keyboard.release();
 }
 
-void Input::update() const {
-	__keyboard->update();
-}
-
-bool Input::getTrigger(KeyCode key) const {
-	return __keyboard->getTrigger(static_cast<unsigned int>(key));
-}
-
-bool Input::getPress(KeyCode key) const {
-	return __keyboard->getPress(static_cast<unsigned int>(key));
-}
-
-bool Input::getRepeat(KeyCode key) const {
-	return __keyboard->getRepeat(static_cast<unsigned int>(key));
-}
-
-bool Input::getRelease(KeyCode key) const {
-	return __keyboard->getRelease(static_cast<unsigned int>(key));
-}
-
 void Input::Initialize() {
 	if (!__instance) __instance = new Input();
 }
@@ -51,21 +31,30 @@ void Input::Finalize() {
 }
 
 void Input::Update() {
-	__instance->update();
+	__instance->__keyboard->update();
 }
 
 bool Input::GetTrigger(KeyCode key) {
-	return __instance->getTrigger(key);
+	return __instance->__keyboard->getTrigger(static_cast<unsigned int>(key));
 }
 
 bool Input::GetPress(KeyCode key) {
-	return __instance->getPress(key);
+	return __instance->__keyboard->getPress(static_cast<unsigned int>(key));
 }
 
 bool Input::GetRepeat(KeyCode key) {
-	return __instance->getRepeat(key);
+	return __instance->__keyboard->getRepeat(static_cast<unsigned int>(key));
 }
 
 bool Input::GetRelease(KeyCode key) {
-	return __instance->getRelease(key);
+	return __instance->__keyboard->getRelease(static_cast<unsigned int>(key));
 }
+
+bool Input::GetAnyPress() {
+	return __instance->__keyboard->getAnyPress();
+}
+
+bool Input::GetAnyTrigger() {
+	return __instance->__keyboard->getAnyTrigger();
+}
+

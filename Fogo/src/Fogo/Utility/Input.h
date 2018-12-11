@@ -16,11 +16,6 @@ namespace Fogo::Utility {
 		
 		Input();
 		~Input();
-		void update() const;
-		bool getTrigger(KeyCode key) const;
-		bool getPress(KeyCode key) const;
-		bool getRepeat(KeyCode key) const;
-		bool getRelease(KeyCode key) const;
 	public:
 		Input(const Input &) = delete;
 		Input & operator=(const Input &) = delete;
@@ -32,5 +27,7 @@ namespace Fogo::Utility {
 		static bool GetPress(KeyCode key);
 		static bool GetRepeat(KeyCode key);
 		static bool GetRelease(KeyCode key);
+		static bool GetAnyPress();
+		static bool GetAnyTrigger();
 	};
 }

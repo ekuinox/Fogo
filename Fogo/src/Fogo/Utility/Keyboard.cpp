@@ -72,3 +72,17 @@ bool Keyboard::getRelease(const unsigned int key) const {
 	return (__states[key].release & 0x80) != 0;
 
 }
+
+bool Keyboard::getAnyPress() const {
+	for (auto i = 0u; i < NUM_KEY_MAX; ++i) {
+		if (getPress(i)) return true;
+	}
+	return false;
+}
+
+bool Keyboard::getAnyTrigger() const {
+	for (auto i = 0u; i < NUM_KEY_MAX; ++i) {
+		if (getTrigger(i)) return true;
+	}
+	return false;
+}

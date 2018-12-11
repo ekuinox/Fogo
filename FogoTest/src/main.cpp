@@ -22,14 +22,8 @@ auto main(int argc, char ** argv) -> int {
 
 	struct KeyControl : Fogo::Game::ComponentInterface {
 		void update() override {
-			if (Input::GetPress(KeyCode::W)) {
-				std::cout << "Pressed W" << std::endl;
-			}
-			if (Input::GetTrigger(KeyCode::W)) {
-				std::cout << "Triggered W" << std::endl;
-			}
-			if (Input::GetRelease(KeyCode::W)) {
-				std::cout << "Released W" << std::endl;
+			if (Input::GetAnyTrigger()) {
+				std::cout << "‚È‚ñ‚ç‚©‚ÌƒL[‚ªƒgƒŠƒK‚³‚ê‚½‚º" << std::endl;
 			}
 		}
 		void render() const override {};
