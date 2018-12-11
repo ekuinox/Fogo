@@ -8,61 +8,6 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 void FBXSample::createRootSignature() {
-	/*
-	// 頂点シェーダにコンスタントバッファを渡せるルートシグニチャ作成
-	D3D12_DESCRIPTOR_RANGE range;
-	range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	range.NumDescriptors = 1;
-	range.BaseShaderRegister = 0;
-	range.RegisterSpace = 0;
-	range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	D3D12_ROOT_DESCRIPTOR_TABLE root_descriptor_table;
-	root_descriptor_table.NumDescriptorRanges = 1;
-	root_descriptor_table.pDescriptorRanges = &range;
-
-	D3D12_ROOT_PARAMETER root_parameter;
-	root_parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	root_parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	root_parameter.DescriptorTable = root_descriptor_table;
-
-	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC {
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		0.0f,
-		16,
-		D3D12_COMPARISON_FUNC_NEVER,
-		D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK,
-		0.0f,
-		D3D12_FLOAT32_MAX,
-		0,
-		0,
-		D3D12_SHADER_VISIBILITY_ALL
-	};
-	
-	ComPtr<ID3DBlob> out_blob;
-	auto desc_root_signature = D3D12_ROOT_SIGNATURE_DESC();
-	desc_root_signature.Flags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
-	desc_root_signature.NumParameters = 1;
-	desc_root_signature.pParameters = &root_parameter;
-	desc_root_signature.pStaticSamplers = &SAMPLER_DESC;
-	desc_root_signature.NumStaticSamplers = 1;
-	Utility::ExecOrFail(D3D12SerializeRootSignature(&desc_root_signature, D3D_ROOT_SIGNATURE_VERSION_1, &out_blob, nullptr));
-	Utility::ExecOrFail(DX12::Graphics::GetDevice()->CreateRootSignature(
-		0x00000001,
-		out_blob->GetBufferPointer(),
-		out_blob->GetBufferSize(),
-		IID_PPV_ARGS(__root_signature.GetAddressOf())
-	));
-	*/
 	static constexpr D3D12_DESCRIPTOR_RANGE range[2] = {
 		D3D12_DESCRIPTOR_RANGE {
 			D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
@@ -189,13 +134,11 @@ void FBXSample::createDescriptorHeaps() {
 	ZeroMemory(&heapDesc, sizeof(heapDesc));
 	heapDesc.NumDescriptors = 2; // back buffer count
 
-	for (auto i = 0u; i < DESCRIPTOR_HEAP_TYPE_MAX; ++i)
-	{
+	for (auto i = 0u; i < DESCRIPTOR_HEAP_TYPE_MAX; ++i) {
 		heapDesc.Flags = (i == D3D12_DESCRIPTOR_HEAP_TYPE_RTV || i == D3D12_DESCRIPTOR_HEAP_TYPE_DSV) ? D3D12_DESCRIPTOR_HEAP_FLAG_NONE : D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		heapDesc.Type = static_cast<D3D12_DESCRIPTOR_HEAP_TYPE>(i);
 		DX12::Graphics::GetDevice()->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(__descriptor_heaps[i].GetAddressOf()));
 	}
-
 	// ディスクリプタヒープとコマンドリストの関連づけ
 	DX12::Graphics::GetCommandList()->SetDescriptorHeaps(DESCRIPTOR_HEAP_TYPE_SET, __descriptor_heaps[0].GetAddressOf());
 }
@@ -351,18 +294,14 @@ void FBXSample::render() const {
 		}
 		// テクスチャをセット
 		{
-			ID3D12DescriptorHeap * heaps[] = { __texture->getDescriptorHeap().Get() };
-			commandList->SetDescriptorHeaps(_countof(heaps), heaps);
+			std::vector<ID3D12DescriptorHeap*> heaps = { __texture->getDescriptorHeap().Get() };
+			commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
 			commandList->SetGraphicsRootDescriptorTable(1, __texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 		}
-		
 
 		// 三角形描画
 		commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &__vertex_buffer_view);
 		commandList->DrawInstanced(__vertexes.size(), __vertexes.size() / 3, 0, 0);
-		
 	});
-	
-
 }
