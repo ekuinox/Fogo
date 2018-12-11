@@ -20,16 +20,23 @@ auto main(int argc, char ** argv) -> int {
 
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	struct KeyControl : Fogo::Game::ComponentInterface {
+	struct InputDebugger : Fogo::Game::ComponentInterface {
 		void update() override {
-			if (Input::GetAnyTrigger()) {
-				std::cout << "なんらかのキーがトリガされたぜ" << std::endl;
+			if (Input::GetPress(MouseButton::Right)) {
+				std::cout << "右クリ" << std::endl;
+			}
+			if (Input::GetPress(MouseButton::Left)) {
+				std::cout << "左クリ" << std::endl;
+			}
+			const auto move = Input::GetMouseMove();
+			if (!(move.x == 0.0f && move.y == 0.0f && move.z == 0.0f)) {
+				std::cout << move.x << ", " << move.y << ", " << move.z << std::endl;
 			}
 		}
 		void render() const override {};
 	};
 
-	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<KeyControl>>;
+	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };
 	enum class TextureType { BOX };
@@ -50,11 +57,11 @@ auto main(int argc, char ** argv) -> int {
 		ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::BOX)
 	)));
 
-	ComponentStore::Insert(1, -1, std::make_shared<KeyControl>());
+	ComponentStore::Insert(1, -1, std::make_shared<InputDebugger>());
 
 	const auto scene = std::make_shared<Fogo::Game::Scene>();
 	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<FBXSample>>(0));
-	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<KeyControl>>(1));
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<InputDebugger>>(1));
 
 	const auto gameController = Fogo::Game::GameController({ scene });
 

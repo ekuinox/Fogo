@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Input.h"
+#include <dinput.h>
 
 namespace Fogo::Utility {
 	class Keyboard {

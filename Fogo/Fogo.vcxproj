@@ -40,6 +40,7 @@
     <ClInclude Include="src\Fogo\Utility\KeyCode.h" />
     <ClInclude Include="src\Fogo\Utility\MappedStore.h" />
     <ClInclude Include="src\Fogo\Utility\Matches.h" />
+    <ClInclude Include="src\Fogo\Utility\Mouse.h" />
     <ClInclude Include="src\Fogo\Utility\PubSub.h" />
     <ClInclude Include="src\Fogo\Utility\SimplePromise.h" />
     <ClInclude Include="src\Fogo\Utility\SingletonWrapper.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />
     <ClCompile Include="src\Fogo\Utility\Input.cpp" />
     <ClCompile Include="src\Fogo\Utility\Keyboard.cpp" />
+    <ClCompile Include="src\Fogo\Utility\Mouse.cpp" />
     <ClCompile Include="src\Fogo\Utility\Time.cpp" />
     <ClCompile Include="src\Fogo\Utility\Window.cpp" />
   </ItemGroup>
