@@ -3,7 +3,6 @@
 #include "./ComponentInterface.h"
 #include <vector>
 #include <memory>
-#include "../Graphics.h"
 
 namespace Fogo::Game {
 	class Scene {
