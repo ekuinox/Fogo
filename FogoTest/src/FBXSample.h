@@ -2,6 +2,7 @@
 
 #include "./FBX2016Loader.h"
 #include "Fogo/Game/ComponentInterface.h"
+#include "Fogo.h"
 
 class FBXSample : public Fogo::Game::ComponentInterface {
 public:

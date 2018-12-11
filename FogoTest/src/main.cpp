@@ -33,7 +33,6 @@ auto main(int argc, char ** argv) -> int {
 				std::cout << move.x << ", " << move.y << ", " << move.z << std::endl;
 			}
 		}
-		void render() const override {};
 	};
 
 	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
