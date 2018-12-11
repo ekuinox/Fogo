@@ -258,7 +258,26 @@ FBXSample::FBXSample(
 }
 
 void FBXSample::update() {
-	__matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Utility::Time::GetElapsedTime()));
+	static constexpr auto SPEED = 10.0f;
+
+	XMFLOAT3 translation { 0, 0, 0 };
+	XMFLOAT3 rotation { 0, 0, 0 };
+
+	if (Input::GetPress(KeyCode::A)) rotation.y -= Time::GetElapsedTime() * SPEED;
+	if (Input::GetPress(KeyCode::D)) rotation.y += Time::GetElapsedTime() * SPEED;
+	if (Input::GetPress(KeyCode::W)) translation.z += Time::GetElapsedTime() * SPEED;
+	if (Input::GetPress(KeyCode::S)) translation.z -= Time::GetElapsedTime() * SPEED;
+	if (Input::GetPress(KeyCode::LShift)) translation.y -= Time::GetElapsedTime() * SPEED;
+	if (Input::GetPress(KeyCode::Space)) translation.y += Time::GetElapsedTime() * SPEED;
+
+	const auto rotation_matrix
+		= XMMatrixRotationX(XMConvertToRadians(rotation.x * Time::GetElapsedTime() * 360))
+		* XMMatrixRotationY(XMConvertToRadians(rotation.y * Time::GetElapsedTime() * 360))
+		* XMMatrixRotationZ(XMConvertToRadians(rotation.z * Time::GetElapsedTime() * 360));
+
+	const auto translation_matrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
+
+	__matrix = rotation_matrix * translation_matrix * __matrix;
 }
 
 void FBXSample::render() const {
@@ -272,7 +291,7 @@ void FBXSample::render() const {
 		const auto view = XMMatrixLookAtLH({ 0, 0, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
 		const auto proj = XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(60),
-			static_cast<float>(Utility::Window::GetWidth()) / static_cast<float>(Utility::Window::GetHeight()),
+			static_cast<float>(Window::GetWidth()) / static_cast<float>(Window::GetHeight()),
 			1,
 			1000
 		);
