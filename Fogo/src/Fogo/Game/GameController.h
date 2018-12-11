@@ -8,7 +8,9 @@ namespace Fogo::Game {
 	class GameController {
 	public:
 		enum class Event {
-			NextScene
+			NextScene,
+			End, // 最後のシーンでNextSceneが呼ばれた際に発行する
+			MakeSceneIndexFirst // シーンを初期に戻せ
 		};
 	private:
 		std::vector<std::shared_ptr<Scene>> __scenes;

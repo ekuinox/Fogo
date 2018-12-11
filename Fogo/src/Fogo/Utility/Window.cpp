@@ -86,7 +86,7 @@ auto Window::run() const -> int
 	UpdateWindow(__window_handle);
 
 	MSG msg;
-	while (true)
+	while (__running)
 	{
 		if (!GetMessage(&msg, nullptr, 0, 0)) break;
 		
@@ -146,4 +146,8 @@ auto Window::GetInstanceHandle() -> HINSTANCE
 
 auto Window::GetInstance() -> Window & {
 	return * instance;
+}
+
+auto Window::Stop() -> void {
+	GetInstance().__running = false;
 }

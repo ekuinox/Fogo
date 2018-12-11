@@ -36,4 +36,6 @@ public:
 	>;
 
 	void initialize() override;
+	void update() override;
+	void finalize() override;
 };

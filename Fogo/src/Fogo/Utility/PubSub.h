@@ -29,6 +29,10 @@ namespace Fogo::Utility {
 		{
 			for (const auto & subscriber : Subscribers::GetInstance()[type]) subscriber(detail);
 		}
+		static size_t GetSubscriberCount(EventType type)
+		{
+			return Subscribers::GetInstance()[type].size();
+		}
 	};
 
 	// ƒCƒxƒ“ƒgÚ×‚È‚µ‚Ì“Áê‰»
@@ -54,6 +58,10 @@ namespace Fogo::Utility {
 		static void Publish(EventType type)
 		{
 			for (const auto & subscriber : Subscribers::GetInstance()[type]) subscriber();
+		}
+		static size_t GetSubscriberCount(EventType type)
+		{
+			return Subscribers::GetInstance()[type].size();
 		}
 	};
 }

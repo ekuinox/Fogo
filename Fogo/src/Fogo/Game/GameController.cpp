@@ -12,7 +12,9 @@ GameController * GameController::__instance = nullptr;
 auto GameController::exec() const -> void {
 	Time::Start();
 	Input::Update();
+	if (!(__current_scene_index < __scenes.size())) return;
 	__scenes[__current_scene_index]->update();
+	if (!(__current_scene_index < __scenes.size())) return;
 	__scenes[__current_scene_index]->render();
 	Time::Stop();
 }
@@ -25,13 +27,35 @@ auto GameController::onDestroy() -> void {
 
 GameController::GameController(std::vector<std::shared_ptr<Scene>> scenes) :
 	__scenes(std::move(scenes)), __current_scene_index(0), __is_thread_running(true) {
+	
 	Window::PubSub::RegisterSubscriber(Window::Event::OnDestroy, [&] { onDestroy(); });
+	
 	PubSub<Event, void>::RegisterSubscriber(Event::NextScene, [&] {
-		if (__scenes.size() < __current_scene_index - 1) ++__current_scene_index;
+		if (__current_scene_index < __scenes.size()) {
+			__scenes[__current_scene_index]->finalize(); // 現在のシーンを終了して
+			++__current_scene_index;
+			if (__current_scene_index == __scenes.size()) PubSub<Event, void>::Publish(Event::End); // オワっとる
+			else __scenes[__current_scene_index]->initialize(); // 次のシーンを初期化する
+		}
+	});
+
+	PubSub<Event, void>::RegisterSubscriber(Event::MakeSceneIndexFirst, [&] {
+		__scenes[__current_scene_index]->finalize(); // 現在のシーンを終了して
+		__current_scene_index = 0;
 		__scenes[__current_scene_index]->initialize();
 	});
+
+	PubSub<Event, void>::RegisterSubscriber(Event::End, [&] {
+		// Endをサブスクライブしているのが自分自身だけなら
+		if (PubSub<Event, void>::GetSubscriberCount(Event::End) == 1) {
+			Window::Stop();
+		}
+	});
+
 	__scenes[__current_scene_index]->initialize();
+	
 	Input::Initialize();
+	
 	__thread = std::thread([&] {
 		while (__is_thread_running) { exec(); }
 	});

@@ -26,6 +26,7 @@ namespace Fogo::Utility {
 		HWND __window_handle;
 		WNDCLASSEX __window_class;
 		struct { UINT width, height; } __window_size;
+		bool __running = true;
 
 		static Window * instance;
 		static WNDPROC default_procedure;
@@ -74,6 +75,7 @@ namespace Fogo::Utility {
 		static auto GetWindowHandle() -> HWND;
 		static auto GetInstanceHandle() -> HINSTANCE;
 		static auto GetInstance() -> Window &;
+		static auto Stop() -> void;
 	};
 
 } // namespace Fogo
