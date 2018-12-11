@@ -30,10 +30,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> __vertex_buffer_resource;
 	D3D12_VERTEX_BUFFER_VIEW __vertex_buffer_view;
 	Microsoft::WRL::ComPtr<ID3D12Resource> __constant_buffer_resource;
-	D3D12_VERTEX_BUFFER_VIEW __constant_buffer_view;
 	D3D12_CPU_DESCRIPTOR_HANDLE __constant_buffer_handles[CONSTANT_BUFFER_NUMBER];
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
 	VertexContainer __vertexes;
+	std::shared_ptr<Fogo::Graphics::DX12::Texture> __texture;
 	DirectX::XMMATRIX __matrix;
 
 	void createRootSignature();
@@ -42,9 +42,14 @@ private:
 	void createVertexBuffer();
 	void createConstantBuffer();
 	void initializeGameData();
+
 public:
-	FBXSample(const char * modelFileName, const Microsoft::WRL::ComPtr<ID3DBlob>& vertexShader, const Microsoft::WRL::ComPtr<ID3DBlob>
-	          & pixelShader);
+	FBXSample(
+		const char * modelFileName,
+		const Microsoft::WRL::ComPtr<ID3DBlob>& vertexShader,
+		const Microsoft::WRL::ComPtr<ID3DBlob> & pixelShader,
+		std::shared_ptr<Fogo::Graphics::DX12::Texture> texture
+	);
 	void update() override;
 	void render() const override;
 };

@@ -8,6 +8,7 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 void FBXSample::createRootSignature() {
+	/*
 	// 頂点シェーダにコンスタントバッファを渡せるルートシグニチャ作成
 	D3D12_DESCRIPTOR_RANGE range;
 	range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -25,6 +26,21 @@ void FBXSample::createRootSignature() {
 	root_parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	root_parameter.DescriptorTable = root_descriptor_table;
 
+	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC {
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		0.0f,
+		16,
+		D3D12_COMPARISON_FUNC_NEVER,
+		D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK,
+		0.0f,
+		D3D12_FLOAT32_MAX,
+		0,
+		0,
+		D3D12_SHADER_VISIBILITY_ALL
+	};
 	
 	ComPtr<ID3DBlob> out_blob;
 	auto desc_root_signature = D3D12_ROOT_SIGNATURE_DESC();
@@ -37,13 +53,82 @@ void FBXSample::createRootSignature() {
 
 	desc_root_signature.NumParameters = 1;
 	desc_root_signature.pParameters = &root_parameter;
-	D3D12SerializeRootSignature(&desc_root_signature, D3D_ROOT_SIGNATURE_VERSION_1, &out_blob, nullptr);
-	DX12::Graphics::GetDevice()->CreateRootSignature(
+	desc_root_signature.pStaticSamplers = &SAMPLER_DESC;
+	desc_root_signature.NumStaticSamplers = 1;
+	Utility::ExecOrFail(D3D12SerializeRootSignature(&desc_root_signature, D3D_ROOT_SIGNATURE_VERSION_1, &out_blob, nullptr));
+	Utility::ExecOrFail(DX12::Graphics::GetDevice()->CreateRootSignature(
 		0x00000001,
 		out_blob->GetBufferPointer(),
 		out_blob->GetBufferSize(),
 		IID_PPV_ARGS(__root_signature.GetAddressOf())
-	);
+	));
+	*/
+	static constexpr D3D12_DESCRIPTOR_RANGE range[2] = {
+		D3D12_DESCRIPTOR_RANGE {
+			D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+			1,
+			0,
+			0,
+			D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND
+		},
+		D3D12_DESCRIPTOR_RANGE {
+			D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+			1,
+			0,
+			0,
+			D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND
+		} 
+	};
+
+	D3D12_ROOT_PARAMETER root_parameters[2];
+
+	root_parameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	root_parameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	root_parameters[0].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE { 1, &range[0] };
+
+	root_parameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	root_parameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	root_parameters[1].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE { 1, &range[1] };
+
+	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC {
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
+		0.0f,
+		16,
+		D3D12_COMPARISON_FUNC_NEVER,
+		D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK,
+		0.0f,
+		D3D12_FLOAT32_MAX,
+		0,
+		0,
+		D3D12_SHADER_VISIBILITY_ALL
+	};
+
+	const D3D12_ROOT_SIGNATURE_DESC root_signature_desc {
+		_countof(root_parameters),
+		root_parameters,
+		1,
+		&SAMPLER_DESC,
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
+	};
+
+	ComPtr<ID3DBlob> blob;
+
+	Fogo::Utility::ExecOrFail(D3D12SerializeRootSignature(
+		&root_signature_desc,
+		D3D_ROOT_SIGNATURE_VERSION_1,
+		&blob,
+		nullptr
+	));
+
+	Utility::ExecOrFail(DX12::Graphics::GetDevice()->CreateRootSignature(
+		0x00000001,
+		blob->GetBufferPointer(),
+		blob->GetBufferSize(),
+		IID_PPV_ARGS(__root_signature.GetAddressOf())
+	));
 }
 
 void FBXSample::createPipelineStateObject(const ComPtr<ID3DBlob>& vertexShader, const ComPtr<ID3DBlob>& pixelShader) {
@@ -95,7 +180,7 @@ void FBXSample::createPipelineStateObject(const ComPtr<ID3DBlob>& vertexShader, 
 	descPSO.NumRenderTargets = 1;																			// レンダーターゲット数
 	descPSO.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;														// レンダーターゲットフォーマット
 	descPSO.SampleDesc.Count = 1;																			// サンプルカウント
-	DX12::Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf()));
+	Utility::ExecOrFail(DX12::Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
 }
 
 void FBXSample::createDescriptorHeaps() {
@@ -145,15 +230,16 @@ void FBXSample::createVertexBuffer() {
 		IID_PPV_ARGS(__vertex_buffer_resource.GetAddressOf()));
 
 	UINT8 * data_begin;
-	if (SUCCEEDED(__vertex_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin))))
-	{
+	Utility::Window::SimplePromise([&] {
+		return __vertex_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
+	}).then([&] {
 		const auto temp = reinterpret_cast<VertexData*>(data_begin);
 		for (size_t i = 0; i < __vertexes.size(); ++i)
 		{
 			temp[i] = __vertexes[i];
 		}
 		__vertex_buffer_resource->Unmap(0, nullptr);
-	}
+	});
 
 	// 頂点バッファビュー設定
 	__vertex_buffer_view.BufferLocation = __vertex_buffer_resource->GetGPUVirtualAddress();
@@ -204,7 +290,6 @@ void FBXSample::createConstantBuffer() {
 	for (auto i = 0u; i < CONSTANT_BUFFER_NUMBER; ++i) {
 		__constant_buffer_handles[i] = __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetCPUDescriptorHandleForHeapStart();
 		__constant_buffer_handles[i].ptr += i * stride_handle_bytes;
-
 		DX12::Graphics::GetDevice()->CreateConstantBufferView(&desc_constant_buffer_view, __constant_buffer_handles[i]);
 	}
 }
@@ -213,11 +298,16 @@ void FBXSample::initializeGameData() {
 	__matrix = XMMatrixIdentity();
 }
 
-FBXSample::FBXSample(const char * modelFileName, const ComPtr<ID3DBlob> & vertexShader, const ComPtr<ID3DBlob> & pixelShader) {
+FBXSample::FBXSample(
+	const char * modelFileName,
+	const ComPtr<ID3DBlob> & vertexShader,
+	const ComPtr<ID3DBlob> & pixelShader,
+	std::shared_ptr<DX12::Texture> texture
+) : __texture(std::move(texture)) {
 	createRootSignature();
 	createPipelineStateObject(vertexShader, pixelShader);
 	createDescriptorHeaps();
-	LoadFBXConvertToVertexData(modelFileName, __vertexes);
+	loadFBXConvertToVertexData(modelFileName, __vertexes);
 	createVertexBuffer();
 	createConstantBuffer();
 	initializeGameData();
@@ -242,27 +332,36 @@ void FBXSample::render() const {
 			1,
 			1000
 		);
-		{
-			const MatrixConstantBuffer buffer { XMMatrixTranspose(__matrix * view * proj) };
-
-			UINT8 * data_begin;
-			Utility::Window::SimplePromise([&] {
-				return __constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-			}).then([&] {
-				memcpy(data_begin, &buffer, sizeof buffer);
-				__constant_buffer_resource->Unmap(0, nullptr);
-			});
 		
-			// コンスタントバッファを設定
-			ID3D12DescriptorHeap* heaps[] = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
-			commandList->SetDescriptorHeaps(std::size(heaps), heaps);
-			commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
+		const MatrixConstantBuffer buffer { XMMatrixTranspose(__matrix * view * proj) };
 
-			// 三角形描画
-			commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			commandList->IASetVertexBuffers(0, 1, &__vertex_buffer_view);
-			commandList->DrawInstanced(__vertexes.size(), __vertexes.size() / 3, 0, 0);
+		UINT8 * data_begin;
+		Utility::Window::SimplePromise([&] {
+			return __constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
+		}).then([&] {
+			memcpy(data_begin, &buffer, sizeof buffer);
+			__constant_buffer_resource->Unmap(0, nullptr);
+		});
+		
+		// コンスタントバッファを設定
+		{
+			std::vector<ID3D12DescriptorHeap*> heaps = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
+			commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
+			commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
 		}
+		// テクスチャをセット
+		{
+			ID3D12DescriptorHeap * heaps[] = { __texture->getDescriptorHeap().Get() };
+			commandList->SetDescriptorHeaps(_countof(heaps), heaps);
+			commandList->SetGraphicsRootDescriptorTable(1, __texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+		}
+		
+
+		// 三角形描画
+		commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &__vertex_buffer_view);
+		commandList->DrawInstanced(__vertexes.size(), __vertexes.size() / 3, 0, 0);
+		
 	});
 	
 

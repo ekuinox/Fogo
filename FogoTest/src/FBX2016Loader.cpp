@@ -1,118 +1,59 @@
 #include <cstdio>
 #include <fbxsdk.h>
 #include "FBX2016Loader.h"
+#include <iostream>
+#include "Fogo/Utility/Exception.h"
 
-// 頂点データ獲得
-static void GetFBXVertexData(FbxMesh* pMesh, VertexContainer& outVertexData);
+static void GetFBXVertexData(FbxMesh * pMesh, VertexContainer & outVertexData);
+static void GetMaterialData(FbxSurfaceMaterial * material);
+static void GetMeshData(FbxNode * child, VertexContainer & outVertexData);
 
-// マテリアル表示
-static void GetMatrialData(FbxSurfaceMaterial* mat);
+void loadFBXConvertToVertexData(const char* filename, VertexContainer& outVertexData) {
+	const auto manager = FbxManager::Create();
+	const auto scene = FbxScene::Create(manager, "");
+	const auto io = FbxIOSettings::Create(manager, IOSROOT);
+	
+	manager->SetIOSettings(io);
+	
+	const auto importer = FbxImporter::Create(manager, "");
+	
+	Fogo::Utility::ExecOrFail(importer->Initialize(filename, -1, manager->GetIOSettings()));
+	Fogo::Utility::ExecOrFail(importer->Import(scene));
+	
+	importer->Destroy();
 
-// メッシュ情報処理(再帰関数)
-static void GetMeshData(FbxNode *child, VertexContainer& outVertexData);
-
-// FBXデータから頂点データにコンバート
-// ※パスは「/」でしか通らない
-//const char* filename = "../datas/box.fbx";
-bool LoadFBXConvertToVertexData(const char* filename, VertexContainer& outVertexData)
-{
-	//==============================================================================
-	// FBXオブジェクト初期化
-	//==============================================================================
-	// FBXマネージャー作成
-	FbxManager* pFBXManager = FbxManager::Create();
-
-	// シーン作成
-	FbxScene* pScene = FbxScene::Create(pFBXManager, "");
-
-	// FBXのIO設定オブジェクト作成
-	FbxIOSettings *pIO = FbxIOSettings::Create(pFBXManager, IOSROOT);
-	pFBXManager->SetIOSettings(pIO);
-
-	// インポートオブジェクト作成
-	FbxImporter* pImporter = FbxImporter::Create(pFBXManager, "");
-
-	// ファイルインポート
-	if(pImporter->Initialize(filename, -1, pFBXManager->GetIOSettings()) == false)
-	{
-		return false;
-	}
-
-	// シーンへインポート
-	if(pImporter->Import(pScene) == false)
-	{
-		return false;
-	}
-
-	// ※この時点でインポートオブジェクトはいらない
-	pImporter->Destroy();
-
-	//==============================================================================
-	// FBXオブジェクトの処理
-	//==============================================================================
 	// シーンのものすべてを三角化
-	FbxGeometryConverter geometryConverte(pFBXManager);
-	geometryConverte.Triangulate(pScene, true);
+	FbxGeometryConverter converter(manager);
+	converter.Triangulate(scene, true);
 
-	// メッシュ情報処理
-	GetMeshData(pScene->GetRootNode(), outVertexData);
-
-	//==============================================================================
-	// FBXオブジェクト色々破棄
-	//==============================================================================
-	pIO->Destroy();
-	pScene->Destroy();
-	pFBXManager->Destroy();
-
-	getchar();
-
-	return true;
+	GetMeshData(scene->GetRootNode(), outVertexData);
+	
+	io->Destroy();
+	scene->Destroy();
+	manager->Destroy();
 }
 
-// メッシュ情報処理(再帰関数)
-void GetMeshData(FbxNode *parent, VertexContainer& outVertexData)
+// 再帰的にメッシュ情報を処理する
+void GetMeshData(FbxNode * parent, VertexContainer & outVertexData)
 {
 	// メッシュだけ処理
-	int numKids = parent->GetChildCount();
-	for(int i = 0; i < numKids; i++)
-	{
-		FbxNode *child = parent->GetChild(i);
+	const auto children_count = parent->GetChildCount();
+	for(auto i = 0; i < children_count; i++) {
+		auto child = parent->GetChild(i);
 
 		// メッシュを見つけたら
-		if(child->GetMesh())
-		{
-			FbxMesh* pMesh = child->GetMesh();// static_cast<FbxMesh*>(child->GetNodeAttribute());
-			printf("メッシュ発見\n");
-
-			printf("名前:%s\n", pMesh->GetName());
-			printf("ポリゴン数:%d\n", pMesh->GetPolygonCount());
-			printf("マテリアル数:%d\n", pMesh->GetElementMaterialCount());
-
-			printf("コントロールポイント数(頂点座標):%d\n", pMesh->GetControlPointsCount());
-			printf("UV数:%d\n", pMesh->GetTextureUVCount());
-
-			FbxArray<FbxVector4> normals;
-			pMesh->GetPolygonVertexNormals(normals);
-			printf("法線数:%d\n", normals.GetCount());
-
+		if(child->GetMesh()) {
 			// 頂点情報取得
-			GetFBXVertexData(pMesh, outVertexData);
+			GetFBXVertexData(child->GetMesh(), outVertexData);
 		}
 
 		// マテリアル
-		int numMat = child->GetMaterialCount();
-		for(int j = 0; j < numMat; ++j)
-		{
-			FbxSurfaceMaterial* mat = child->GetMaterial(j);
-			if(mat)
-			{
-				GetMatrialData(mat);
+		const auto material_count = child->GetMaterialCount();
+		for(auto j = 0u; j < material_count; ++j) {
+			const auto material = child->GetMaterial(j);
+			if(material) {
+				GetMaterialData(material);
 			}
-		}
-
-		if(numMat == 0)
-		{
-			printf("マテリアルなし\n");
 		}
 
 		child->GetChild(0);
@@ -123,22 +64,20 @@ void GetMeshData(FbxNode *parent, VertexContainer& outVertexData)
 }
 
 // 頂点データ獲得
-void GetFBXVertexData(FbxMesh* pMesh, VertexContainer& outVertexData)
+void GetFBXVertexData(FbxMesh * mesh, VertexContainer & outVertexData)
 {
 	// 頂点座標と法線ベクトル獲得
 	std::vector<FbxVector4> positions, normals;
 	FbxVector4 normal;
 
 	// メモ:GetPolygonCount = 面数、GetPolygonSize = 頂点数
-	for(int i = 0; i < pMesh->GetPolygonCount(); i++)
-	{
-		for(int j = 0; j < pMesh->GetPolygonSize(i); j++)
-		{
+	for(auto i = 0; i < mesh->GetPolygonCount(); i++) {
+		for(auto j = 0; j < mesh->GetPolygonSize(i); j++) {
 			// 頂点座標
-			positions.push_back(pMesh->GetControlPointAt(pMesh->GetPolygonVertex(i, j)));
+			positions.push_back(mesh->GetControlPointAt(mesh->GetPolygonVertex(i, j)));
 
 			// 法線ベクトル
-			pMesh->GetPolygonVertexNormal(i, j, normal);
+			mesh->GetPolygonVertexNormal(i, j, normal);
 			normals.push_back(normal);
 		}
 	}
@@ -147,36 +86,31 @@ void GetFBXVertexData(FbxMesh* pMesh, VertexContainer& outVertexData)
 	outVertexData.resize(positions.size());
 
 	// 頂点座標と法線情報を格納
-	for(size_t i = 0; i < outVertexData.size(); ++i)
-	{
-		fbxsdk::FbxVector4& pos		= positions[i];
-		fbxsdk::FbxVector4& normal	= normals[i];
+	for(size_t i = 0; i < outVertexData.size(); ++i) {
+		auto & pos		= positions[i];
+		auto & normal	= normals[i];
 
 		outVertexData[i].pos	= DirectX::XMFLOAT3(pos.mData[0], pos.mData[1] , pos.mData[2]);
-		outVertexData[i].normal = DirectX::XMFLOAT4(normal.mData[0], normal.mData[1], normal.mData[2], normal.mData[3]);
+		outVertexData[i].normal = DirectX::XMFLOAT4(normal.mData[0],  normal.mData[1],  normal.mData[2],  normal.mData[3]);
 	}
 
 	// UVセットの名前配列獲得
-	FbxStringList uvSetNames;
-	pMesh->GetUVSetNames(uvSetNames);
+	FbxStringList uv_set_names;
+	mesh->GetUVSetNames(uv_set_names);
 
-	bool unmapped = false;
-	int UVCount = 0;
+	auto unmapped = false;
+	auto uv_count = 0;
 
-	for(int i = 0; i < uvSetNames.GetCount(); ++i)
-	{
-		for(int j = 0; j < pMesh->GetPolygonCount(); ++j)
-		{
-			for(int k = 0; k < pMesh->GetPolygonSize(j); ++k)
-			{
-				FbxVector2 UV;
-				pMesh->GetPolygonVertexUV(j, k, uvSetNames.GetStringAt(i), UV, unmapped);
+	for(auto i = 0; i < uv_set_names.GetCount(); ++i) {
+		for(auto j = 0; j < mesh->GetPolygonCount(); ++j) {
+			for(auto k = 0; k < mesh->GetPolygonSize(j); ++k) {
+				FbxVector2 uv;
+				mesh->GetPolygonVertexUV(j, k, uv_set_names.GetStringAt(i), uv, unmapped);
 
-				if(outVertexData.size() > UVCount)
-				{
-					outVertexData[UVCount].uv = DirectX::XMFLOAT2(UV.mData[0], UV.mData[1]);
+				if(outVertexData.size() > uv_count) {
+					outVertexData[uv_count].uv = DirectX::XMFLOAT2(uv.mData[0], uv.mData[1]);
 				}
-				UVCount++;
+				uv_count++;
 			}
 		}
 	}
@@ -184,114 +118,66 @@ void GetFBXVertexData(FbxMesh* pMesh, VertexContainer& outVertexData)
 
 // マテリアルプロパティ獲得
 FbxDouble3 GetMaterialProperty(
-	const FbxSurfaceMaterial * pMaterial,
-	const char * pPropertyName,
-	const char * pFactorPropertyName)
+	const FbxSurfaceMaterial * material,
+	const char * propertyName,
+	const char * factorPropertyName)
 {
-	FbxDouble3 lResult(0, 0, 0);
-	const FbxProperty lProperty = pMaterial->FindProperty(pPropertyName);
-	const FbxProperty lFactorProperty = pMaterial->FindProperty(pFactorPropertyName);
-	if(lProperty.IsValid() && lFactorProperty.IsValid())
-	{
-		lResult = lProperty.Get<FbxDouble3>();
-		double lFactor = lFactorProperty.Get<FbxDouble>();
-		if(lFactor != 1)
-		{
-			lResult[0] *= lFactor;
-			lResult[1] *= lFactor;
-			lResult[2] *= lFactor;
+	FbxDouble3 result(0, 0, 0);
+	const auto property = material->FindProperty(propertyName);
+	const auto factor_property = material->FindProperty(factorPropertyName);
+	if(property.IsValid() && factor_property.IsValid()) {
+		result = property.Get<FbxDouble3>();
+		if(const auto factor = factor_property.Get<FbxDouble>() != 1) {
+			result[0] *= factor;
+			result[1] *= factor;
+			result[2] *= factor;
 		}
 	}
 
-	if(lProperty.IsValid())
-	{
-		printf("テクスチャ\n");
-		const int lTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
-		for(int i = 0; i<lTextureCount; i++)
-		{
-			FbxFileTexture* lFileTexture = lProperty.GetSrcObject<FbxFileTexture>(i);
-			if(lFileTexture)
-			{
-				FbxString uvsetName = lFileTexture->UVSet.Get();
-				std::string uvSetString = uvsetName.Buffer();
-				std::string filepath = lFileTexture->GetFileName();
-
-				printf("UVSet名=%s\n", uvSetString.c_str());
-				printf("テクスチャ名=%s\n", filepath.c_str());
+	if(property.IsValid()) {
+		const auto textures_count = property.GetSrcObjectCount<FbxFileTexture>();
+		for(auto i = 0u; i < textures_count; i++) {
+			if(const auto texture_file = property.GetSrcObject<FbxFileTexture>(i)) {
+				std::string uv_name_string = texture_file->UVSet.Get().Buffer();
+				std::string filepath = texture_file->GetFileName();
+				std::cout << filepath.c_str() << std::endl;
 			}
 		}
-		puts("");
 
-		printf("レイヤードテクスチャ\n");
-		const int lLayeredTextureCount = lProperty.GetSrcObjectCount<FbxLayeredTexture>();
-		for(int i = 0; i<lLayeredTextureCount; i++)
-		{
-			FbxLayeredTexture* lLayeredTexture = lProperty.GetSrcObject<FbxLayeredTexture>(i);
-
-			const int lTextureFileCount = lLayeredTexture->GetSrcObjectCount<FbxFileTexture>();
-
-			for(int j = 0; j<lTextureFileCount; j++)
-			{
-				FbxFileTexture* lFileTexture = lLayeredTexture->GetSrcObject<FbxFileTexture>(j);
-				if(lFileTexture)
-				{
-					FbxString uvsetName = lFileTexture->UVSet.Get();
-					std::string uvSetString = uvsetName.Buffer();
-					std::string filepath = lFileTexture->GetFileName();
-
-					printf("UVSet名=%s\n", uvSetString.c_str());
-					printf("テクスチャ名=%s\n", filepath.c_str());
+		// layered textures
+		const auto layered_textures_count = property.GetSrcObjectCount<FbxLayeredTexture>();
+		for(auto i = 0u; i < layered_textures_count; i++) {
+			const auto layered_texture = property.GetSrcObject<FbxLayeredTexture>(i);
+			const auto texture_file_count = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+			for(auto j = 0u; j < texture_file_count; j++) {
+				if(const auto texture_file = layered_texture->GetSrcObject<FbxFileTexture>(j)) {
+					std::string uv_name_string = texture_file->UVSet.Get().Buffer();
+					std::string filepath = texture_file->GetFileName();
+					std::cout << filepath.c_str() << std::endl;
 				}
 			}
 		}
-		puts("");
 	}
 
-	return lResult;
+	return result;
 }
 
 // マテリアル表示
-void GetMatrialData(FbxSurfaceMaterial* mat)
-{
-	if(mat == nullptr)
-	{
-		return;
+void GetMaterialData(FbxSurfaceMaterial* material) {
+	if (material == nullptr) return;
+
+	const auto emissive = GetMaterialProperty(material, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
+	const auto ambient = GetMaterialProperty(material, FbxSurfaceMaterial::sAmbient, FbxSurfaceMaterial::sAmbientFactor);
+	const auto diffuse = GetMaterialProperty(material, FbxSurfaceMaterial::sDiffuse, FbxSurfaceMaterial::sDiffuseFactor);
+	const auto specular = GetMaterialProperty(material, FbxSurfaceMaterial::sSpecular, FbxSurfaceMaterial::sSpecularFactor);
+
+	const auto transparency_factor_property = material->FindProperty(FbxSurfaceMaterial::sTransparencyFactor);
+	if(transparency_factor_property.IsValid()) {
+		auto transparencyFactor = transparency_factor_property.Get<FbxDouble>();
 	}
 
-	puts("");
-
-	if(mat->GetClassId().Is(FbxSurfaceLambert::ClassId))
-	{
-		printf("ランバートタイプ\n");
-	}
-	else if(mat->GetClassId().Is(FbxSurfacePhong::ClassId))
-	{
-		printf("フォンタイプ\n");
-	}
-
-	const FbxDouble3 lEmissive = GetMaterialProperty(mat, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
-	printf("エミッシブカラー:r = %f, g = %f, b = %f\n", lEmissive.mData[0], lEmissive.mData[1], lEmissive.mData[2]);
-
-	const FbxDouble3 lAmbient = GetMaterialProperty(mat, FbxSurfaceMaterial::sAmbient, FbxSurfaceMaterial::sAmbientFactor);
-	printf("アンビエントカラー:r = %f, g = %f, b = %f\n", lAmbient.mData[0], lAmbient.mData[1], lAmbient.mData[2]);
-
-	const FbxDouble3 lDiffuse = GetMaterialProperty(mat, FbxSurfaceMaterial::sDiffuse, FbxSurfaceMaterial::sDiffuseFactor);
-	printf("ディフューズカラー:r = %f, g = %f, b = %f\n", lDiffuse.mData[0], lDiffuse.mData[1], lDiffuse.mData[2]);
-
-	const FbxDouble3 lSpecular = GetMaterialProperty(mat, FbxSurfaceMaterial::sSpecular, FbxSurfaceMaterial::sSpecularFactor);
-	printf("スペキュラカラー:r = %f, g = %f, b = %f\n", lSpecular.mData[0], lSpecular.mData[1], lSpecular.mData[2]);
-
-	FbxProperty lTransparencyFactorProperty = mat->FindProperty(FbxSurfaceMaterial::sTransparencyFactor);
-	if(lTransparencyFactorProperty.IsValid())
-	{
-		double lTransparencyFactor = lTransparencyFactorProperty.Get<FbxDouble>();
-		printf("透明度 = %lf\n", lTransparencyFactor);
-	}
-
-	FbxProperty lShininessProperty = mat->FindProperty(FbxSurfaceMaterial::sShininess);
-	if(lShininessProperty.IsValid())
-	{
-		double lShininess = lShininessProperty.Get<FbxDouble>();
-		printf("スペキュラ = %lf\n", lShininess);
+	const auto shininess_property = material->FindProperty(FbxSurfaceMaterial::sShininess);
+	if(shininess_property.IsValid()) {
+		auto shininess = shininess_property.Get<FbxDouble>();
 	}
 }

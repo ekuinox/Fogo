@@ -21,22 +21,24 @@ auto main(int argc, char ** argv) -> int {
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
 	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>>;
-
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };
-
-	using ShaderStore = MappedStore<
+	enum class TextureType { BOX };
+	using ResourceStore = MappedStore<
 		VertexShader, ComPtr<ID3DBlob>,
-		PixelShader, ComPtr<ID3DBlob>
+		PixelShader, ComPtr<ID3DBlob>,
+		TextureType, std::shared_ptr<Texture>
 	>;
 
-	ShaderStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
-	ShaderStore::Insert(PixelShader::BOX, Graphics::CompilePixelShader(L"./resources/shader/PixelShader.hlsl", 0, "main", "ps_5_1"));
+	ResourceStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
+	ResourceStore::Insert(PixelShader::BOX, Graphics::CompilePixelShader(L"./resources/shader/PixelShader.hlsl", 0, "main", "ps_5_1"));
+	ResourceStore::Insert(TextureType::BOX, std::make_shared<Texture>(L"./resources/Textures/KUTIJE/M_1.jpg"));
 
 	ComponentStore::Insert(0, -1, std::shared_ptr<FBXSample>(new FBXSample(
-		"./resources/box.fbx",
-		ShaderStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX),
-		ShaderStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX)
+		"./resources/2.fbx",
+		ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX),
+		ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX),
+		ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::BOX)
 	)));
 
 	const auto scene = std::make_shared<Fogo::Game::Scene>();
