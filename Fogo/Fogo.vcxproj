@@ -35,6 +35,9 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\Texture.h" />
     <ClInclude Include="src\Fogo\Utility.h" />
     <ClInclude Include="src\Fogo\Utility\Exception.h" />
+    <ClInclude Include="src\Fogo\Utility\Input.h" />
+    <ClInclude Include="src\Fogo\Utility\Keyboard.h" />
+    <ClInclude Include="src\Fogo\Utility\KeyCode.h" />
     <ClInclude Include="src\Fogo\Utility\MappedStore.h" />
     <ClInclude Include="src\Fogo\Utility\Matches.h" />
     <ClInclude Include="src\Fogo\Utility\PubSub.h" />
@@ -58,6 +61,8 @@
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />
+    <ClCompile Include="src\Fogo\Utility\Input.cpp" />
+    <ClCompile Include="src\Fogo\Utility\Keyboard.cpp" />
     <ClCompile Include="src\Fogo\Utility\Time.cpp" />
     <ClCompile Include="src\Fogo\Utility\Window.cpp" />
   </ItemGroup>

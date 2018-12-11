@@ -14,7 +14,7 @@ namespace Fogo::Utility {
 		static constexpr LPCWSTR DEFAULT_TITLE = L"DEFAULT_TITLE";
 		static constexpr LPCWSTR DEFAULT_CLASS_NAME = L"DEFAULT_CLASS_NAME";
 	private:
-		HINSTANCE __instance;
+		HINSTANCE __instance_handle;
 		HWND __window_handle;
 		WNDCLASSEX __window_class;
 		struct { UINT width, height; } __window_size;
@@ -54,6 +54,8 @@ namespace Fogo::Utility {
 		static auto GetWidth() -> UINT;
 		static auto GetHeight() -> UINT;
 		static auto GetHandle() -> HWND;
+		static auto GetWindowHandle() -> HWND;
+		static auto GetInstanceHandle() -> HINSTANCE;
 		static auto GetInstance() -> Window &;
 	};
 

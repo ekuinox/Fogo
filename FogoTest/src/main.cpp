@@ -20,7 +20,22 @@ auto main(int argc, char ** argv) -> int {
 
 	Graphics::Create(Window::GetHandle(), { Window::GetWidth(), Window::GetHeight() });
 
-	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>>;
+	struct KeyControl : Fogo::Game::ComponentInterface {
+		void update() override {
+			if (Input::GetPress(KeyCode::W)) {
+				std::cout << "Pressed W" << std::endl;
+			}
+			if (Input::GetTrigger(KeyCode::W)) {
+				std::cout << "Triggered W" << std::endl;
+			}
+			if (Input::GetRelease(KeyCode::W)) {
+				std::cout << "Released W" << std::endl;
+			}
+		}
+		void render() const override {};
+	};
+
+	using ComponentStore = TreeStore<void, int, std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<KeyControl>>;
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };
 	enum class TextureType { BOX };
@@ -41,8 +56,11 @@ auto main(int argc, char ** argv) -> int {
 		ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::BOX)
 	)));
 
+	ComponentStore::Insert(1, -1, std::make_shared<KeyControl>());
+
 	const auto scene = std::make_shared<Fogo::Game::Scene>();
 	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<FBXSample>>(0));
+	scene->components.emplace_back(ComponentStore::Get<std::shared_ptr<KeyControl>>(1));
 
 	const auto gameController = Fogo::Game::GameController({ scene });
 

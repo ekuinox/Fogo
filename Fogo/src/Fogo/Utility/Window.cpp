@@ -15,7 +15,7 @@ auto Window::createWindowClass(const WNDPROC & procedure, const LPCWSTR & classN
 		procedure,
 		0,
 		0,
-		__instance,
+		__instance_handle,
 		LoadIcon(static_cast<HINSTANCE>(nullptr), IDI_APPLICATION),
 		LoadCursor(static_cast<HINSTANCE>(nullptr), IDC_ARROW),
 		static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH)),
@@ -41,7 +41,7 @@ auto Window::createWindow(const LPCWSTR & title) const -> HWND
 		__window_size.height,
 		HWND_DESKTOP,
 		static_cast<HMENU>(nullptr),
-		__instance,
+		__instance_handle,
 		static_cast<LPVOID>(nullptr)
 	);
 }
@@ -66,7 +66,7 @@ auto Window::moveWindowCenter() const -> void
 }
 
 Window::Window(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
-	: __instance(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
+	: __instance_handle(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
 {
 	__window_handle = createWindow(title);
 
@@ -119,6 +119,17 @@ auto Window::GetHandle() -> HWND
 {
 	return GetInstance().__window_handle;
 }
+
+auto Window::GetWindowHandle() -> HWND
+{
+	return GetInstance().__window_handle;
+}
+
+auto Window::GetInstanceHandle() -> HINSTANCE
+{
+	return GetInstance().__instance_handle;
+}
+
 
 auto Window::GetInstance() -> Window & {
 	return * instance;
