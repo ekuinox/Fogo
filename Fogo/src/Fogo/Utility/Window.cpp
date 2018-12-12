@@ -41,12 +41,12 @@ auto Window::createWindow(const LPCWSTR & title) const -> HWND
 	return CreateWindow(
 		__window_class.lpszClassName,
 		title,
-		WS_CAPTION | WS_SYSMENU,
+		__is_full_screen ? (WS_VISIBLE | WS_POPUP) : (WS_CAPTION | WS_SYSMENU),
 		0,
 		0,
 		__window_size.width,
 		__window_size.height,
-		HWND_DESKTOP,
+		__is_full_screen ? NULL : HWND_DESKTOP,
 		static_cast<HMENU>(nullptr),
 		__instance_handle,
 		static_cast<LPVOID>(nullptr)
@@ -55,6 +55,7 @@ auto Window::createWindow(const LPCWSTR & title) const -> HWND
 
 auto Window::moveWindowCenter() const -> void
 {
+	if (__is_full_screen) return;
 	RECT windowRect, clientRect;
 	GetWindowRect(__window_handle, &windowRect);
 	GetClientRect(__window_handle, &clientRect);
@@ -72,8 +73,17 @@ auto Window::moveWindowCenter() const -> void
 	);
 }
 
-Window::Window(const UINT width, const UINT height, const WNDPROC & procedure, const LPCWSTR & title, const LPCWSTR & className)
-	: __instance_handle(GetModuleHandle(nullptr)), __window_size({ width, height }), __window_class(createWindowClass(procedure, className))
+Window::Window(
+	const UINT width,
+	const UINT height,
+	const WNDPROC & procedure,
+	const LPCWSTR & title,
+	const LPCWSTR & className,
+	bool isFullScreen)
+: __instance_handle(GetModuleHandle(nullptr))
+, __window_size({ width, height })
+, __window_class(createWindowClass(procedure, className))
+, __is_full_screen(isFullScreen)
 {
 	__window_handle = createWindow(title);
 
@@ -104,7 +114,14 @@ auto Window::HideConsole() -> void
 
 auto Window::Create(const Properties & properties) -> Window & {
 	if (instance == nullptr)
-		instance = new Window(properties.width, properties.height, properties.procedure, properties.title, properties.className);
+		instance = new Window(
+			properties.width,
+			properties.height,
+			properties.procedure,
+			properties.title,
+			properties.className,
+			properties.isFullScreen
+		);
 	return * instance;
 }
 

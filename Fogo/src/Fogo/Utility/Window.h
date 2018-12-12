@@ -19,7 +19,7 @@ namespace Fogo::Utility {
 			OnDestroy
 		};
 
-		using PubSub = Utility::PubSub<Utility::Window::Event, void>;
+		using PubSub = PubSub<Event, void>;
 
 	private:
 		HINSTANCE __instance_handle;
@@ -27,6 +27,7 @@ namespace Fogo::Utility {
 		WNDCLASSEX __window_class;
 		struct { UINT width, height; } __window_size;
 		bool __running = true;
+		bool __is_full_screen;
 
 		static Window * instance;
 		static WNDPROC default_procedure;
@@ -40,7 +41,8 @@ namespace Fogo::Utility {
 			const UINT height,
 			const WNDPROC & procedure = default_procedure,
 			const LPCWSTR & title = DEFAULT_TITLE,
-			const LPCWSTR & className = DEFAULT_CLASS_NAME
+			const LPCWSTR & className = DEFAULT_CLASS_NAME,
+			bool isFullScreen = false
 		);
 	public:
 		struct Properties {
@@ -49,11 +51,13 @@ namespace Fogo::Utility {
 			WNDPROC procedure = default_procedure;
 			LPCWSTR title = DEFAULT_TITLE;
 			LPCWSTR className = DEFAULT_CLASS_NAME;
+			bool isFullScreen = false;
 			Properties & setWidth(const UINT & newWidth) { width = newWidth; return *this; }
 			Properties & setHeight(const UINT & newHeight) { height = newHeight; return * this; }
 			Properties & setProcedure(const WNDPROC & newProcedure) { procedure = newProcedure; return * this; }
 			Properties & setTitle(const LPCWSTR & newTitle) { title = newTitle; return *this; }
-			Properties & setClassName(const LPCWSTR & newClassName) { className = newClassName; return * this; }
+			Properties & setClassName(const LPCWSTR & newClassName) { className = newClassName; return *this; }
+			Properties & makeFullScreen() { isFullScreen = true; return * this; }
 		};
 
 		Window(const Window &) = delete;
