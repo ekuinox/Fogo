@@ -1,4 +1,5 @@
 #include "FBXSample.h"
+#include <utility>
 #include "Fogo.h"
 #include "d3dx12.h"
 
@@ -244,20 +245,26 @@ void FBXSample::initializeGameData() {
 
 FBXSample::FBXSample(
 	const char * modelFileName,
-	const ComPtr<ID3DBlob> & vertexShader,
-	const ComPtr<ID3DBlob> & pixelShader,
+	ComPtr<ID3DBlob> vertexShader,
+	ComPtr<ID3DBlob> pixelShader,
 	std::shared_ptr<DX12::Texture> texture
-) : __texture(std::move(texture)) {
+) : __texture(std::move(texture)), __vertex_shader(std::move(vertexShader)), __pixel_shader(std::move(pixelShader)), __model_file_name(modelFileName) {
+	
+}
+
+void FBXSample::initialize() {
 	createRootSignature();
-	createPipelineStateObject(vertexShader, pixelShader);
+	createPipelineStateObject(__vertex_shader, __pixel_shader);
 	createDescriptorHeaps();
-	loadFBXConvertToVertexData(modelFileName, __vertexes);
+	loadFBXConvertToVertexData(__model_file_name, __vertexes);
 	createVertexBuffer();
 	createConstantBuffer();
 	initializeGameData();
 }
 
 void FBXSample::update() {
+	if (__state != State::Started) return;
+
 	static constexpr auto SPEED = 10.0f;
 
 	XMFLOAT3 translation { 0, 0, 0 };
@@ -281,6 +288,7 @@ void FBXSample::update() {
 }
 
 void FBXSample::render() const {
+	if (__state != State::Started) return;
 	DX12::Graphics::Render([&](ComPtr<ID3D12GraphicsCommandList> commandList) {
 		commandList->SetGraphicsRootSignature(__root_signature.Get());
 		commandList->SetPipelineState(__pipeline_state_object.Get());

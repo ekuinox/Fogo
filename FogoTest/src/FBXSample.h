@@ -35,6 +35,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
 	VertexContainer __vertexes;
 	std::shared_ptr<Fogo::Graphics::DX12::Texture> __texture;
+	Microsoft::WRL::ComPtr<ID3DBlob> __vertex_shader;
+	Microsoft::WRL::ComPtr<ID3DBlob> __pixel_shader;
+	const char * __model_file_name;
+
 	DirectX::XMMATRIX __matrix;
 
 	void createRootSignature();
@@ -47,10 +51,11 @@ private:
 public:
 	FBXSample(
 		const char * modelFileName,
-		const Microsoft::WRL::ComPtr<ID3DBlob>& vertexShader,
-		const Microsoft::WRL::ComPtr<ID3DBlob> & pixelShader,
+		Microsoft::WRL::ComPtr<ID3DBlob> vertexShader,
+		Microsoft::WRL::ComPtr<ID3DBlob> pixelShader,
 		std::shared_ptr<Fogo::Graphics::DX12::Texture> texture
 	);
+	void initialize() override;
 	void update() override;
 	void render() const override;
 };

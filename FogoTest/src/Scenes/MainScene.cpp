@@ -10,7 +10,7 @@ using Fogo::Game::GameController;
 using Microsoft::WRL::ComPtr;
 
 void MainScene::initialize() {
-	static bool once = true;
+	static auto once = true;
 	if (once) {
 		ResourceStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
 		ResourceStore::Insert(PixelShader::BOX, Graphics::CompilePixelShader(L"./resources/shader/PixelShader.hlsl", 0, "main", "ps_5_1"));
@@ -29,6 +29,8 @@ void MainScene::initialize() {
 
 	components.emplace_back(ComponentStore::Get<std::shared_ptr<FBXSample>>(0));
 	components.emplace_back(ComponentStore::Get<std::shared_ptr<InputDebugger>>(1));
+
+	Scene::initialize();
 }
 
 void MainScene::update() {
@@ -43,4 +45,5 @@ void MainScene::finalize() {
 	ComponentStore::Execute<std::shared_ptr<Fogo::Game::ComponentInterface>>([&] (std::shared_ptr<Fogo::Game::ComponentInterface> component) {
 		component.reset();
 	});
+	Scene::finalize();
 }

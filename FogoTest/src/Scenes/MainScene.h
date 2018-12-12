@@ -8,7 +8,7 @@
 
 class MainScene : public Fogo::Game::Scene {
 private:
-	struct InputDebugger : Fogo::Game::ComponentInterface {
+	struct InputDebugger : ComponentInterface {
 		void update() override {
 			if (Fogo::Utility::Input::GetPress(Fogo::Utility::MouseButton::Right)) {
 				std::cout << "‰EƒNƒŠ" << std::endl;
@@ -24,7 +24,7 @@ private:
 	};
 public:
 	using ComponentStore = Fogo::Utility::TreeStore<
-		std::shared_ptr<Fogo::Game::ComponentInterface>, int,
+		std::shared_ptr<ComponentInterface>, int,
 		std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };

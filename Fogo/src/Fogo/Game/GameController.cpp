@@ -35,7 +35,10 @@ GameController::GameController(std::vector<std::shared_ptr<Scene>> scenes) :
 			__scenes[__current_scene_index]->finalize(); // 現在のシーンを終了して
 			++__current_scene_index;
 			if (__current_scene_index == __scenes.size()) PubSub<Event, void>::Publish(Event::End); // オワっとる
-			else __scenes[__current_scene_index]->initialize(); // 次のシーンを初期化する
+			else {
+				__scenes[__current_scene_index]->initialize(); // 次のシーンを初期化する
+				__scenes[__current_scene_index]->start();
+			}
 		}
 	});
 
@@ -43,6 +46,7 @@ GameController::GameController(std::vector<std::shared_ptr<Scene>> scenes) :
 		__scenes[__current_scene_index]->finalize(); // 現在のシーンを終了して
 		__current_scene_index = 0;
 		__scenes[__current_scene_index]->initialize();
+		__scenes[__current_scene_index]->start();
 	});
 
 	PubSub<Event, void>::RegisterSubscriber(Event::End, [&] {
@@ -53,7 +57,8 @@ GameController::GameController(std::vector<std::shared_ptr<Scene>> scenes) :
 	});
 
 	__scenes[__current_scene_index]->initialize();
-	
+	__scenes[__current_scene_index]->start();
+
 	Input::Initialize();
 	
 	__thread = std::thread([&] {
