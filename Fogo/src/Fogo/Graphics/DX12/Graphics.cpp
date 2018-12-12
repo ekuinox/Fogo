@@ -1,5 +1,6 @@
 #include "Graphics.h"
 #include "../../Utility/Exception.h"
+#include "../../Utility/Window.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -158,8 +159,8 @@ auto Graphics::render() -> void {
 	renderers.clear();
 }
 
-Graphics::Graphics(HWND hwnd, const WindowSize & windowSize)
-	: windowHandle(hwnd), windowSize(windowSize), frames(0), rtvIndex(0) {
+Graphics::Graphics()
+	: windowHandle(Window::GetWindowHandle()), windowSize({Window::GetWidth(), Window::GetHeight()}), frames(0), rtvIndex(0) {
 	createFactory();
 	createDevice();
 	createCommandQueue();
@@ -182,9 +183,9 @@ Graphics::Graphics(HWND hwnd, const WindowSize & windowSize)
 	};
 }
 
-auto Graphics::Create(HWND hwnd, const WindowSize & windowSize) -> Graphics &
+auto Graphics::Create() -> Graphics &
 {
-	if (instance == nullptr) instance = new Graphics(hwnd, windowSize);
+	if (instance == nullptr) instance = new Graphics();
 	return * instance;
 }
 

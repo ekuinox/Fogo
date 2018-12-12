@@ -165,6 +165,10 @@ auto Window::GetInstance() -> Window & {
 	return * instance;
 }
 
+auto Window::Run() -> void {
+	GetInstance().run();
+}
+
 auto Window::Stop() -> void {
 	GetInstance().__running = false;
 }

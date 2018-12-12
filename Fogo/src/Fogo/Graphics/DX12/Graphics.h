@@ -72,12 +72,12 @@ namespace Fogo::Graphics::DX12 {
 		auto setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState) -> void;
 		auto populateCommandList() -> void;
 		auto render() -> void;
-		Graphics(HWND hwnd, const WindowSize & windowSize);
+		Graphics();
 
 	public: // functions
 		Graphics(const Graphics &) = delete;
 		auto operator=(const Graphics &) -> Graphics & = delete;
-		static auto Create(HWND hwnd, const WindowSize & windowSize) -> Graphics &;
+		static auto Create() -> Graphics &;
 		static auto Destroy() -> void;
 		static auto GetInstance() -> Graphics &;
 		static auto Render(const std::function<void(ComPtr<ID3D12GraphicsCommandList>)> & renderer) -> void;

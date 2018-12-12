@@ -35,6 +35,7 @@ namespace Fogo::Utility {
 		auto createWindowClass(const WNDPROC & procedure, const LPCWSTR & className) const -> WNDCLASSEX;
 		auto createWindow(const LPCWSTR & title) const -> HWND;
 		auto moveWindowCenter() const -> void;
+		auto run() const -> int;
 
 		Window(
 			const UINT width,
@@ -62,7 +63,6 @@ namespace Fogo::Utility {
 
 		Window(const Window &) = delete;
 		auto operator=(const Window &) -> Window & = delete;
-		auto run() const -> int;
 		static auto HideConsole() -> void;
 		static auto Create(const Properties & properties) -> Window &;
 		static auto Create(
@@ -79,6 +79,7 @@ namespace Fogo::Utility {
 		static auto GetWindowHandle() -> HWND;
 		static auto GetInstanceHandle() -> HINSTANCE;
 		static auto GetInstance() -> Window &;
+		static auto Run() -> void;
 		static auto Stop() -> void;
 	};
 

@@ -2,9 +2,9 @@
 
 void Fogo::Initialize(const Properties & properties) {
 	Utility::Window::Create(properties.window);
-	Graphics::DX12::Graphics::Create(Utility::Window::GetHandle(), { properties.window.width, properties.window.height });
+	Graphics::DX12::Graphics::Create();
 	Game::GameController::Create(properties.scenes);
-	Utility::Window::GetInstance().run();
+	Utility::Window::Run();
 }
 
 void Fogo::Finalize() {
