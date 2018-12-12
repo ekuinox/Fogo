@@ -99,6 +99,8 @@ namespace Fogo::Game {
 		}
 
 		static void LoadNext() {
+			// 特に管理していないのでシーンを瞬間的に何度もに切り替えるようなことをすると落ちる
+			// まあそんなこと普通せんやろって感じです
 			__instance->__load_next_scene = std::thread([&] {
 				__instance->__scenes[__instance->__next_key]->initialize();
 			});
