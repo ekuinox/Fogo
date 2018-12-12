@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Car.cpp" />
     <ClCompile Include="src\FBX2016Loader.cpp" />
     <ClCompile Include="src\FBXSample.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -27,7 +26,6 @@
     <ClCompile Include="src\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Car.h" />
     <ClInclude Include="src\FBX2016Loader.h" />
     <ClInclude Include="src\FBXSample.h" />
     <ClInclude Include="src\Scenes\MainScene.h" />

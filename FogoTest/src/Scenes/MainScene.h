@@ -2,7 +2,6 @@
 
 #include "Fogo.h"
 #include "../Square.h"
-#include "../Car.h"
 #include "../FBXSample.h"
 #include <iostream>
 
@@ -25,7 +24,7 @@ private:
 public:
 	using ComponentStore = Fogo::Utility::TreeStore<
 		std::shared_ptr<ComponentInterface>, int,
-		std::shared_ptr<Square>, std::shared_ptr<Car>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
+		std::shared_ptr<Square>, std::shared_ptr<FBXSample>, std::shared_ptr<InputDebugger>>;
 	enum class VertexShader { BOX };
 	enum class PixelShader { BOX };
 	enum class TextureType { BOX };

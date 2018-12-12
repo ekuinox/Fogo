@@ -90,12 +90,6 @@
     <ClInclude Include="src\Fogo\Game\ComponentInterface.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject\FBXModel.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Fogo\Graphics\DX12\FBX.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Fogo\Utility\SimplePromise.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -141,12 +135,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Fogo\Game\Scene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\FBXModel.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Fogo\Graphics\DX12\FBX.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\Fogo\Utility\Input.cpp">
