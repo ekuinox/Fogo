@@ -3,7 +3,6 @@
 #include "FBX2016Loader.h"
 #include <iostream>
 #include "Fogo/Utility/Exception.h"
-#pragma comment(lib, "libfbxsdk-md.lib")
 
 static void GetFBXVertexData(FbxMesh * pMesh, VertexContainer & outVertexData);
 static void GetMaterialData(FbxSurfaceMaterial * material);
