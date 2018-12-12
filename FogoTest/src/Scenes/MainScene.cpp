@@ -34,8 +34,8 @@ void MainScene::initialize() {
 }
 
 void MainScene::update() {
-	if (Input::GetAnyPress()) {
-		Fogo::Game::GameController<const char *>::SetNext("TScene");
+	if (Input::GetTrigger(KeyCode::Return)) {
+		Fogo::Game::GameController<const char *>::SetNext("HiroyukiScene");
 		PubSub<Fogo::Game::GameController<const char *>::Event, void>::Publish(Fogo::Game::GameController<const char *>::Event::Next);
 	}
 

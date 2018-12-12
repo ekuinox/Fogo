@@ -45,5 +45,6 @@ auto Scene::finalize() -> void {
 	for (const auto & component : components) {
 		component->finalize();
 	}
+	components.clear();
 	ComponentInterface::finalize();
 }

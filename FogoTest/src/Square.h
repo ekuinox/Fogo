@@ -20,8 +20,8 @@ private:
 
 public:
 	struct Option {
-		DirectX::XMFLOAT2 center = { 0.0f, 0.0f }, size = { 1.0f, 1.0f };
 		std::shared_ptr<Fogo::Graphics::DX12::Texture> texture;
+		DirectX::XMFLOAT2 center = { 0.0f, 0.0f }, size = { 1.0f, 1.0f };
 	};
 
 	Square(const Option & option);
