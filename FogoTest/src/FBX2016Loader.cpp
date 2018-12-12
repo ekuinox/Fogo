@@ -140,7 +140,6 @@ FbxDouble3 GetMaterialProperty(
 			if(const auto texture_file = property.GetSrcObject<FbxFileTexture>(i)) {
 				std::string uv_name_string = texture_file->UVSet.Get().Buffer();
 				std::string filepath = texture_file->GetFileName();
-				std::cout << filepath.c_str() << std::endl;
 			}
 		}
 
@@ -153,7 +152,6 @@ FbxDouble3 GetMaterialProperty(
 				if(const auto texture_file = layered_texture->GetSrcObject<FbxFileTexture>(j)) {
 					std::string uv_name_string = texture_file->UVSet.Get().Buffer();
 					std::string filepath = texture_file->GetFileName();
-					std::cout << filepath.c_str() << std::endl;
 				}
 			}
 		}
