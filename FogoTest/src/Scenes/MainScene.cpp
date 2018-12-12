@@ -35,8 +35,11 @@ void MainScene::initialize() {
 
 void MainScene::update() {
 	if (Input::GetTrigger(KeyCode::Return)) {
-		Fogo::Game::GameController<const char *>::SetNext("HiroyukiScene");
-		PubSub<Fogo::Game::GameController<const char *>::Event, void>::Publish(Fogo::Game::GameController<const char *>::Event::Next);
+		Fogo::Game::System::SetNext("HiroyukiScene");
+		Fogo::Game::System::LoadNext();
+	}
+	if (Fogo::Game::System::IsNextSceneInitialized()) {
+		PubSub<Fogo::Game::System::Event, void>::Publish(Fogo::Game::System::Event::Next);
 	}
 
 	Scene::update();

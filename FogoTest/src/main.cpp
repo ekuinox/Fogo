@@ -18,6 +18,9 @@ auto main(int argc, char ** argv) -> int {
 		auto update() -> void override {
 			if (Input::GetTrigger(KeyCode::Return)) {
 				System::SetNext("MainScene");
+				System::LoadNext();
+			}
+			if (System::IsNextSceneInitialized()) {
 				PubSub<System::Event, void>::Publish(System::Event::Next);
 			}
 			Scene::update();
@@ -30,7 +33,7 @@ auto main(int argc, char ** argv) -> int {
 			{ "HiroyukiScene", std::make_shared<HiroyukiScene>() },
 			{ "MainScene", std::make_shared<MainScene>() }
 		})
-		.setFirstSceneKey("MainScene")
+		.setFirstSceneKey("HiroyukiScene")
 		.setWidth(800)
 		.setHeight(640)
 		.setTitle(L"FogoTest")

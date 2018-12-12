@@ -22,6 +22,8 @@ namespace Fogo::Game {
 		std::thread __thread;
 		bool __is_thread_running;
 
+		std::thread __load_next_scene;
+
 		auto exec() -> void {
 			Utility::Time::Start();
 			Utility::Input::Update();
@@ -94,6 +96,20 @@ namespace Fogo::Game {
 
 		static void SetNext(Key key) {
 			__instance->__next_key = key;
+		}
+
+		static void LoadNext() {
+			__instance->__load_next_scene = std::thread([&] {
+				__instance->__scenes[__instance->__next_key]->initialize();
+			});
+		}
+
+		static bool IsNextSceneInitialized() {
+			const auto result = __instance->__scenes[__instance->__next_key]->getState() == Scene::State::Initialized;
+			if (result && __instance->__load_next_scene.joinable()) {
+				__instance->__load_next_scene.join();
+			}
+			return result;
 		}
 	};
 
