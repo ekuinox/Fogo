@@ -34,9 +34,11 @@ void MainScene::initialize() {
 }
 
 void MainScene::update() {
-	if (Input::GetTrigger(KeyCode::ESCAPE)) {
-		PubSub<GameController::Event, void>::Publish(GameController::Event::MakeSceneIndexFirst);
+	if (Input::GetAnyPress()) {
+		Fogo::Game::GameController<const char *>::SetNext("TScene");
+		PubSub<Fogo::Game::GameController<const char *>::Event, void>::Publish(Fogo::Game::GameController<const char *>::Event::Next);
 	}
+
 	Scene::update();
 }
 
