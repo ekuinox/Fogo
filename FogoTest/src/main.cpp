@@ -10,14 +10,17 @@ auto main(int argc, char ** argv) -> int {
 	using namespace Microsoft::WRL;
 	using Fogo::Game::System;
 
-	struct HiroyukiScene : Fogo::Game::Scene {
+	struct SampleScene : Fogo::Game::Scene {
+		const char * name;
+		LPCWSTR textureFile;
+		SampleScene(const char * name, LPCWSTR textureFile) : name(name), textureFile(textureFile) {}
 		auto initialize() -> void override {
-			components.emplace_back(std::make_shared<Square>(Square::Option{ std::make_shared<Texture>(L"./resources/b.png") }));
+			components.emplace_back(std::make_shared<Square>(Square::Option { std::make_shared<Texture>(textureFile) }));
 			Scene::initialize();
 		}
 		auto update() -> void override {
 			if (Input::GetTrigger(KeyCode::Return)) {
-				System::SetNext("MainScene");
+				System::SetNext(name);
 				System::LoadNext();
 			}
 			if (System::IsNextSceneInitialized()) {
@@ -30,8 +33,8 @@ auto main(int argc, char ** argv) -> int {
 	Initialize(
 		Fogo::Properties()
 		.setScenes({
-			{ "HiroyukiScene", std::make_shared<HiroyukiScene>() },
-			{ "MainScene", std::make_shared<MainScene>() }
+			{ "HiroyukiScene", std::make_shared<SampleScene>("HutariScene", L"./resources/b.png") },
+			{ "HutariScene", std::make_shared<SampleScene>("HiroyukiScene", L"./resources/a.png") }
 		})
 		.setFirstSceneKey("HiroyukiScene")
 		.setWidth(800)

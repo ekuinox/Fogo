@@ -21,15 +21,29 @@ namespace Fogo::Game {
 
 		std::thread __thread;
 		bool __is_thread_running;
-
 		std::thread __load_next_scene;
+
+		bool __go_next;
+		Key __finalize_scene;
+		
 
 		auto exec() -> void {
 			Utility::Time::Start();
 			Utility::Input::Update();
 			__scenes[__current_key]->update();
 			__scenes[__current_key]->render();
+			if (__go_next) {
+				__go_next = false;
+				__scenes[__next_key]->start();
+				__finalize_scene = __current_key;
+				// キーの切り替え
+				__current_key = __next_key;
+				Utility::Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
+					__scenes[__finalize_scene]->finalize();
+				});
+			}
 			Utility::Time::Stop();
+			Utility::Time::CheckTimers();
 		}
 
 		auto onNext() -> void {
@@ -38,17 +52,12 @@ namespace Fogo::Game {
 				return;
 			}
 
-			// 今のシーンを終了させて、次のシーンを開始する
-			__scenes[__current_key]->finalize();
-
-			__current_key = __next_key;
-
 			// 初期化されてなかったら初期化しましょう
-			if (__scenes[__current_key]->getState() != Scene::State::Initialized) {
-				__scenes[__current_key]->initialize();
+			if (__scenes[__next_key]->getState() != Scene::State::Initialized) {
+				__scenes[__next_key]->initialize();
 			}
 
-			__scenes[__current_key]->start();
+			__go_next = true;
 		}
 
 		auto onEnd() -> void {
@@ -103,7 +112,13 @@ namespace Fogo::Game {
 			// まあそんなこと普通せんやろって感じです
 			__instance->__load_next_scene = std::thread([&] {
 				__instance->__scenes[__instance->__next_key]->initialize();
+				std::cout << "[GameController] Loaded next scene" << std::endl;
 			});
+		}
+
+		static void LoadNextSync() {
+			__instance->__scenes[__instance->__next_key]->initialize();
+			std::cout << "[GameController] Loaded next scene" << std::endl;
 		}
 
 		static bool IsNextSceneInitialized() {
