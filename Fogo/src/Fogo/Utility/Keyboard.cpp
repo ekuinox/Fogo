@@ -1,5 +1,5 @@
 #include "Keyboard.h"
-#include "Exception.h"
+#include "HelperFunctions.h"
 #include "Window.h"
 #include <dinput.h>
 

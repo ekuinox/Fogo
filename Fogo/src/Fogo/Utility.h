@@ -1,11 +1,10 @@
 #pragma once
 
-#include "./Utility/Exception.h"
+#include "./Utility/HelperFunctions.h"
 #include "./Utility/Input.h"
 #include "./Utility/Keyboard.h"
 #include "./Utility/KeyCode.h"
 #include "./Utility/MappedStore.h"
-#include "./Utility/Matches.h"
 #include "./Utility/Mouse.h"
 #include "./Utility/PubSub.h"
 #include "./Utility/SimplePromise.h"

@@ -4,7 +4,7 @@
 #include <vector>
 #include <d3dcompiler.h>
 #include "../Graphics.h"
-#include "../../../Utility/Exception.h"
+#include "../../../Utility/HelperFunctions.h"
 #include "../../../Utility/Time.h"
 
 using namespace Fogo::Graphics::DX12::DrawObject;

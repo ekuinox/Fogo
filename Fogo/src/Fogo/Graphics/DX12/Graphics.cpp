@@ -1,5 +1,5 @@
 #include "Graphics.h"
-#include "../../Utility/Exception.h"
+#include "../../Utility/HelperFunctions.h"
 #include "../../Utility/Window.h"
 
 #pragma comment(lib, "d3d12.lib")

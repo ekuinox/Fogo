@@ -1,5 +1,5 @@
 #include "DepthStencilView.h"
-#include "../../Utility/Exception.h"
+#include "../../Utility/HelperFunctions.h"
 
 using namespace Fogo::Graphics::DX12;
 using namespace Fogo::Utility;

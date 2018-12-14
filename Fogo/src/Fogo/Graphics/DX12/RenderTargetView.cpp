@@ -1,5 +1,5 @@
 #include "RenderTargetView.h"
-#include "../../Utility/Exception.h"
+#include "../../Utility/HelperFunctions.h"
 
 using namespace Microsoft::WRL;
 using namespace Fogo::Graphics::DX12;
