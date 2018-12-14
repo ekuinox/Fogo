@@ -23,8 +23,12 @@ namespace Fogo::Game {
 		bool __is_thread_running;
 		std::thread __load_next_scene;
 
-		bool __go_next;
-		Key __finalize_scene;
+		struct Finalizer {
+			Key scene;
+			bool isFinaliing = false;
+		} __finalizer;
+
+		bool __go_next = false;
 		
 
 		auto exec() -> void {
@@ -35,11 +39,12 @@ namespace Fogo::Game {
 			if (__go_next) {
 				__go_next = false;
 				__scenes[__next_key]->start();
-				__finalize_scene = __current_key;
+				__finalizer = { __current_key, true };
 				// キーの切り替え
 				__current_key = __next_key;
 				Utility::Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
-					__scenes[__finalize_scene]->finalize();
+					__scenes[__finalizer.scene]->finalize();
+					__finalizer.isFinaliing = false;
 				});
 			}
 			Utility::Time::Stop();
@@ -108,8 +113,9 @@ namespace Fogo::Game {
 		}
 
 		static void LoadNext() {
-			// 特に管理していないのでシーンを瞬間的に何度もに切り替えるようなことをすると落ちる
-			// まあそんなこと普通せんやろって感じです
+			// 前のシーンの終了中にやるなバカ
+			if (__instance->__finalizer.isFinaliing) return;
+
 			__instance->__load_next_scene = std::thread([&] {
 				__instance->__scenes[__instance->__next_key]->initialize();
 				std::cout << "[GameController] Loaded next scene" << std::endl;
@@ -117,6 +123,9 @@ namespace Fogo::Game {
 		}
 
 		static void LoadNextSync() {
+			// 前のシーンの終了中にやるなバカ
+			if (__instance->__finalizer.isFinaliing) return;
+
 			__instance->__scenes[__instance->__next_key]->initialize();
 			std::cout << "[GameController] Loaded next scene" << std::endl;
 		}
