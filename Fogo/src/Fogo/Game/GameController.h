@@ -118,7 +118,6 @@ namespace Fogo::Game {
 
 			__instance->__load_next_scene = std::thread([&] {
 				__instance->__scenes[__instance->__next_key]->initialize();
-				std::cout << "[GameController] Loaded next scene" << std::endl;
 			});
 		}
 
@@ -127,7 +126,6 @@ namespace Fogo::Game {
 			if (__instance->__finalizer.isFinaliing) return;
 
 			__instance->__scenes[__instance->__next_key]->initialize();
-			std::cout << "[GameController] Loaded next scene" << std::endl;
 		}
 
 		static bool IsNextSceneInitialized() {
