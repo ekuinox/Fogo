@@ -1,6 +1,8 @@
 #pragma once
 
 #include <chrono>
+#include <unordered_map>
+#include <functional>
 
 namespace Fogo::Utility {
 	
@@ -11,6 +13,13 @@ namespace Fogo::Utility {
 		TimePoint __begun_time;
 		TimePoint __ended_time;
 		float __elapsed_time;
+
+		struct Timer {
+			std::function<void(void)> func;
+			float span;
+			TimePoint whenStarted;
+		};
+		std::unordered_map<const char *, Timer> __timers;
 
 		Time();
 		
@@ -29,6 +38,8 @@ namespace Fogo::Utility {
 		static void Stop();
 		static TimePoint GetCurrent();
 		static float GetElapsedTime();
+		static void RegisterTimer(const char * key, float time, const std::function<void(void)> & func);
+		static void CheckTimers();
 	};
 
 } // namespace Fogo

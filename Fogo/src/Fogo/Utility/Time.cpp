@@ -47,3 +47,27 @@ float Fogo::Utility::Time::GetElapsedTime()
 {
 	return getInstance().__elapsed_time;
 }
+
+void Fogo::Utility::Time::RegisterTimer(const char * key, float time, const std::function<void(void)> & func)
+{
+	getInstance().__timers[key] = Timer { func, time, GetCurrent() };
+}
+
+void Fogo::Utility::Time::CheckTimers()
+{
+	auto & timers = getInstance().__timers;
+
+	if (timers.size() < 1) return;
+
+	std::vector<const char *> finishedTimerKeys = {};
+	for (const auto & [key, timer] : timers) {
+		if (static_cast<float>(duration_cast<nanoseconds>(GetCurrent() - timer.whenStarted).count()) / nano::den > timer.span) {
+			timer.func();
+			finishedTimerKeys.emplace_back(key);
+		}
+	}
+	for (const auto & key : finishedTimerKeys) {
+		timers.erase(key);
+	}
+
+}
