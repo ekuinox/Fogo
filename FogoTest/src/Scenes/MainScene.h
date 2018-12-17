@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Fogo.h"
+#include <Fogo.h>
 #include "../Square.h"
 #include "../FBXSample.h"
 #include <iostream>
@@ -8,18 +8,7 @@
 class MainScene : public Fogo::Game::Scene {
 private:
 	struct InputDebugger : ComponentInterface {
-		void update() override {
-			if (Fogo::Utility::Input::GetPress(Fogo::Utility::MouseButton::Right)) {
-				std::cout << "‰EƒNƒŠ" << std::endl;
-			}
-			if (Fogo::Utility::Input::GetPress(Fogo::Utility::MouseButton::Left)) {
-				std::cout << "¶ƒNƒŠ" << std::endl;
-			}
-			const auto move = Fogo::Utility::Input::GetMouseMove();
-			if (!(move.x == 0.0f && move.y == 0.0f && move.z == 0.0f)) {
-				std::cout << move.x << ", " << move.y << ", " << move.z << std::endl;
-			}
-		}
+		// nothing
 	};
 public:
 	using ComponentStore = Fogo::Utility::TreeStore<
