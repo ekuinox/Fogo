@@ -260,11 +260,10 @@ void FBXSample::initialize() {
 	createVertexBuffer();
 	createConstantBuffer();
 	initializeGameData();
+	ComponentInterface::initialize();
 }
 
 void FBXSample::update() {
-	if (__state != State::Started) return;
-
 	static constexpr auto SPEED = 10.0f;
 
 	XMFLOAT3 translation { 0, 0, 0 };
@@ -288,7 +287,6 @@ void FBXSample::update() {
 }
 
 void FBXSample::render() const {
-	if (__state != State::Started) return;
 	DX12::Graphics::Render([&](ComPtr<ID3D12GraphicsCommandList> commandList) {
 		commandList->SetGraphicsRootSignature(__root_signature.Get());
 		commandList->SetPipelineState(__pipeline_state_object.Get());

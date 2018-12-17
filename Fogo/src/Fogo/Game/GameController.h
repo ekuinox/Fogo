@@ -43,6 +43,7 @@ namespace Fogo::Game {
 				// ƒL[‚ÌØ‚è‘Ö‚¦
 				__current_key = __next_key;
 				Utility::Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
+					__scenes[__finalizer.scene]->stop();
 					__scenes[__finalizer.scene]->finalize();
 					__finalizer.isFinaliing = false;
 				});
