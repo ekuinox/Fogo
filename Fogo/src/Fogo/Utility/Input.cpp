@@ -1,7 +1,7 @@
 #include "Input.h"
 #include <dinput.h>
 #include "./Window.h"
-#include "Exception.h"
+#include "HelperFunctions.h"
 #include "./Keyboard.h"
 #include "./Mouse.h"
 #include <DirectXMath.h>
