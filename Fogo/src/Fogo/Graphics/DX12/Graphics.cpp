@@ -14,7 +14,10 @@ Graphics * Graphics::instance = nullptr;
 std::array<float, 4> Graphics::clearColor = { 0.0f, 0.0f, 0.5f, 1.0f };
 
 auto Graphics::createFactory() -> void {
-	ExecOrFail<exception>(CreateDXGIFactory2(enableDebug, IID_PPV_ARGS(factory.GetAddressOf())));
+	ExecOrFail<exception>(CreateDXGIFactory2(
+		Fogo::Utility::DEBUG ? DXGI_CREATE_FACTORY_DEBUG : 0,
+		IID_PPV_ARGS(factory.GetAddressOf())
+	));
 }
 
 auto Graphics::createDevice() -> void {
@@ -158,6 +161,12 @@ auto Graphics::render() -> void {
 
 Graphics::Graphics()
 	: windowHandle(Window::GetWindowHandle()), windowSize({Window::GetWidth(), Window::GetHeight()}), frames(0), rtvIndex(0) {
+	if constexpr (Fogo::Utility::DEBUG) {
+		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugger.GetAddressOf())))) {
+			debugger->EnableDebugLayer();
+		}
+	}
+
 	createFactory();
 	createDevice();
 	createCommandQueue();

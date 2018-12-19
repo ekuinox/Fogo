@@ -31,7 +31,6 @@ namespace Fogo::Graphics::DX12 {
 
 	private: // private variables
 		static constexpr unsigned char RENDER_TARGET_VIEW_NUMBER = 2;
-		static constexpr UINT enableDebug = 0;
 
 		static Graphics * instance;
 
@@ -62,6 +61,7 @@ namespace Fogo::Graphics::DX12 {
 		D3D12_VIEWPORT viewport;
 
 		std::vector<std::function<void(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>)>> renderers;
+		ComPtr<ID3D12Debug> debugger;
 
 	private: // private functions
 		auto createFactory() -> void;
