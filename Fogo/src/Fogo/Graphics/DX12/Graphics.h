@@ -11,6 +11,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <array>
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 
@@ -33,6 +34,8 @@ namespace Fogo::Graphics::DX12 {
 		static constexpr UINT enableDebug = 0;
 
 		static Graphics * instance;
+
+		static std::array<float, 4> clearColor;
 
 		HWND windowHandle;
 		WindowSize windowSize;
@@ -86,5 +89,6 @@ namespace Fogo::Graphics::DX12 {
 		static auto GetCommandList() -> ComPtr<ID3D12GraphicsCommandList>;
 		static auto CompileVertexShader(LPCWSTR fileName, UINT compileFlag = 0, const char * entryFunc = "VSMain", const char * target = "vs_5_0") ->ComPtr<ID3DBlob>;
 		static auto CompilePixelShader(LPCWSTR fileName, UINT compileFlag = 0, const char * entryFunc = "PSMain", const char * target = "ps_5_0") -> ComPtr<ID3DBlob>;
+		static auto SetClearColor(const std::array<float, 4> & newClearColor) -> void;
 	};
 }

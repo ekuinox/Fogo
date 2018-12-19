@@ -11,6 +11,7 @@ using namespace Fogo::Graphics::DX12;
 using namespace Fogo::Utility;
 
 Graphics * Graphics::instance = nullptr;
+std::array<float, 4> Graphics::clearColor = { 0.0f, 0.0f, 0.5f, 1.0f };
 
 auto Graphics::createFactory() -> void {
 	ExecOrFail<exception>(CreateDXGIFactory2(enableDebug, IID_PPV_ARGS(factory.GetAddressOf())));
@@ -112,15 +113,13 @@ auto Graphics::setResourceBarrier(D3D12_RESOURCE_STATES beforeState, D3D12_RESOU
 }
 
 auto Graphics::populateCommandList() -> void {
-	static constexpr FLOAT clearColor[4] = { 0.0f, 0.0f, 0.5f, 1.0f };
-
 	//リソースの状態をプレゼント用からレンダーターゲット用に変更
 	setResourceBarrier(D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	//深度バッファとレンダーターゲットのクリア
 	commandList->ClearDepthStencilView(depthStencilView->getHandle(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	commandList->ClearRenderTargetView(renderTargetView->getTargetHandle(rtvIndex), clearColor, 0, nullptr);
-
+	commandList->ClearRenderTargetView(renderTargetView->getTargetHandle(rtvIndex), clearColor.data(), 0, nullptr);
+	
 	// この辺から
 
 	//ビューポートとシザー矩形の設定
@@ -259,4 +258,8 @@ auto Graphics::CompilePixelShader(LPCWSTR fileName, UINT compileFlag, const char
 	}
 
 	return shader;
+}
+
+auto Graphics::SetClearColor(const std::array<float, 4> & newClearColor) -> void {
+	clearColor = newClearColor;
 }
