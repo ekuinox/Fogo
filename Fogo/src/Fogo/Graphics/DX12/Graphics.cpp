@@ -55,9 +55,7 @@ auto Graphics::createSwapChain() -> void {
 		DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
 	};
 
-	ComPtr<IDXGISwapChain> swap_chain;
-	ExecOrFail<exception>(factory->CreateSwapChain(commandQueue.Get(), &swapChainDesc, swap_chain.GetAddressOf()));
-	ExecOrFail<exception>(swap_chain->QueryInterface(swapChain.GetAddressOf()));
+	ExecOrFail<exception>(factory->CreateSwapChain(commandQueue.Get(), &swapChainDesc, reinterpret_cast<IDXGISwapChain**>(swapChain.GetAddressOf())));
 
 	rtvIndex = swapChain->GetCurrentBackBufferIndex();
 }
