@@ -122,6 +122,7 @@ void FBXSample::createPipelineStateObject(const ComPtr<ID3DBlob>& vertexShader, 
 	descPSO.RasterizerState = descRasterizer;																// ラスタライザ設定
 	descPSO.BlendState = descBlend;																			// ブレンド設定
 	descPSO.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);									// ステンシルバッファ有効設定
+	descPSO.DSVFormat = DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT;													// DSVフォーマット指定
 	descPSO.SampleMask = UINT_MAX;																			// サンプルマスク設定
 	descPSO.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;									// プリミティブタイプ	
 	descPSO.NumRenderTargets = 1;																			// レンダーターゲット数
