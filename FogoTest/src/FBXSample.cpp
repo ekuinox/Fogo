@@ -125,7 +125,7 @@ void FBXSample::createPipelineStateObject(const ComPtr<ID3DBlob>& vertexShader, 
 	descPSO.SampleMask = UINT_MAX;																			// サンプルマスク設定
 	descPSO.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;									// プリミティブタイプ	
 	descPSO.NumRenderTargets = 1;																			// レンダーターゲット数
-	descPSO.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;														// レンダーターゲットフォーマット
+	descPSO.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;														// レンダーターゲットフォーマット
 	descPSO.SampleDesc.Count = 1;																			// サンプルカウント
 	Utility::ExecOrFail(DX12::Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
 }
