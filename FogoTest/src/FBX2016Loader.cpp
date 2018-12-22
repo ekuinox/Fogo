@@ -52,6 +52,7 @@ void GetMeshData(FbxNode * parent, VertexContainer & outVertexData)
 		for(auto j = 0u; j < material_count; ++j) {
 			const auto material = child->GetMaterial(j);
 			if(material) {
+				Fogo::Utility::Log(material->GetName());
 				GetMaterialData(material);
 			}
 		}
@@ -66,6 +67,7 @@ void GetMeshData(FbxNode * parent, VertexContainer & outVertexData)
 // 頂点データ獲得
 void GetFBXVertexData(FbxMesh * mesh, VertexContainer & outVertexData)
 {
+	OutputDebugStringW(L"GetFBXVertexData\n");
 	// 頂点座標と法線ベクトル獲得
 	std::vector<FbxVector4> positions, normals;
 	FbxVector4 normal;
@@ -140,6 +142,7 @@ FbxDouble3 GetMaterialProperty(
 			if(const auto texture_file = property.GetSrcObject<FbxFileTexture>(i)) {
 				std::string uv_name_string = texture_file->UVSet.Get().Buffer();
 				std::string filepath = texture_file->GetFileName();
+				Fogo::Utility::Log(filepath);
 			}
 		}
 
@@ -152,6 +155,7 @@ FbxDouble3 GetMaterialProperty(
 				if(const auto texture_file = layered_texture->GetSrcObject<FbxFileTexture>(j)) {
 					std::string uv_name_string = texture_file->UVSet.Get().Buffer();
 					std::string filepath = texture_file->GetFileName();
+					Fogo::Utility::Log(filepath);
 				}
 			}
 		}

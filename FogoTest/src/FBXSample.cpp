@@ -2,6 +2,7 @@
 #include <utility>
 #include "Fogo.h"
 #include "d3dx12.h"
+#include <iostream>
 
 using namespace Fogo;
 using namespace Utility;
@@ -257,6 +258,13 @@ void FBXSample::initialize() {
 	createRootSignature();
 	createPipelineStateObject(__vertex_shader, __pixel_shader);
 	createDescriptorHeaps();
+
+	const auto model = new Fogo::Graphics::DX12::FBXModel(
+		__model_file_name,
+		Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
+	);
+	const auto & meshes = model->getMeshes();
+
 	loadFBXConvertToVertexData(__model_file_name, __vertexes);
 	createVertexBuffer();
 	createConstantBuffer();
