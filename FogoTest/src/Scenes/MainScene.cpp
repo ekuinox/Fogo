@@ -18,16 +18,14 @@ void MainScene::initialize() {
 		once = false;
 	}
 
-	ComponentStore::Insert(0, -1, std::shared_ptr<FBXSample>(new FBXSample(
-		"./resources/2.fbx",
-		ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX),
-		ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX),
-		ResourceStore::Get<std::shared_ptr<Texture>>(TextureType::BOX)
-	)));
+	ComponentStore::Insert(0, -1, std::shared_ptr<FBX>(new FBX()));
+	ComponentStore::Get<std::shared_ptr<FBX>>(0)->modelFile = "./resources/2.fbx";
+	ComponentStore::Get<std::shared_ptr<FBX>>(0)->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
+	ComponentStore::Get<std::shared_ptr<FBX>>(0)->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
 	ComponentStore::Insert(1, -1, std::make_shared<InputDebugger>());
 
-	components.emplace_back(ComponentStore::Get<std::shared_ptr<FBXSample>>(0));
+	components.emplace_back(ComponentStore::Get<std::shared_ptr<FBX>>(0));
 	components.emplace_back(ComponentStore::Get<std::shared_ptr<InputDebugger>>(1));
 
 	Scene::initialize();
