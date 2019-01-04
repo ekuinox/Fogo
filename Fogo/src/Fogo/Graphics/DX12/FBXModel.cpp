@@ -148,9 +148,7 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 
 				for (unsigned int j = 0; j < textureCount; ++j) {
 					if (src == "Maya|DiffuseTexture") {
-						const std::string texName = fbxProperty.GetSrcObject<FbxFileTexture>(j)->GetFileName();
-						Fogo::Utility::Log(texName);
-						texturePaths.emplace_back(texName.substr(texName.find_last_of('/') + 1));
+						texturePaths.emplace_back(fbxProperty.GetSrcObject<FbxFileTexture>(j)->GetFileName());
 					}
 				}
 			}
@@ -158,7 +156,8 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 	}
 
 	if (!texturePaths.empty()) {
-		const auto temp = properties.textureDirectory + std::wstring(texturePaths.front().begin(), texturePaths.front().end());
+		const auto textureName = texturePaths.front().substr(texturePaths.front().find_last_of('/') + 1);
+		const auto temp = properties.textureDirectory + std::wstring(textureName.begin(), textureName.end());
 		const auto ext = temp.substr(temp.find_last_of('.') + 1);
 		newMaterial.texture = std::make_shared<Texture>(
 			temp.c_str(),

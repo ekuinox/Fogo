@@ -26,7 +26,6 @@ namespace Fogo::Graphics::DX12 {
 			DirectX::XMFLOAT3 emissive, ambient, diffuse, specular;
 			float transparency, shininess;
 			std::shared_ptr<Texture> texture;
-			std::string texturePath;
 		};
 
 		struct Mesh {
