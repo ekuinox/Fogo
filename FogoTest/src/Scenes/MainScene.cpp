@@ -19,7 +19,7 @@ void MainScene::initialize() {
 	}
 
 	ComponentStore::Insert(0, -1, std::shared_ptr<FBX>(new FBX()));
-	ComponentStore::Get<std::shared_ptr<FBX>>(0)->modelFile = "./resources/2.fbx";
+	ComponentStore::Get<std::shared_ptr<FBX>>(0)->modelFile = "./resources/model/unitychan.fbx";
 	ComponentStore::Get<std::shared_ptr<FBX>>(0)->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
 	ComponentStore::Get<std::shared_ptr<FBX>>(0)->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 

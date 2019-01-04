@@ -9,7 +9,7 @@ using Microsoft::WRL::ComPtr;
 
 struct MaterialProperty {
 	FbxDouble3 result;
-	std::vector<std::string> texturePathes;
+	std::vector<std::string> texturePaths;
 };
 
 static void ReadNode(FbxNode * parent, std::vector<FBXModel::Mesh> & meshes, const FBXModel::Properties & properties) noexcept;
@@ -104,7 +104,7 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 	if (material == nullptr) return {};
 
 	FBXModel::Material newMaterial;
-	std::vector<std::string> texturePathes {};
+	std::vector<std::string> texturePaths {};
 
 	const auto & emissiveProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
 	const auto & ambientProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sAmbient, FbxSurfaceMaterial::sAmbientFactor);
@@ -116,10 +116,10 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 	newMaterial.diffuse = DirectX::XMFLOAT3(diffuseProperty.result.mData[0], diffuseProperty.result.mData[1], diffuseProperty.result.mData[2]);
 	newMaterial.specular = DirectX::XMFLOAT3(specularProperty.result.mData[0], specularProperty.result.mData[1], specularProperty.result.mData[2]);
 
-	for (const auto & texturePath : emissiveProperty.texturePathes) texturePathes.emplace_back(texturePath);
-	for (const auto & texturePath : ambientProperty.texturePathes) texturePathes.emplace_back(texturePath);
-	for (const auto & texturePath : diffuseProperty.texturePathes) texturePathes.emplace_back(texturePath);
-	for (const auto & texturePath : specularProperty.texturePathes) texturePathes.emplace_back(texturePath);
+	for (const auto & texturePath : emissiveProperty.texturePaths) texturePaths.emplace_back(texturePath);
+	for (const auto & texturePath : ambientProperty.texturePaths) texturePaths.emplace_back(texturePath);
+	for (const auto & texturePath : diffuseProperty.texturePaths) texturePaths.emplace_back(texturePath);
+	for (const auto & texturePath : specularProperty.texturePaths) texturePaths.emplace_back(texturePath);
 
 	const auto transparency_factor_property = material->FindProperty(FbxSurfaceMaterial::sTransparencyFactor);
 	if (transparency_factor_property.IsValid()) {
@@ -131,35 +131,69 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 		newMaterial.shininess = static_cast<float>(shininess_property.Get<FbxDouble>());
 	}
 
-	std::wstring stemp = properties.textureDirectory + std::wstring(texturePathes.front().begin(), texturePathes.front().end());
+	if (const auto implementation = GetImplementation(material, FBXSDK_IMPLEMENTATION_CGFX)) {
+		const auto rootTable = implementation->GetRootTable();
+		const auto entryCount = rootTable->GetEntryCount();
 
-	newMaterial.texture = std::make_shared<Texture>(stemp.c_str());
+		for (unsigned int i = 0; i < entryCount; ++i) {
+			const auto entry = rootTable->GetEntry(i);
+			auto fbxProperty = material->FindPropertyHierarchical(entry.GetSource());
+			if (!fbxProperty.IsValid()) {
+				fbxProperty = material->RootProperty.FindHierarchical(entry.GetSource());
+			}
+
+			const auto textureCount = fbxProperty.GetSrcObjectCount<FbxTexture>();
+			if (textureCount > 0) {
+				std::string src = entry.GetSource();
+
+				for (unsigned int j = 0; j < textureCount; ++j) {
+					if (src == "Maya|DiffuseTexture") {
+						const std::string texName = fbxProperty.GetSrcObject<FbxFileTexture>(j)->GetFileName();
+						Fogo::Utility::Log(texName);
+						texturePaths.emplace_back(texName.substr(texName.find_last_of('/') + 1));
+					}
+				}
+			}
+		}
+	}
+
+	if (!texturePaths.empty()) {
+		const auto temp = properties.textureDirectory + std::wstring(texturePaths.front().begin(), texturePaths.front().end());
+		const auto ext = temp.substr(temp.find_last_of('.') + 1);
+		newMaterial.texture = std::make_shared<Texture>(
+			temp.c_str(),
+			ext == L"tga" || ext == L"TGA" ? Texture::Type::TGA : Texture::Type::ANY
+		);
+	}
 
 	return newMaterial;
 }
 
 MaterialProperty GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName) {
-	std::cout << propertyName << ", " << factorPropertyName << std::endl;
+	Fogo::Utility::Log(material->GetName());
+	
 	FbxDouble3 result(0, 0, 0);
-	const auto property = material->FindProperty(propertyName);
+	std::vector<std::string> texturePaths {};
+	
 	const auto factor_property = material->FindProperty(factorPropertyName);
-	if (property.IsValid() && factor_property.IsValid()) {
-		result = property.Get<FbxDouble3>();
-		if (const auto factor = factor_property.Get<FbxDouble>() != 1) {
-			result[0] *= factor;
-			result[1] *= factor;
-			result[2] *= factor;
-		}
-	}
-
-	std::vector<std::string> texturePathes {};
-
+	const auto property = material->FindProperty(propertyName);
+	
 	if (property.IsValid()) {
+
+		if (factor_property.IsValid()) {
+			result = property.Get<FbxDouble3>();
+			if (const auto factor = factor_property.Get<FbxDouble>() != 1) {
+				result[0] *= factor;
+				result[1] *= factor;
+				result[2] *= factor;
+			}
+		}
+
 		const auto textures_count = property.GetSrcObjectCount<FbxFileTexture>();
 		for (auto i = 0u; i < textures_count; i++) {
 			if (const auto texture_file = property.GetSrcObject<FbxFileTexture>(i)) {
 				std::string uv_name_string = texture_file->UVSet.Get().Buffer();
-				texturePathes.emplace_back(texture_file->GetFileName());
+				texturePaths.emplace_back(texture_file->GetFileName());
 			}
 		}
 
@@ -171,13 +205,13 @@ MaterialProperty GetMaterialProperty(const FbxSurfaceMaterial * material, const 
 			for (auto j = 0u; j < texture_file_count; j++) {
 				if (const auto texture_file = layered_texture->GetSrcObject<FbxFileTexture>(j)) {
 					std::string uv_name_string = texture_file->UVSet.Get().Buffer();
-					texturePathes.emplace_back(texture_file->GetFileName());
+					texturePaths.emplace_back(texture_file->GetFileName());
 				}
 			}
 		}
 	}
 
-	return { result, texturePathes };
+	return { result, texturePaths };
 }
 
 /* --- FBXModel Class Functions  --- */
@@ -508,7 +542,7 @@ void FBXModel::render() const {
 				commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
 			}
 			// テクスチャをセット
-			{
+			if (__meshes[i].material.texture) {
 				std::vector<ID3D12DescriptorHeap*> heaps = { __meshes[i].material.texture->getDescriptorHeap().Get() };
 				commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
 				commandList->SetGraphicsRootDescriptorTable(1, __meshes[i].material.texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
