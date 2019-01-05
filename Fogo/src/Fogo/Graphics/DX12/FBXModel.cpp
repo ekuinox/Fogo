@@ -103,7 +103,7 @@ std::vector<FBXModel::Vertex> GetVertexes(FbxMesh * mesh, const FBXModel::Proper
 FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Properties & properties) noexcept {
 	if (material == nullptr) return {};
 
-	FBXModel::Material newMaterial;
+	FBXModel::Material newMaterial {};
 	std::vector<std::string> texturePaths {};
 
 	const auto & emissiveProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
@@ -169,8 +169,6 @@ FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Pr
 }
 
 MaterialProperty GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName) {
-	Fogo::Utility::Log(material->GetName());
-	
 	FbxDouble3 result(0, 0, 0);
 	std::vector<std::string> texturePaths {};
 	
@@ -233,7 +231,7 @@ void FBXModel::loadModel(const char * fileName)  {
 		FbxGeometryConverter converter(manager);
 		converter.Triangulate(scene, true);
 	}
-	
+
 	ReadNode(scene->GetRootNode(), __meshes, __properties);
 
 	io->Destroy();
