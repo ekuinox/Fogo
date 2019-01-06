@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include <memory>
-#include "./Texture.h"
+#include "./FBXParser.h"
 
 namespace Fogo::Graphics::DX12 {
 	class FBXModel {
@@ -14,23 +14,6 @@ namespace Fogo::Graphics::DX12 {
 			Properties & setTextureDirectory(LPCWSTR newTextureDirectory) { textureDirectory = newTextureDirectory; return *this; }
 			Properties & setVertexShader(const Microsoft::WRL::ComPtr<ID3DBlob> & newShader) { vertexShader = newShader; return *this; }
 			Properties & setPixelShader(const Microsoft::WRL::ComPtr<ID3DBlob> & newShader) { pixelShader = newShader; return *this; }
-		};
-
-		struct Vertex {
-			DirectX::XMFLOAT3 position;		// ç¿ïW
-			DirectX::XMFLOAT4 normal;		// ñ@ê¸
-			DirectX::XMFLOAT2 texture;		// UVç¿ïW
-		};
-
-		struct Material {
-			DirectX::XMFLOAT3 emissive, ambient, diffuse, specular;
-			float transparency, shininess;
-			std::shared_ptr<Texture> texture;
-		};
-
-		struct Mesh {
-			std::vector<Vertex> vertexes;
-			Material material;
 		};
 
 		struct MatrixConstantBuffer {
@@ -56,14 +39,15 @@ namespace Fogo::Graphics::DX12 {
 		};
 
 		Properties __properties;
-		std::vector<Mesh> __meshes;
+		std::vector<FBXParser::Mesh> __meshes;
 		Microsoft::WRL::ComPtr<ID3D12RootSignature> __root_signature;
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> __pipeline_state_object;
-		struct VertexBuffer {
+		template <typename View> struct Buffer {
 			Microsoft::WRL::ComPtr<ID3D12Resource> resource;
-			D3D12_VERTEX_BUFFER_VIEW view;
+			View view;
 		};
-		std::vector<VertexBuffer> __vertex_buffers;
+		std::vector<Buffer<D3D12_INDEX_BUFFER_VIEW>> __index_buffers;
+		std::vector<Buffer<D3D12_VERTEX_BUFFER_VIEW>> __vertex_buffers;
 		Microsoft::WRL::ComPtr<ID3D12Resource> __constant_buffer_resource;
 		D3D12_CPU_DESCRIPTOR_HANDLE __constant_buffer_handles[CONSTANT_BUFFER_NUMBER];
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
@@ -74,6 +58,7 @@ namespace Fogo::Graphics::DX12 {
 		void createRootSignature();
 		void createPipelineStateObject();
 		void createDescriptorHeaps();
+		void createIndexBuffers();
 		void createVertexBuffers();
 		void createConstantBuffer();
 
@@ -81,7 +66,7 @@ namespace Fogo::Graphics::DX12 {
 		DirectX::XMMATRIX matrix;
 
 		FBXModel(const char * fileName, const Properties & properties = {});
-		const std::vector<Mesh> & getMeshes() const;
+		const std::vector<FBXParser::Mesh> & getMeshes() const;
 		void render() const;
 	};
 }

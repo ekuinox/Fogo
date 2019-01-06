@@ -7,17 +7,18 @@
 using namespace Fogo::Graphics::DX12;
 using Microsoft::WRL::ComPtr;
 
+/*
 struct MaterialProperty {
 	FbxDouble3 result;
 	std::vector<std::string> texturePaths;
 };
 
 static void ReadNode(FbxNode * parent, std::vector<FBXModel::Mesh> & meshes, const FBXModel::Properties & properties) noexcept;
-static std::vector<FBXModel::Vertex> GetVertexes(FbxMesh * mesh, const FBXModel::Properties & properties) noexcept;
-static FBXModel::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Properties & properties) noexcept;
+static std::vector<FBXParser::Vertex> GetVertexes(FbxMesh * mesh, const FBXModel::Properties & properties) noexcept;
+static FBXParser::Material GetMaterial(FbxSurfaceMaterial * material, const FBXModel::Properties & properties) noexcept;
 static MaterialProperty GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName);
 
-void ReadNode(FbxNode * parent, std::vector<FBXModel::Mesh> & meshes, const FBXModel::Properties & properties) noexcept {
+void ReadNode(FbxNode * parent, std::vector<FBXParser::Mesh> & meshes, const FBXModel::Properties & properties) noexcept {
 	if (parent == nullptr) return;
 
 	const auto children_count = parent->GetChildCount();
@@ -210,7 +211,7 @@ MaterialProperty GetMaterialProperty(const FbxSurfaceMaterial * material, const 
 
 	return { result, texturePaths };
 }
-
+*/
 /* --- FBXModel Class Functions  --- */
 void FBXModel::loadModel(const char * fileName)  {
 	const auto manager = FbxManager::Create();
@@ -232,7 +233,28 @@ void FBXModel::loadModel(const char * fileName)  {
 		converter.Triangulate(scene, true);
 	}
 
-	ReadNode(scene->GetRootNode(), __meshes, __properties);
+	const auto materials = FBXParser::GetMaterials(scene);
+	__meshes = FBXParser::GetMeshes(scene);
+
+	for (auto & mesh : __meshes) {
+		for (const auto & material : materials) {
+			if (mesh.materialName == material.name) {
+				mesh.material = material;
+				break;
+			}
+		}
+
+		if (!mesh.material.texturePath.empty()) {
+			const auto textureFile = __properties.textureDirectory + std::wstring(mesh.material.texturePath.begin(), mesh.material.texturePath.end());
+			const auto ext = textureFile.substr(textureFile.find_last_of('.') + 1);
+			mesh.material.texture = std::make_shared<Texture>(
+				textureFile.c_str(),
+				ext == L"tga" || ext == L"TGA" ? Texture::Type::TGA : Texture::Type::ANY
+			);
+		}
+	}
+
+//	ReadNode(scene->GetRootNode(), __meshes, __properties);
 
 	io->Destroy();
 	scene->Destroy();
@@ -383,6 +405,64 @@ void FBXModel::createDescriptorHeaps() {
 	Graphics::GetCommandList()->SetDescriptorHeaps(DESCRIPTOR_HEAP_TYPE_SET, __descriptor_heaps[0].GetAddressOf());
 }
 
+void FBXModel::createIndexBuffers() {
+	static constexpr D3D12_HEAP_PROPERTIES heapProperties {
+		D3D12_HEAP_TYPE_UPLOAD, // Type
+		D3D12_CPU_PAGE_PROPERTY_UNKNOWN, // CPUPageProperty
+		D3D12_MEMORY_POOL_UNKNOWN, // MemoryPoolPreference
+		0, // CreationNodeMask
+		0 // VisibleNodeMask
+	};
+
+	D3D12_RESOURCE_DESC descResource {
+		D3D12_RESOURCE_DIMENSION_BUFFER, //Dimension
+		0, // Alignment
+		256, // Width
+		1, // Height
+		1, // DepthOrArraySize
+		1, // MipLevels
+		DXGI_FORMAT_UNKNOWN, // Format
+		DXGI_SAMPLE_DESC { 1, 0 }, // SampleDesc { Count, Quality }
+		D3D12_TEXTURE_LAYOUT_ROW_MAJOR, // Layout
+		D3D12_RESOURCE_FLAG_NONE // Flags
+	};
+
+	for (auto && mesh : __meshes) {
+		ComPtr<ID3D12Resource> resource;
+
+		descResource.Width = mesh.indexes.size() * sizeof(unsigned int);
+
+		Graphics::GetDevice()->CreateCommittedResource(
+			&heapProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&descResource,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&resource)
+		);
+
+		UINT8 * data_begin;
+		Utility::SimplePromise([&] {
+			return resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
+		}).then([&] {
+			const auto temp = reinterpret_cast<unsigned int*>(data_begin);
+			for (size_t i = 0; i < mesh.indexes.size(); ++i) {
+				temp[i] = mesh.indexes[i];
+			}
+			resource->Unmap(0, nullptr);
+		});
+
+		__index_buffers.push_back({
+			resource,
+			D3D12_INDEX_BUFFER_VIEW { // インデックスバッファビュー設定
+				resource->GetGPUVirtualAddress(),
+				static_cast<UINT>(descResource.Width),
+				DXGI_FORMAT_R32_UINT
+			}
+		});
+	}
+}
+
 void FBXModel::createVertexBuffers() {
 	static constexpr D3D12_HEAP_PROPERTIES heapProperties {
 		D3D12_HEAP_TYPE_UPLOAD, // Type
@@ -406,9 +486,9 @@ void FBXModel::createVertexBuffers() {
 	};
 
 	for (auto && mesh : __meshes) {
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+		ComPtr<ID3D12Resource> resource;
 		
-		descResource.Width = mesh.vertexes.size() * sizeof(Vertex);
+		descResource.Width = mesh.vertexes.size() * sizeof(FBXParser::Vertex);
 
 		Graphics::GetDevice()->CreateCommittedResource(
 			&heapProperties,
@@ -423,7 +503,7 @@ void FBXModel::createVertexBuffers() {
 		Utility::SimplePromise([&] {
 			return resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
 		}).then([&] {
-			const auto temp = reinterpret_cast<Vertex*>(data_begin);
+			const auto temp = reinterpret_cast<FBXParser::Vertex*>(data_begin);
 			for (size_t i = 0; i < mesh.vertexes.size(); ++i)
 			{
 				temp[i] = mesh.vertexes[i];
@@ -436,9 +516,9 @@ void FBXModel::createVertexBuffers() {
 			D3D12_VERTEX_BUFFER_VIEW { // 頂点バッファビュー設定
 				resource->GetGPUVirtualAddress(),
 				static_cast<UINT>(descResource.Width),
-				sizeof Vertex
+				sizeof FBXParser::Vertex
 			}
-			});
+		});
 	}
 }
 
@@ -496,11 +576,12 @@ FBXModel::FBXModel(const char * fileName, const Properties & properties)
 	createRootSignature();
 	createPipelineStateObject();
 	createDescriptorHeaps();
+	createIndexBuffers();
 	createVertexBuffers();
 	createConstantBuffer();
 }
 
-const std::vector<FBXModel::Mesh>& FBXModel::getMeshes() const
+const std::vector<FBXParser::Mesh>& FBXModel::getMeshes() const
 {
 	return __meshes;
 }
@@ -547,7 +628,9 @@ void FBXModel::render() const {
 			// 三角形描画
 			commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			commandList->IASetVertexBuffers(0, 1, &__vertex_buffers[i].view);
-			commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
+			commandList->IASetIndexBuffer(&__index_buffers[i].view);
+		//	commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
+			commandList->DrawIndexedInstanced(__meshes[i].indexes.size(), 1, 0, 0, 0);
 		}
 	});
 }

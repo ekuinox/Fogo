@@ -33,6 +33,7 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\RenderTargetView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Texture.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\FBXParser.h" />
     <ClInclude Include="src\Fogo\Utility.h" />
     <ClInclude Include="src\Fogo\Utility\HelperFunctions.h" />
     <ClInclude Include="src\Fogo\Utility\Input.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\FBXModel.cpp" />
+    <ClCompile Include="src\Fogo\Graphics\DX12\FBXParser.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />
