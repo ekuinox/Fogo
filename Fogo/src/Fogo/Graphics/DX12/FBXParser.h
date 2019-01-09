@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <vector>
+#include <unordered_map>
 #include <memory>
 #include <fbxsdk.h>
 #include "./Texture.h"
@@ -35,14 +36,33 @@ namespace Fogo::Graphics::DX12 {
 			int skinCount;
 		};
 
+	private:
 		static std::vector<int> GetIndexes(FbxMesh * mesh);
 		static std::vector<DirectX::XMFLOAT3> GetPositions(FbxMesh* mesh, const std::vector<int> & indexes);
 		static std::vector<DirectX::XMFLOAT3> GetNormals(FbxMesh* mesh, const std::vector<int> & indexes);
 		static std::vector<DirectX::XMFLOAT2> GetUVs(FbxMesh* mesh, const std::vector<int> & indexes, int uvNo = 0);
 		static Mesh Parse(FbxMesh * mesh);
 		static Material Parse(FbxSurfaceMaterial * mesh);
-		static std::vector<Material> GetMaterials(FbxScene * scene);
+		static std::vector<Mesh> Parse(FbxScene * scene);
+		static std::unordered_map<std::string, Material> GetMaterials(FbxScene * scene);
 		static std::vector<Mesh> GetMeshes(FbxScene * scene);
+		static FbxScene * Triangulate(FbxScene * scene, FbxManager * manager, bool isLegacy = false);
+
+		std::vector<Mesh> __meshes;
+		FbxScene * __scene;
+		FbxManager * __manager;
+		FbxIOSettings * __io_settings;
+
+	public:
+		FBXParser();
+		FBXParser(const FBXParser &) = delete;
+		FBXParser & operator=(const FBXParser &) = delete;
+		FBXParser & import(const char * file);
+		FBXParser & parse();
+		FBXParser & triangulate(bool isLegacy = false);
+		FBXParser & loadTextures(LPCWSTR directory);
+		[[nodiscard]] std::vector<Mesh> getMeshes();
+		~FBXParser();
 	};
 }
 

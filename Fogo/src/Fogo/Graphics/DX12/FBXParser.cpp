@@ -1,4 +1,5 @@
 #include "FBXParser.h"
+#include "../../Utility/HelperFunctions.h"
 
 using namespace Fogo::Graphics::DX12;
 using namespace DirectX;
@@ -45,7 +46,7 @@ std::vector<XMFLOAT3> FBXParser::GetNormals(FbxMesh * mesh, const std::vector<in
 	assert(elementCount == 1);					// １個の法線情報にしか対応しない
 
 	const auto element = mesh->GetElementNormal(0);	// ０番目の法線セットを取得
-	const auto mappingmode = element->GetMappingMode();	// マッピングモード取得
+	const auto mappingMode = element->GetMappingMode();	// マッピングモード取得
 	const auto referenceMode = element->GetReferenceMode();	// リファレンスモード取得
 	const auto & indexArray = element->GetIndexArray();	// 法線情報を格納したｖｅｃｔｏｒ配列のインデックス値配列を取得 
 	const auto & directArray = element->GetDirectArray();	// 法線情報を格納したｖｅｃｔｏｒ配列を取得
@@ -58,7 +59,7 @@ std::vector<XMFLOAT3> FBXParser::GetNormals(FbxMesh * mesh, const std::vector<in
 	normalList.reserve(indexes.size());		// 頂点インデックス数分確保
 
 	// 頂点座標でマッピングされている場合
-	if (mappingmode == FbxGeometryElement::eByControlPoint) {
+	if (mappingMode == FbxGeometryElement::eByControlPoint) {
 		for (const auto & index : indexes) {
 			const auto normal = directArray.GetAt(
 				referenceMode == FbxGeometryElement::eDirect ? index : indexArray.GetAt(index)
@@ -73,7 +74,7 @@ std::vector<XMFLOAT3> FBXParser::GetNormals(FbxMesh * mesh, const std::vector<in
 			}
 		}
 	}
-	else if (mappingmode == FbxGeometryElement::eByPolygonVertex) {
+	else if (mappingMode == FbxGeometryElement::eByPolygonVertex) {
 		// 頂点インデックス(面の構成情報)でマッピングされている場合
 		auto indexByPolygonVertex = 0;
 		const auto polygonCount = mesh->GetPolygonCount();					// ポリゴン数を取得
@@ -182,12 +183,18 @@ FBXParser::Mesh FBXParser::Parse(FbxMesh* mesh) {
 	modelMesh.materialName = node->GetMaterial(0)->GetName();			// マテリアル名をセット
 
 	// インデックスＶＥＣＴＯＲ取得
-	const auto indexes = GetIndexes(mesh);
+	const auto & indexes = GetIndexes(mesh);
 
 	// 頂点データ取得
-	const auto positions = GetPositions(mesh, indexes);		// 頂点座標を取得（面の構成情報に合わせる）
-	const auto normals = GetNormals(mesh, indexes);			// 法線ベクトルを取得（面の構成情報に合わせる）
-	const auto uvs = GetUVs(mesh, indexes);				// UV座標を取得（面の構成情報に合わせる）
+	const auto & positions = GetPositions(mesh, indexes);		// 頂点座標を取得（面の構成情報に合わせる）
+	const auto & normals = GetNormals(mesh, indexes);			// 法線ベクトルを取得（面の構成情報に合わせる）
+	const auto & uvs = [&] {
+		auto & uvs = GetUVs(mesh, indexes);
+		for (auto && uv : uvs) {
+			uv.y = 1.0f - uv.y;
+		}
+		return uvs; 
+	}();						// UV座標を取得（面の構成情報に合わせる）
 
 	// 念のためサイズチェック
 
@@ -294,8 +301,7 @@ FBXParser::Material FBXParser::Parse(FbxSurfaceMaterial* material) {
 			std::string src = entry.GetSource();
 			for (unsigned int j = 0; j < textureCount; ++j) {
 
-				auto tex = fbxProperty.GetSrcObject<FbxFileTexture>(j);
-				std::string texName = tex->GetFileName();
+				std::string texName = fbxProperty.GetSrcObject<FbxFileTexture>(j)->GetFileName();
 				texName = texName.substr(texName.find_last_of('/') + 1);
 
 				if (src == "Maya|DiffuseTexture") {
@@ -308,11 +314,21 @@ FBXParser::Material FBXParser::Parse(FbxSurfaceMaterial* material) {
 	return modelMaterial;
 }
 
-std::vector<FBXParser::Material> FBXParser::GetMaterials(FbxScene * scene) {
-	std::vector<Material> materials {};
+std::vector<FBXParser::Mesh> FBXParser::Parse(FbxScene * scene) {
+	auto & meshes = GetMeshes(scene);
+	const auto & materials = GetMaterials(scene);
+	for (auto && mesh : meshes) {
+		mesh.material = materials.at(mesh.materialName);
+	}
+	return meshes;
+}
+
+std::unordered_map<std::string, FBXParser::Material> FBXParser::GetMaterials(FbxScene * scene) {
+	std::unordered_map<std::string, Material> materials {};
 	const auto count = scene->GetMaterialCount();
 	for (unsigned int i = 0; i < count; ++i) {
-		materials.emplace_back(Parse(scene->GetMaterial(i)));
+		const auto & material = Parse(scene->GetMaterial(i));
+		materials[material.name] = material;
 	}
 	return materials;
 }
@@ -324,4 +340,63 @@ std::vector<FBXParser::Mesh> FBXParser::GetMeshes(FbxScene * scene) {
 		meshes.emplace_back(Parse(scene->GetMember<FbxMesh>(i)));
 	}
 	return meshes;
+}
+
+FbxScene * FBXParser::Triangulate(FbxScene * scene, FbxManager * manager, bool isLegacy) {
+	FbxGeometryConverter converter(manager);
+	converter.Triangulate(scene, true);
+	return scene;
+}
+
+FBXParser::FBXParser() {
+	__manager = FbxManager::Create();
+	__scene = FbxScene::Create(__manager, "");
+	__io_settings = FbxIOSettings::Create(__manager, IOSROOT);
+	__manager->SetIOSettings(__io_settings);
+}
+
+FBXParser & FBXParser::import(const char * file) {
+	const auto importer = FbxImporter::Create(__manager, "");
+
+	Utility::ExecOrFail(importer->Initialize(file, -1, __manager->GetIOSettings()));
+	Utility::ExecOrFail(importer->Import(__scene));
+
+	importer->Destroy();
+
+	return * this;
+}
+
+FBXParser & FBXParser::parse() {
+	__meshes = Parse(__scene);
+
+	return * this;
+}
+
+FBXParser & FBXParser::triangulate(bool isLegacy) {
+	Triangulate(__scene, __manager, isLegacy);
+	return * this;
+}
+
+FBXParser & FBXParser::loadTextures(LPCWSTR directory) {
+	for (auto & mesh : __meshes) {
+		if (!mesh.material.texturePath.empty()) {
+			const auto textureFile = directory + std::wstring(mesh.material.texturePath.begin(), mesh.material.texturePath.end());
+			const auto ext = textureFile.substr(textureFile.find_last_of('.') + 1);
+			mesh.material.texture = std::make_shared<Texture>(
+				textureFile.c_str(),
+				ext == L"tga" || ext == L"TGA" ? Texture::Type::TGA : Texture::Type::ANY
+			);
+		}
+	}
+	return * this;
+}
+
+std::vector<FBXParser::Mesh> FBXParser::getMeshes() {
+	return __meshes;
+}
+
+FBXParser::~FBXParser() {
+	__io_settings->Destroy();
+	__scene->Destroy();
+	__manager->Destroy();
 }
