@@ -4,6 +4,52 @@
 using namespace Fogo::Graphics::DX12;
 using namespace DirectX;
 
+std::pair<FbxDouble3, std::vector<std::string>> GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName) {
+	Fogo::Utility::Log(material->GetName());
+
+	FbxDouble3 result(0, 0, 0);
+	std::vector<std::string> texturePaths{};
+
+	const auto factor_property = material->FindProperty(factorPropertyName);
+	const auto property = material->FindProperty(propertyName);
+
+	if (property.IsValid()) {
+
+		if (factor_property.IsValid()) {
+			result = property.Get<FbxDouble3>();
+			if (const auto factor = factor_property.Get<FbxDouble>() != 1) {
+				result[0] *= factor;
+				result[1] *= factor;
+				result[2] *= factor;
+			}
+		}
+
+		const auto textures_count = property.GetSrcObjectCount<FbxFileTexture>();
+		for (auto i = 0u; i < textures_count; i++) {
+			if (const auto texture_file = property.GetSrcObject<FbxFileTexture>(i)) {
+				std::string uv_name_string = texture_file->UVSet.Get().Buffer();
+				texturePaths.emplace_back(texture_file->GetFileName());
+			}
+		}
+
+		// layered textures
+		const auto layered_textures_count = property.GetSrcObjectCount<FbxLayeredTexture>();
+		for (auto i = 0u; i < layered_textures_count; i++) {
+			const auto layered_texture = property.GetSrcObject<FbxLayeredTexture>(i);
+			const auto texture_file_count = layered_texture->GetSrcObjectCount<FbxFileTexture>();
+			for (auto j = 0u; j < texture_file_count; j++) {
+				if (const auto texture_file = layered_texture->GetSrcObject<FbxFileTexture>(j)) {
+					std::string uv_name_string = texture_file->UVSet.Get().Buffer();
+					texturePaths.emplace_back(texture_file->GetFileName());
+				}
+			}
+		}
+	}
+
+	return { result, texturePaths };
+}
+
+
 std::vector<int> FBXParser::GetIndexes(FbxMesh* mesh) {
 	const auto count = mesh->GetPolygonCount();			// 三角形の数を取得
 	std::vector<int> indexList;							// 頂点インデックス（面の構成情報）
@@ -198,9 +244,11 @@ FBXParser::Mesh FBXParser::Parse(FbxMesh* mesh) {
 
 	// 念のためサイズチェック
 
+	/*
 	assert(indexes.size() == positions.size());
 	assert(indexes.size() == normals.size());
 	assert(indexes.size() == uvs.size());
+	*/
 
 	// テンポラリの頂点情報（ＭｏｄｅｌＶｅｒｔｅｘ）を作る
 	std::vector<Vertex> tempVertexes;
@@ -208,7 +256,11 @@ FBXParser::Mesh FBXParser::Parse(FbxMesh* mesh) {
 
 	// 頂点インデックス数分（面の構成情報順）ループする
 	for (unsigned int i = 0; i < indexes.size(); ++i) {
-		tempVertexes.emplace_back(Vertex { positions[i], normals[i], uvs.empty() ? XMFLOAT2(0.0f, 0.0f) : uvs[i] });
+		tempVertexes.emplace_back(Vertex {
+			positions[i],
+			normals.empty() ? XMFLOAT3(0.0f, 0.0f, 0.0f) : normals[i],
+			uvs.empty() ? XMFLOAT2(0.0f, 0.0f) : uvs[i] }
+		);
 	}
 
 	// 重複頂点を除いてインデックス作成
@@ -309,6 +361,21 @@ FBXParser::Material FBXParser::Parse(FbxSurfaceMaterial* material) {
 				}
 			}
 		}
+	} else {
+		const auto & emissiveProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sEmissive, FbxSurfaceMaterial::sEmissiveFactor);
+		const auto & ambientProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sAmbient, FbxSurfaceMaterial::sAmbientFactor);
+		const auto & diffuseProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sDiffuse, FbxSurfaceMaterial::sDiffuseFactor);
+		const auto & specularProperty = GetMaterialProperty(material, FbxSurfaceMaterial::sSpecular, FbxSurfaceMaterial::sSpecularFactor);
+
+		modelMaterial.emissive = DirectX::XMFLOAT3(emissiveProperty.first.mData[0], emissiveProperty.first.mData[1], emissiveProperty.first.mData[2]);
+		modelMaterial.ambient = DirectX::XMFLOAT3(ambientProperty.first.mData[0], ambientProperty.first.mData[1], ambientProperty.first.mData[2]);
+		modelMaterial.diffuse = DirectX::XMFLOAT3(diffuseProperty.first.mData[0], diffuseProperty.first.mData[1], diffuseProperty.first.mData[2]);
+		modelMaterial.specular = DirectX::XMFLOAT3(specularProperty.first.mData[0], specularProperty.first.mData[1], specularProperty.first.mData[2]);
+
+		for (const auto & texturePath : emissiveProperty.second) modelMaterial.texturePath = texturePath;
+		for (const auto & texturePath : ambientProperty.second) modelMaterial.texturePath = texturePath;
+		for (const auto & texturePath : diffuseProperty.second) modelMaterial.texturePath = texturePath;
+		for (const auto & texturePath : specularProperty.second) modelMaterial.texturePath = texturePath;
 	}
 
 	return modelMaterial;
