@@ -5,8 +5,6 @@ using namespace Fogo::Graphics::DX12;
 using namespace DirectX;
 
 std::pair<FbxDouble3, std::vector<std::string>> GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName) {
-	Fogo::Utility::Log(material->GetName());
-
 	FbxDouble3 result(0, 0, 0);
 	std::vector<std::string> texturePaths{};
 
