@@ -38,16 +38,21 @@ namespace Fogo::Graphics::DX12 {
 			DESCRIPTOR_HEAP_TYPE_SET = DESCRIPTOR_HEAP_TYPE_SAMPLER + 1,
 		};
 
-		Properties __properties;
-		std::vector<FBXParser::Mesh> __meshes;
-		Microsoft::WRL::ComPtr<ID3D12RootSignature> __root_signature;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState> __pipeline_state_object;
 		template <typename View> struct Buffer {
 			Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 			View view;
 		};
-		std::vector<Buffer<D3D12_INDEX_BUFFER_VIEW>> __index_buffers;
-		std::vector<Buffer<D3D12_VERTEX_BUFFER_VIEW>> __vertex_buffers;
+
+		struct Mesh : FBXParser::Mesh {
+			Mesh(const FBXParser::Mesh & mesh) : FBXParser::Mesh(mesh) {}
+			Buffer< D3D12_INDEX_BUFFER_VIEW> indexBuffer;
+			Buffer< D3D12_VERTEX_BUFFER_VIEW> vertexBuffer;
+		};
+
+		Properties __properties;
+		std::vector<Mesh> __meshes;
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> __root_signature;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> __pipeline_state_object;
 		Microsoft::WRL::ComPtr<ID3D12Resource> __constant_buffer_resource;
 		D3D12_CPU_DESCRIPTOR_HANDLE __constant_buffer_handles[CONSTANT_BUFFER_NUMBER];
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
@@ -66,7 +71,7 @@ namespace Fogo::Graphics::DX12 {
 		DirectX::XMMATRIX matrix;
 
 		FBXModel(const char * fileName, const Properties & properties = {});
-		const std::vector<FBXParser::Mesh> & getMeshes() const;
+		const std::vector<Mesh> & getMeshes() const;
 		void render() const;
 	};
 }

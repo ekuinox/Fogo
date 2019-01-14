@@ -8,12 +8,14 @@ using namespace Fogo::Graphics::DX12;
 using Microsoft::WRL::ComPtr;
 
 void FBXModel::loadModel(const char * fileName)  {
-	__meshes = FBXParser()
+	for (const auto & mesh : FBXParser()
 		.import(fileName)
 		.triangulate()
 		.parse()
 		.loadTextures(__properties.textureDirectory)
-		.getMeshes();
+		.getMeshes()) {
+		__meshes.emplace_back(mesh);
+	}
 }
 
 void FBXModel::compileShaders() {
@@ -207,14 +209,14 @@ void FBXModel::createIndexBuffers() {
 			resource->Unmap(0, nullptr);
 		});
 
-		__index_buffers.push_back({
+		mesh.indexBuffer = {
 			resource,
 			D3D12_INDEX_BUFFER_VIEW { // インデックスバッファビュー設定
 				resource->GetGPUVirtualAddress(),
 				static_cast<UINT>(descResource.Width),
 				DXGI_FORMAT_R32_UINT
 			}
-		});
+		};
 	}
 }
 
@@ -266,14 +268,14 @@ void FBXModel::createVertexBuffers() {
 			resource->Unmap(0, nullptr);
 		});
 
-		__vertex_buffers.push_back({
+		mesh.vertexBuffer = {
 			resource,
 			D3D12_VERTEX_BUFFER_VIEW { // 頂点バッファビュー設定
 				resource->GetGPUVirtualAddress(),
 				static_cast<UINT>(descResource.Width),
 				sizeof FBXParser::Vertex
 			}
-		});
+		};
 	}
 }
 
@@ -336,7 +338,7 @@ FBXModel::FBXModel(const char * fileName, const Properties & properties)
 	createConstantBuffer();
 }
 
-const std::vector<FBXParser::Mesh>& FBXModel::getMeshes() const
+const std::vector<FBXModel::Mesh>& FBXModel::getMeshes() const
 {
 	return __meshes;
 }
@@ -367,7 +369,7 @@ void FBXModel::render() const {
 			__constant_buffer_resource->Unmap(0, nullptr);
 		});
 
-		for (auto i = 0; i < __meshes.size(); ++i) {
+		for (const auto& mesh : __meshes) {
 			// コンスタントバッファを設定
 			{
 				std::vector<ID3D12DescriptorHeap*> heaps = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
@@ -375,17 +377,17 @@ void FBXModel::render() const {
 				commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
 			}
 			// テクスチャをセット
-			if (__meshes[i].material.texture) {
-				std::vector<ID3D12DescriptorHeap*> heaps = { __meshes[i].material.texture->getDescriptorHeap().Get() };
+			if (mesh.material.texture) {
+				std::vector<ID3D12DescriptorHeap*> heaps = {mesh.material.texture->getDescriptorHeap().Get() };
 				commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
-				commandList->SetGraphicsRootDescriptorTable(1, __meshes[i].material.texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+				commandList->SetGraphicsRootDescriptorTable(1, mesh.material.texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 			}
 			// 三角形描画
 			commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			commandList->IASetVertexBuffers(0, 1, &__vertex_buffers[i].view);
-			commandList->IASetIndexBuffer(&__index_buffers[i].view);
+			commandList->IASetVertexBuffers(0, 1, &mesh.vertexBuffer.view);
+			commandList->IASetIndexBuffer(&mesh.indexBuffer.view);
 		//	commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
-			commandList->DrawIndexedInstanced(__meshes[i].indexes.size(), 1, 0, 0, 0);
+			commandList->DrawIndexedInstanced(mesh.indexes.size(), 1, 0, 0, 0);
 		}
 	});
 }
