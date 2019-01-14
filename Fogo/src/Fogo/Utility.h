@@ -9,6 +9,7 @@
 #include "./Utility/PubSub.h"
 #include "./Utility/SimplePromise.h"
 #include "./Utility/SingletonWrapper.h"
+#include "./Utility/Store.h"
 #include "./Utility/Subject.h"
 #include "./Utility/Time.h"
 #include "./Utility/TreeStore.h"

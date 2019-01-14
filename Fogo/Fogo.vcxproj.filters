@@ -111,6 +111,9 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\FBXParser.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="src\Fogo\Utility\Store.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Fogo\Utility\Time.cpp">

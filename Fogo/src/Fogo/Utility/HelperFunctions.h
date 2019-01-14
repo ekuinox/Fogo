@@ -13,6 +13,7 @@ namespace Fogo::Utility {
 
 	void Log(const char * message);
 	void Log(const std::string & message);
+	std::string GenerateGUID();
 
 	// Templates
 

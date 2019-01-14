@@ -18,15 +18,16 @@ void MainScene::initialize() {
 		once = false;
 	}
 
-	ComponentStore::Insert(0, -1, std::shared_ptr<FBX>(new FBX()));
-	ComponentStore::Get<std::shared_ptr<FBX>>(0)->modelFile = "./resources/2.fbx";
-	ComponentStore::Get<std::shared_ptr<FBX>>(0)->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
-	ComponentStore::Get<std::shared_ptr<FBX>>(0)->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
-	ComponentStore::Insert(1, -1, std::make_shared<InputDebugger>());
+	store.insert("fbx", std::shared_ptr<FBX>(new FBX()));
+	store.get<std::shared_ptr<FBX>>("fbx")->modelFile = "./resources/2.fbx";
+	store.get<std::shared_ptr<FBX>>("fbx")->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
+	store.get<std::shared_ptr<FBX>>("fbx")->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
-	components.emplace_back(ComponentStore::Get<std::shared_ptr<FBX>>(0));
-	components.emplace_back(ComponentStore::Get<std::shared_ptr<InputDebugger>>(1));
+	store.insert("inputDebugger", std::make_shared<InputDebugger>());
+
+	components.emplace_back(store.get<std::shared_ptr<FBX>>("fbx"));
+	components.emplace_back(store.get<std::shared_ptr<InputDebugger>>("inputDebugger"));
 
 	Scene::initialize();
 }
@@ -37,8 +38,8 @@ void MainScene::update() {
 
 void MainScene::finalize() {
 	components.clear();
-	ComponentStore::Execute<std::shared_ptr<Fogo::Game::ComponentInterface>>([&] (std::shared_ptr<Fogo::Game::ComponentInterface> component) {
-		component.reset();
-	});
+	store.execute<std::shared_ptr<FBX>>([&](std::shared_ptr<FBX> component) { component.reset(); });
+	store.execute<std::shared_ptr<InputDebugger>>([&](std::shared_ptr<InputDebugger> component) { component.reset(); });
+
 	Scene::finalize();
 }
