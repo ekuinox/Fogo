@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FogoTest", "FogoTest\FogoTe
 		{F7A7D040-42A0-47F1-947D-F2FAAAE057D3} = {F7A7D040-42A0-47F1-947D-F2FAAAE057D3}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Playground01", "Playground01\Playground01.vcxproj", "{D560557E-E8D2-45CB-BA4A-694C287CA9C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,14 @@ Global
 		{CB6DD265-A596-404F-AC3C-447C87F1ED06}.Release|x64.Build.0 = Release|x64
 		{CB6DD265-A596-404F-AC3C-447C87F1ED06}.Release|x86.ActiveCfg = Release|Win32
 		{CB6DD265-A596-404F-AC3C-447C87F1ED06}.Release|x86.Build.0 = Release|Win32
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Debug|x64.ActiveCfg = Debug|x64
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Debug|x64.Build.0 = Debug|x64
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Debug|x86.ActiveCfg = Debug|Win32
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Debug|x86.Build.0 = Debug|Win32
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Release|x64.ActiveCfg = Release|x64
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Release|x64.Build.0 = Release|x64
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Release|x86.ActiveCfg = Release|Win32
+		{D560557E-E8D2-45CB-BA4A-694C287CA9C7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
