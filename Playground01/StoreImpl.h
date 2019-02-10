@@ -80,7 +80,7 @@ void Store::Execute(const std::function<void(Element &)> & func, const UUID & pa
 }
 
 template <typename Element>
-Element * Store::Detatch(const UUID & uuid) {
+Element * Store::Detach(const UUID & uuid) {
 	static_assert(IsCorrectElement<Element>());
 
 	const auto element = Container<Element>::shared.at(uuid).element;

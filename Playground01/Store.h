@@ -53,7 +53,7 @@ public:
 
 	// 管理を放棄する
 	template <typename Element>
-	static Element * Detatch(const UUID & uuid);
+	static Element * Detach(const UUID & uuid);
 
 	// コンテナの中身を開放していく
 	template <typename Element, typename ... Elements>
