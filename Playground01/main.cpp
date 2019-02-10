@@ -1,9 +1,7 @@
 #include <iostream>
-#include "./StoreImpl.h"
-#include "./ComponentImpl.h"
-
 #include <variant>
 #include <optional>
+#include "Component.h"
 
 /*
 
@@ -89,7 +87,7 @@ auto main() -> int {
 
 	delete component;
 
-	/*
+	
 	class Data : public Component {
 	public:
 		const char * name = "";
@@ -181,7 +179,7 @@ auto main() -> int {
 
 	std::cout << Store::GetSize() << std::endl;
 
-	*/
+	
 
 	getchar();
 
