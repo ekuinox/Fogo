@@ -7,6 +7,7 @@
 #include "./ContainerBase.h"
 #include "./Renderable.h"
 #include "./Updatable.h"
+#include "./Result.h"
 
 class Component;
 
@@ -68,9 +69,9 @@ public:
 
 	// コンテナのサイズを知る
 	template <typename Element>
-	static const std::size_t GetSize();
+	static std::size_t GetSize();
 
-	static const std::size_t GetSize();
+	static std::size_t GetSize();
 
 };
 
@@ -200,11 +201,11 @@ void Store::Free(const UUID & parentId) {
 }
 
 template <typename Element>
-const std::size_t Store::GetSize() {
+std::size_t Store::GetSize() {
 	return Container<Element>::shared.size();
 }
 
-const std::size_t Store::GetSize() {
+std::size_t Store::GetSize() {
 	return GetSize<Component>();
 }
 
