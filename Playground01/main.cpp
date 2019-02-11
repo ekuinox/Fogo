@@ -1,7 +1,6 @@
 #include <iostream>
-#include <variant>
-#include <optional>
 #include "Component.h"
+#include "Result.h"
 
 /*
 
@@ -9,57 +8,15 @@ C++‚Ì‹@”\‚Æ‚©‘‚¢‚Ä‚İ‚½‚¢‚â‚Â‚ª‚©‚¯‚é‚©‚È‚Ç‚¨‚ê‚ª‚·êŠ@‚»‚Ì‚P
 
 */
 
-template <typename E, typename V>
-struct Result final {
-	std::variant<E, V> r;
-	bool success;
-	std::function<void(E)> onFailure = [](E) {};
-	std::function<void(V)> onSucces = [](V) {};
-
-	Result(const E & e) : r(e), success(false) {}
-	Result(const V & v) : r(v), success(true) {}
-	~Result() {
-		if (success) onSucces(std::get<V>(r));
-		else onFailure(std::get<E>(r));
-	}
-
-	Result & done(const std::function<void(V)> func) {
-		onSucces = func;
-		return * this;
-	}
-
-	Result & fail(const std::function<void(E)> func) {
-		onFailure = func;
-		return * this;
-	}
-
-	bool operator==(const E & e) const {
-		if (success) return false;
-		return e == std::get<E>(r);
-	}
-
-	std::optional<V> get() const {
-		if (success) return std::move(std::get<V>(r));
-		return std::nullopt;
-	}
-
-	V operator*() const {
-		if (success) return std::move(std::get<V>(r));
-	}
-
-	static Result right(const V & v) {
-		return Result(v);
-	}
-	static Result left(const E & e) {
-		return Result(e);
-	}
-};
-
 enum class ErrorType {
 	Error
 };
 
 struct Cm : Component {
+	void foo() {
+		std::cout << "Cm#foo" << std::endl;
+	}
+
 	~Cm() {
 		std::cout << "destruct" << std::endl;
 	}
@@ -70,24 +27,32 @@ Result<ErrorType, Cm *> create(int n) {
 	return new Cm;
 }
 
+Result<ErrorType, int> pow(int n) {
+	if (n < 0) return ErrorType::Error;
+	return n * n;
+}
+
 auto main() -> int {
 
-	create(-1).fail([](ErrorType error) {
-		std::cout << "error!" << std::endl;
-	}).done([](Cm * component) {
-		std::cout << "success" << std::endl;
-		std::cout << component->uuid << std::endl;
-	});
+	if (const auto & n = pow(20)) {
+		std::cout << *n << std::endl;
+	}
 
-	std::cout << "-----" << std::endl;
+	if (const auto & result = create(11)) {
+		std::cout << result->uuid << std::endl;
+		result->foo();
+	}
 
-	const auto component = *create(10).get();
-
-	std::cout << component->uuid << std::endl;
-
-	delete component;
-
+	const auto & result = create(-1);
+	if (result) {
+		std::cout << result->uuid << std::endl;
+		result->foo();
+	} else if (result == ErrorType::Error) {
+		std::cout << "ErrorType::Error" << std::endl;
+	}
 	
+	std::cout << "---" << std::endl;
+
 	class Data : public Component {
 	public:
 		const char * name = "";

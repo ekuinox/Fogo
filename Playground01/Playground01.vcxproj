@@ -154,6 +154,7 @@
     <ClInclude Include="ContainerBase.h" />
     <ClInclude Include="Handler.h" />
     <ClInclude Include="Renderable.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="Store.h" />
     <ClInclude Include="Updatable.h" />
     <ClInclude Include="UUID.h" />
