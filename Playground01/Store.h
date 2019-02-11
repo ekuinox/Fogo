@@ -23,6 +23,11 @@ private:
 	static void Insert(Element * element, const UUID & parentId, const UUID & uuid);
 
 public:
+	enum class Error {
+		NotExist,
+		YourParentIsRoot,
+	};
+
 	static const UUID rootId;
 
 	// 要件を満たした型か確認する
@@ -39,15 +44,15 @@ public:
 
 	// UUIDを用いてComponentを取得する
 	template <typename Element>
-	static Handler<Element> & Get(const UUID & uuid);
+	static Result<Error, Handler<Element>> Get(const UUID & uuid);
 
 	// 指定したキーで管理しているComponentを取得する
 	template <typename Element, typename Key>
-	static Element & Get(const Key & key);
+	static Result<Error, Element*> Get(const Key & key);
 	
 	// 指定したComponentの親を取得する
 	template <typename Element = Component>
-	static Handler<Element> & GetParent(const UUID & uuid);
+	static Result<Error, Handler<Element>> GetParent(const UUID & uuid);
 
 	// コンテナの要素に対して実行する
 	template <typename Element>
@@ -106,7 +111,7 @@ Handler<Element> & Store::Bind(Element * element, const UUID & parentId) {
 
 	if constexpr (Renderable::IsDerived<Element>()) Insert<Renderable>(element, parentId, element->uuid);
 
-	return Get<Element>(element->uuid);
+	return Container<Element>::shared.at(element->uuid);
 }
 
 template <typename Element, typename ... Args>
@@ -115,22 +120,38 @@ Handler<Element> & Store::Create(const UUID & parentId, Args ... args) {
 }
 
 template <typename Element>
-Handler<Element> & Store::Get(const UUID & uuid) {
+Result<Store::Error, Handler<Element>> Store::Get(const UUID & uuid) {
 	static_assert(IsCorrectElement<Element>());
-	return Container<Element>::shared.at(uuid);
+	try {
+		return Container<Element>::shared.at(uuid);
+	} catch (std::out_of_range e) {
+		return Error::NotExist;
+	}
 }
 
 template <typename Element, typename Key>
-Element & Store::Get(const Key & key) {
+Result<Store::Error, Element*> Store::Get(const Key & key) {
 	static_assert(IsCorrectElement<Element>());
-	return *ContainerBase<Key, Element *>::shared.at(key);
+	try {
+		return ContainerBase<Key, Element *>::shared.at(key);
+	}
+	catch (std::out_of_range e) {
+		return Error::NotExist;
+	}
 }
 
 template <typename Element>
-Handler<Element> & Store::GetParent(const UUID & uuid) {
+Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
 	static_assert(IsCorrectElement<Element>());
-	auto parentId = Container<Element>::shared.at(uuid).parentId;
-	return Container<Element>::shared.at(parentId == rootId ? uuid : parentId);
+	try {
+		auto parentId = Container<Element>::shared.at(uuid).parentId;
+		if (parentId == rootId) {
+			return Error::YourParentIsRoot;
+		}
+		return Container<Element>::shared.at(parentId);
+	} catch (std::out_of_range e) {
+		return Error::NotExist;
+	}
 }
 
 template <typename Element>

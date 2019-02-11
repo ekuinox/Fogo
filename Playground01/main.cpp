@@ -73,9 +73,10 @@ auto main() -> int {
 			std::cout << "Foo::update()" << std::endl;
 		}
 		void echoParentName() const {
-			const auto & parent = Store::GetParent<Component>(uuid);
-			if (parent->uuid != uuid) {
-				std::cout << parent.element->uuid << std::endl;
+			if (const auto & parent = Store::GetParent<Component>(uuid)) {
+				if (parent->uuid != uuid) {
+					std::cout << parent->uuid << std::endl;
+				}
 			}
 		}
 	};
@@ -130,13 +131,23 @@ auto main() -> int {
 
 	auto scene = Store::Create<Scene>();
 
-	std::cout << scene.element->uuid << std::endl;
+	std::cout << scene->uuid << std::endl;
 	
 	scene->execute<Foo>([](Foo & foo) {
 		foo.echoParentName();
 	});
 
-	std::cout << Store::Get<Data>(Scene::DataIndex::First).name << std::endl;
+	if (const auto & data = Store::Get<Data>(Scene::DataIndex::First)) {
+		std::cout << data->name << std::endl;
+	}
+
+	const auto & data = Store::Get<Data>(Scene::DataIndex::Second);
+	if (data) {
+		std::cout << data->name << std::endl;
+	} else if (data == Store::Error::NotExist) {
+		std::cout << "NotExistError" << std::endl;
+	}
+
 
 	std::cout << Store::GetSize() << std::endl;
 
