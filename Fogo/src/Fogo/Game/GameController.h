@@ -1,6 +1,7 @@
 #pragma once
 
 #include  "./Scene.h"
+#include "./Store.h"
 #include "../Utility.h"
 #include <vector>
 #include <thread>
