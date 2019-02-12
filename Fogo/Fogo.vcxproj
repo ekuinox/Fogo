@@ -21,9 +21,16 @@
   <ItemGroup>
     <ClInclude Include="src\Fogo.h" />
     <ClInclude Include="src\Fogo\Game.h" />
+    <ClInclude Include="src\Fogo\Game\Component.h" />
+    <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
     <ClInclude Include="src\Fogo\Game\GameController.h" />
     <ClInclude Include="src\Fogo\Game\ComponentInterface.h" />
+    <ClInclude Include="src\Fogo\Game\Handler.h" />
+    <ClInclude Include="src\Fogo\Game\Renderable.h" />
     <ClInclude Include="src\Fogo\Game\Scene.h" />
+    <ClInclude Include="src\Fogo\Game\Store.h" />
+    <ClInclude Include="src\Fogo\Game\Updatable.h" />
+    <ClInclude Include="src\Fogo\Game\UUID.h" />
     <ClInclude Include="src\Fogo\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
@@ -42,6 +49,7 @@
     <ClInclude Include="src\Fogo\Utility\MappedStore.h" />
     <ClInclude Include="src\Fogo\Utility\Mouse.h" />
     <ClInclude Include="src\Fogo\Utility\PubSub.h" />
+    <ClInclude Include="src\Fogo\Utility\Result.h" />
     <ClInclude Include="src\Fogo\Utility\SimplePromise.h" />
     <ClInclude Include="src\Fogo\Utility\SingletonWrapper.h" />
     <ClInclude Include="src\Fogo\Utility\Store.h" />
