@@ -1,10 +1,9 @@
 #pragma once
 
 #include "./FBX2016Loader.h"
-#include "Fogo/Game/ComponentInterface.h"
 #include "Fogo.h"
 
-class FBXSample : public Fogo::Game::ComponentInterface {
+class FBXSample : public Fogo::Game::LifeCycled, public Fogo::Game::Renderable, public Fogo::Game::Updatable {
 public:
 	static constexpr UINT CONSTANT_BUFFER_NUMBER = 2;
 	static constexpr D3D12_INPUT_ELEMENT_DESC INPUT_LAYOUT[3] = {

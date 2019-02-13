@@ -9,14 +9,12 @@ namespace Fogo::Game {
 	class Component {
 	public:
 		const UUID uuid;
-		Component() : uuid() {}
+		Component();
 		virtual ~Component();
 		Component(const Component &) = delete;
 		Component & operator=(const Component &) = delete;
 
-		bool operator==(const Component & rhs) const {
-			return rhs.uuid == uuid;
-		}
+		bool operator==(const Component & rhs) const;
 
 		template <typename Element> void execute(const std::function<void(Element &)> func) const;
 
@@ -45,9 +43,4 @@ namespace Fogo::Game {
 	void Component::free() const {
 		Store::Free<Element>(uuid);
 	}
-
-	Component::~Component() {
-		Store::Free(uuid);
-	}
-
 }

@@ -7,11 +7,11 @@
 
 class MainScene : public Fogo::Game::Scene {
 private:
-	struct InputDebugger : ComponentInterface {
+	struct InputDebugger : Component, LifeCycled {
 		// nothing
 	};
 
-	struct FBX : ComponentInterface {
+	struct FBX : Component, LifeCycled, Updatable, Renderable {
 		Microsoft::WRL::ComPtr<ID3DBlob> vertexShader, pixelShader;
 		const char * modelFile;
 		std::unique_ptr<Fogo::Graphics::DX12::FBXModel> model;
@@ -26,7 +26,7 @@ private:
 				);
 			}
 			model->matrix = DirectX::XMMatrixIdentity();
-			ComponentInterface::initialize();
+			LifeCycled::initialize();
 		}
 		void update() override {
 			using namespace DirectX;
@@ -54,7 +54,6 @@ private:
 		}
 		void render() const override {
 			model->render();
-			ComponentInterface::render();
 		}
 	};
 

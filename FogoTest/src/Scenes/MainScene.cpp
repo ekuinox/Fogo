@@ -8,6 +8,12 @@ using Fogo::Utility::KeyCode;
 using Fogo::Utility::PubSub;
 using Fogo::Game::GameController;
 using Microsoft::WRL::ComPtr;
+using Fogo::Game::Store;
+
+enum class Key {
+	FBX1,
+	InputDebugger1
+};
 
 void MainScene::initialize() {
 	static auto once = true;
@@ -18,16 +24,13 @@ void MainScene::initialize() {
 		once = false;
 	}
 
+	auto & fbx = create<FBX>().makeIndex(Key::FBX1);
 
-	store.insert("fbx", std::shared_ptr<FBX>(new FBX()));
-	store.get<std::shared_ptr<FBX>>("fbx")->modelFile = "./resources/2.fbx";
-	store.get<std::shared_ptr<FBX>>("fbx")->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
-	store.get<std::shared_ptr<FBX>>("fbx")->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
+	fbx->modelFile = "./resources/2.fbx";
+	fbx->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
+	fbx->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
-	store.insert("inputDebugger", std::make_shared<InputDebugger>());
-
-	components.emplace_back(store.get<std::shared_ptr<FBX>>("fbx"));
-	components.emplace_back(store.get<std::shared_ptr<InputDebugger>>("inputDebugger"));
+	auto & inputDebugger = create<InputDebugger>().makeIndex(Key::InputDebugger1);
 
 	Scene::initialize();
 }
@@ -37,9 +40,5 @@ void MainScene::update() {
 }
 
 void MainScene::finalize() {
-	components.clear();
-	store.execute<std::shared_ptr<FBX>>([&](std::shared_ptr<FBX> component) { component.reset(); });
-	store.execute<std::shared_ptr<InputDebugger>>([&](std::shared_ptr<InputDebugger> component) { component.reset(); });
-
 	Scene::finalize();
 }

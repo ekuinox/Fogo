@@ -4,10 +4,8 @@
 #include <wrl/client.h>
 #include <DirectXMath.h>
 #include <Fogo.h>
-#include "Fogo/Game/ComponentInterface.h"
 
-class Square : public Fogo::Game::ComponentInterface
-{
+class Square : public Fogo::Game::Component, Fogo::Game::LifeCycled, public Fogo::Game::Updatable, public Fogo::Game::Renderable {
 private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;

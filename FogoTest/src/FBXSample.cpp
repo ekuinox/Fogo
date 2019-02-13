@@ -262,7 +262,7 @@ void FBXSample::initialize() {
 	createVertexBuffer();
 	createConstantBuffer();
 	initializeGameData();
-	ComponentInterface::initialize();
+	LifeCycled::initialize();
 }
 
 void FBXSample::update() {

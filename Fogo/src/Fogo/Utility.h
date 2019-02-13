@@ -11,6 +11,7 @@
 #include "./Utility/SingletonWrapper.h"
 #include "./Utility/Store.h"
 #include "./Utility/Subject.h"
+#include "./Utility/TaskScheduler.h"
 #include "./Utility/Time.h"
 #include "./Utility/TreeStore.h"
 #include "./Utility/TypeTraitsHelper.h"

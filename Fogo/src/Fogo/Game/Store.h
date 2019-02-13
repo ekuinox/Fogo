@@ -7,6 +7,7 @@
 #include "./ContainerBase.h"
 #include "./Renderable.h"
 #include "./Updatable.h"
+#include "./LifeCycled.h"
 #include "../Utility/Result.h"
 
 namespace Fogo::Game {
@@ -98,6 +99,7 @@ namespace Fogo::Game {
 			std::is_base_of<Component, Element>()
 			|| std::is_same<Element, Updatable>()
 			|| std::is_same<Element, Renderable>()
+			|| std::is_same<Element, LifeCycled>()
 			;
 	}
 
@@ -112,6 +114,8 @@ namespace Fogo::Game {
 		if constexpr (Updatable::IsDerived<Element>()) Insert<Updatable>(element, parentId, element->uuid);
 
 		if constexpr (Renderable::IsDerived<Element>()) Insert<Renderable>(element, parentId, element->uuid);
+
+		if constexpr (LifeCycled::IsDerived<Element>()) Insert<LifeCycled>(element, parentId, element->uuid);
 
 		return Container<Element>::shared.at(element->uuid);
 	}
@@ -192,6 +196,10 @@ namespace Fogo::Game {
 			Container<Renderable>::shared.erase(uuid);
 		}
 
+		if constexpr (std::is_base_of<LifeCycled, Element>()) {
+			Container<LifeCycled>::shared.erase(uuid);
+		}
+
 		return element;
 	}
 
@@ -208,7 +216,11 @@ namespace Fogo::Game {
 		}
 
 		for (const auto & uuid : uuids) {
-			if constexpr (!(std::is_same<Element, Updatable>() || std::is_same<Element, Renderable>())) {
+			if constexpr (!(
+				std::is_same<Element, Updatable>()
+				|| std::is_same<Element, Renderable>()
+				|| std::is_same<Element, LifeCycled>()
+				)) {
 				delete Container<Element>::shared[uuid].element;
 				Container<Element>::shared[uuid].element = nullptr;
 			}
@@ -221,18 +233,8 @@ namespace Fogo::Game {
 		}
 	}
 
-	void Store::Free(const UUID & parentId) {
-		Free<Updatable, Renderable, Component>(parentId);
-	}
-
 	template <typename Element>
 	std::size_t Store::GetSize() {
 		return Container<Element>::shared.size();
 	}
-
-	std::size_t Store::GetSize() {
-		return GetSize<Component>();
-	}
-
-	const UUID Store::rootId = UUID();
 }
