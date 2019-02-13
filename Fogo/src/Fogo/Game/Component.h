@@ -22,12 +22,18 @@ namespace Fogo::Game {
 
 	protected:
 		template <typename Element, typename ... Args> Handler<Element> & create(Args ... args) const;
+		template <typename Element> Handler<Element> & bind(Element * element) const;
 		template <typename Element> void free() const;
 	};
 
 	template<typename Element, typename ... Args>
 	Handler<Element> & Component::create(Args ... args) const {
 		return Store::Create<Element>(uuid, args ...);
+	}
+
+	template<typename Element>
+	Handler<Element>& Component::bind(Element * element) const {
+		return Store::Bind<Element>(element);
 	}
 
 	template<typename Element>

@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TaskScheduler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="Store.h" />
+    <ClInclude Include="TaskScheduler.h" />
     <ClInclude Include="Updatable.h" />
     <ClInclude Include="UUID.h" />
   </ItemGroup>
