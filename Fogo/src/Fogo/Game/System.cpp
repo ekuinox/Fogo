@@ -65,7 +65,7 @@ void System::onDestroy() {
 	__is_thread_running = false;
 	if (__thread.joinable()) __thread.join();
 	for (const auto & key : keys) {
-		if (const auto scene = Store::Get<Scene>(Store::Get<Scene>(key)->uuid)) {
+		if (const auto & scene = Store::Get<Scene>(Store::Get<Scene>(key)->uuid)) {
 			scene.get()->destroyIndex(key);
 		}
 	}

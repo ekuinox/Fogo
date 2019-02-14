@@ -6,6 +6,11 @@
 
 namespace Fogo {
 	struct Properties {
+		/*
+
+		Systemにわたすパラメタをメソッドチェーンで指定できるようにするのが目的
+
+		*/
 		std::unordered_map<const char *, Game::Scene*> scenes;
 		Utility::Window::Properties window;
 		const char * first_key = "";
@@ -18,6 +23,8 @@ namespace Fogo {
 		Properties & setClassName(const LPCWSTR & newClassName) { window.setClassName(newClassName); return *this; }
 		Properties & makeFullScreen() { window.makeFullScreen(); return *this; }
 	};
+	
+	// Propertiesを受け取り、WindowとSystemを初期化する（開始する）
 	void Initialize(const Properties & properties);
 	void Finalize();
 }

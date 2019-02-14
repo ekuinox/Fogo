@@ -9,6 +9,12 @@
 
 namespace Fogo::Game {
 	class System : public Component {
+	/*
+
+	À¿‚ÌRoot Component
+	–ğ–Ú: Scene‚ÌŠÇ—
+
+	*/
 	public:
 		using Key = const char *;
 		enum class Event {
