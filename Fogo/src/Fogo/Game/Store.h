@@ -13,6 +13,7 @@
 namespace Fogo::Game {
 
 	class Component;
+	class Scene;
 
 	class Store final {
 	private:
@@ -117,6 +118,8 @@ namespace Fogo::Game {
 
 		if constexpr (LifeCycled::IsDerived<Element>()) Insert<LifeCycled>(element, parentId, element->uuid);
 
+		if constexpr (std::is_base_of<Element, Scene>()) Insert<Element>(element, parentId, element->uuid);
+
 		return Container<Element>::shared.at(element->uuid);
 	}
 
@@ -198,6 +201,10 @@ namespace Fogo::Game {
 
 		if constexpr (std::is_base_of<LifeCycled, Element>()) {
 			Container<LifeCycled>::shared.erase(uuid);
+		}
+
+		if constexpr (std::is_base_of<Element, Scene>()) {
+			Container<Scene>::shared.erase(uuid);
 		}
 
 		return element;

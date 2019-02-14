@@ -1,10 +1,11 @@
 #include "./Store.h"
+#include "./Scene.h"
 
 using Fogo::Game::Store;
 using Fogo::Game::UUID;
 
 void Store::Free(const UUID & parentId) {
-	Free<Updatable, Renderable, LifeCycled, Component>(parentId);
+	Free<Updatable, Renderable, LifeCycled, Scene, Component>(parentId);
 }
 
 std::size_t Store::GetSize() {

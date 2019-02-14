@@ -17,7 +17,7 @@ namespace Fogo::Game {
 		};
 
 	private:
-		std::unordered_map<Key, Scene*> __scenes;
+		std::vector<Key> keys;
 		Key __current_key;
 		Key __next_key;
 
