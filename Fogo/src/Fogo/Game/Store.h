@@ -16,6 +16,19 @@ namespace Fogo::Game {
 	class Scene;
 
 	class Store final {
+	
+	/*
+	
+	Componentと継承関係にあるクラスElementを管理する．
+	また，Renderable, Updatable, LifeCycledを継承している場合に個別のコンテナを確保する．
+	呼び出し時には，Elementの型やRenderableなどのInterfaceの役割を担うクラスをテンプレート引数にて指定し，uuidを持って取得する．
+	取得時にはResultを返す．
+	UUIDだと認識しずらいと思うので，Handler経由で要素に対して任意のキー型を用いでインデックスをつけることも可能．
+	基本的にはComponentのメンバよりStoreにアクセスすることになる．
+
+	*/
+
+
 	private:
 		template <typename Element>
 		using Container = ContainerBase<UUID, Handler<Element>, UUID::Hash>;
@@ -28,8 +41,8 @@ namespace Fogo::Game {
 
 	public:
 		enum class Error {
-			NotExist,
-			YourParentIsRoot,
+			NotExist, // Elementが取得できなかったときに投げる
+			YourParentIsRoot, // rootがparentを検索したときに投げる
 		};
 
 		static const UUID rootId;

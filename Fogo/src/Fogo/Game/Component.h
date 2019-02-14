@@ -7,6 +7,12 @@
 namespace Fogo::Game {
 
 	class Component {
+	/*
+
+	Componentすべての基底クラス
+	UUIDとStoreのラッパ機能のみ
+
+	*/
 	public:
 		const UUID uuid;
 		Component();
