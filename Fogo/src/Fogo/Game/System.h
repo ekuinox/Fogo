@@ -2,12 +2,13 @@
 
 #include "./Scene.h"
 #include "./Store.h"
+#include "./Component.h"
 #include "../Utility.h"
 #include <vector>
 #include <thread>
 
 namespace Fogo::Game {
-	class System {
+	class System : public Component {
 	public:
 		using Key = const char *;
 		enum class Event {
@@ -16,7 +17,7 @@ namespace Fogo::Game {
 		};
 
 	private:
-		std::unordered_map<Key, std::shared_ptr<Scene>> __scenes;
+		std::unordered_map<Key, Scene*> __scenes;
 		Key __current_key;
 		Key __next_key;
 
@@ -35,17 +36,18 @@ namespace Fogo::Game {
 		void onNext();
 		void onEnd();
 		void onDestroy();
-		System(Key firstKey, std::unordered_map<Key, std::shared_ptr<Scene>> scenes);
+		System(Key firstKey, std::unordered_map<Key, Scene*> scenes);
 		~System();
 
 		static System * __instance;
 
 	public:
-		static void Create(Key firstKey, const std::unordered_map<Key, std::shared_ptr<Scene>> & scenes);
+		static void Create(Key firstKey, const std::unordered_map<Key, Scene*> & scenes);
 		static void Destroy();
 		static void SetNext(Key key);
 		static void LoadNext();
 		static void LoadNextSync();
 		static bool IsNextSceneInitialized();
+
 	};
 }

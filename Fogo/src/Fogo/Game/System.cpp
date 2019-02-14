@@ -54,7 +54,7 @@ void System::onDestroy() {
 	Utility::Input::Finalize();
 }
 
-System::System(Key firstKey, std::unordered_map<Key, std::shared_ptr<Scene>> scenes)
+System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
 	: __current_key(firstKey), __next_key(firstKey), __is_thread_running(true), __scenes(std::move(scenes)) {
 	Utility::PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
 	Utility::PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
@@ -73,7 +73,7 @@ System::~System() {
 	onDestroy();
 }
 
-void System::Create(Key firstKey, const std::unordered_map<Key, std::shared_ptr<Scene>> & scenes) {
+void System::Create(Key firstKey, const std::unordered_map<Key, Scene*> & scenes) {
 	if (!__instance) __instance = new System(firstKey, scenes);
 }
 

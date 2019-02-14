@@ -12,7 +12,7 @@ auto main(int argc, char ** argv) -> int {
 	Initialize(
 		Fogo::Properties()
 		.setScenes({
-			{ "MainScene", std::make_shared<MainScene>() },
+			{ "MainScene", new MainScene },
 		})
 		.setFirstSceneKey("MainScene")
 		.setWidth(800)
