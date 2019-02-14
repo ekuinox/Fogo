@@ -116,7 +116,7 @@ void System::LoadNext() {
 	if (__instance->__finalizer.isFinaliing) return;
 
 	__instance->__load_next_scene = std::thread([&] {
-		Store::Get<Scene>(__instance->__next_key)->finalize();
+		Store::Get<Scene>(__instance->__next_key)->initialize();
 	});
 }
 
