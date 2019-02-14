@@ -25,6 +25,8 @@ namespace Fogo::Utility {
 
 	private:
 		std::map<Priority, std::vector<Function>> tasks;
+		std::map<Priority, std::vector<Function>> runningTasks;
+		
 		std::thread taskThread;
 		ThreadState state;
 

@@ -25,14 +25,23 @@ void TaskScheduler::execTasks() {
 	if (state == ThreadState::Finished && taskThread.joinable()) {
 		taskThread.join();
 	}
+
+	for (const auto & [priority, tasks] : tasks) {
+		for (const auto & task : tasks) {
+			runningTasks[priority].emplace_back(task);
+		}
+	}
+
+	tasks.clear();
+
 	taskThread = std::thread([&] {
 		state = ThreadState::Running;
-		for (const auto &[priority, tasks] : tasks) {
+		for (const auto &[priority, tasks] : runningTasks) {
 			for (const auto & task : tasks) {
 				task();
 			}
 		}
-		tasks.clear();
+		runningTasks.clear();
 		state = ThreadState::Finished;
 	});
 }

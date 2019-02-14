@@ -37,15 +37,11 @@ struct FBX : Component, LifeCycled, Updatable, Renderable {
 	const char * modelFile;
 	std::unique_ptr<Fogo::Graphics::DX12::FBXModel> model;
 	void initialize() override {
-		static auto once = true;
-		if (once) {
-			once = false;
-			model = std::make_unique<Fogo::Graphics::DX12::FBXModel>(
-				modelFile,
-				Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
-				.setPixelShader(pixelShader).setVertexShader(vertexShader)
-				);
-		}
+		model = std::make_unique<Fogo::Graphics::DX12::FBXModel>(
+			modelFile,
+			Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
+			.setPixelShader(pixelShader).setVertexShader(vertexShader)
+		);
 		model->matrix = DirectX::XMMatrixIdentity();
 		LifeCycled::initialize();
 	}
