@@ -21,7 +21,7 @@ auto main(int argc, char ** argv) -> int {
 				System::LoadNext();
 			}
 			if (Input::GetTrigger(KeyCode::ESCAPE)) {
-				System::Destroy();
+				PubSub<System::Event, void>::Publish(System::Event::End);
 			}
 			if (System::IsNextSceneInitialized()) {
 				PubSub<System::Event, void>::Publish(System::Event::Next);
@@ -46,7 +46,7 @@ auto main(int argc, char ** argv) -> int {
 				System::LoadNext();
 			}
 			if (Input::GetTrigger(KeyCode::ESCAPE)) {
-				System::Destroy();
+				PubSub<System::Event, void>::Publish(System::Event::End);
 			}
 			if (System::IsNextSceneInitialized()) {
 				PubSub<System::Event, void>::Publish(System::Event::Next);

@@ -3,6 +3,11 @@
 
 using Fogo::Game::System;
 using Fogo::Game::Scene;
+using Fogo::Utility::TaskScheduler;
+using Fogo::Utility::Time;
+using Fogo::Utility::Input;
+using Fogo::Utility::PubSub;
+using Fogo::Utility::Window;
 
 System * System::__instance = nullptr;
 
@@ -10,8 +15,8 @@ void System::exec() {
 	const auto & currentScene = Store::Get<Scene>(__current_key);
 	if (!currentScene) return;
 
-	Utility::Time::Start();
-	Utility::Input::Update();
+	Time::Start();
+	Input::Update();
 	
 	currentScene->update();
 	currentScene->render();
@@ -24,7 +29,7 @@ void System::exec() {
 			__finalizer = { __current_key, true };
 			// キーの切り替え
 			__current_key = __next_key;
-			Utility::Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
+			Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
 				const auto & finalizeScene = Store::Get<Scene>(__finalizer.scene);
 				finalizeScene->stop();
 				finalizeScene->finalize();
@@ -33,13 +38,14 @@ void System::exec() {
 		}
 	}
 
-	Utility::Time::Stop();
-	Utility::Time::CheckTimers();
+	Time::Stop();
+	Time::CheckTimers();
+	TaskScheduler::ExecTasks();
 }
 
 void System::onNext() {
 	if (__current_key == __next_key) { // 次のシーンキーが切り替えられていない
-		Utility::PubSub<Event, void>::Publish(Event::End);
+		PubSub<Event, void>::Publish(Event::End);
 		return;
 	}
 
@@ -56,8 +62,8 @@ void System::onNext() {
 
 void System::onEnd() {
 	// Endをサブスクライブしているのが自分自身だけなら
-	if (Utility::PubSub<Event, void>::GetSubscriberCount(Event::End) == 1) {
-		Utility::Window::Stop();
+	if (PubSub<Event, void>::GetSubscriberCount(Event::End) == 1) {
+		Window::Stop();
 	}
 }
 
@@ -69,13 +75,14 @@ void System::onDestroy() {
 			scene.get()->destroyIndex(key);
 		}
 	}
-	Utility::Input::Finalize();
+	Input::Finalize();
+	TaskScheduler::Destroy();
 }
 
 System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
 	: __current_key(firstKey), __next_key(firstKey), __is_thread_running(true) {
-	Utility::PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
-	Utility::PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
+	PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
+	PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
 	
 	keys.reserve(scenes.size());
 	for (auto & [key, scene] : scenes) {
@@ -88,7 +95,8 @@ System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
 	currentScene->initialize();
 	currentScene->start();
 
-	Utility::Input::Initialize();
+	Input::Initialize();
+	TaskScheduler::Create();
 	__thread = std::thread([&] {
 		while (__is_thread_running) { exec(); }
 	});
@@ -115,7 +123,7 @@ void System::LoadNext() {
 	// 前のシーンの終了中にやるなバカ
 	if (__instance->__finalizer.isFinaliing) return;
 
-	__instance->__load_next_scene = std::thread([&] {
+	TaskScheduler::AddTask(TaskScheduler::Priority::Highest, [&] {
 		Store::Get<Scene>(__instance->__next_key)->initialize();
 	});
 }
