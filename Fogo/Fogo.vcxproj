@@ -23,7 +23,7 @@
     <ClInclude Include="src\Fogo\Game.h" />
     <ClInclude Include="src\Fogo\Game\Component.h" />
     <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
-    <ClInclude Include="src\Fogo\Game\GameController.h" />
+    <ClInclude Include="src\Fogo\Game\System.h" />
     <ClInclude Include="src\Fogo\Game\LifeCycled.h" />
     <ClInclude Include="src\Fogo\Game\Handler.h" />
     <ClInclude Include="src\Fogo\Game\Renderable.h" />
@@ -67,6 +67,7 @@
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
     <ClCompile Include="src\Fogo\Game\Scene.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
+    <ClCompile Include="src\Fogo\Game\System.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\FBXModel.cpp" />

@@ -6,7 +6,7 @@ using Fogo::Graphics::DX12::Texture;
 using Fogo::Utility::Input;
 using Fogo::Utility::KeyCode;
 using Fogo::Utility::PubSub;
-using Fogo::Game::GameController;
+using Fogo::Game::System;
 using Microsoft::WRL::ComPtr;
 using Fogo::Game::Store;
 using Fogo::Game::Component;
