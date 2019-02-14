@@ -7,6 +7,27 @@ namespace Fogo::Utility {
 
 	template <typename E, typename V>
 	class Result final {
+	/*
+	
+	¬Œ÷‚ÌŒ‹‰Ê‚Æ¸”s‚ÌƒGƒ‰[‚ğ•Ô‚·D
+	Result<ErrorType, const char *> foo(int n) {
+		if (expression) {
+			return "OK Value";
+		}
+		return ErrorType::NotOK;
+	}
+	void main() {
+		const auto & result = foo(10);
+		if (result) {
+			ok(*result);
+		}
+		else if (result == ErrorType::NotOK) {
+			fail();
+		}
+	}
+	‚İ‚½‚¢‚ÈŠ´‚¶‚É‚©‚¯‚é
+
+	*/
 	private:
 		std::variant<E, V> variant;
 		bool success;
@@ -39,5 +60,4 @@ namespace Fogo::Utility {
 			return std::get<V>(variant);
 		}
 	};
-
 }
