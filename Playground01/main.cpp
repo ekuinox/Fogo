@@ -1,5 +1,7 @@
 #include <iostream>
 #include "./TaskScheduler.h"
+#include "../Fogo/src/Fogo/Game/ContainerBase.h"
+#include "UUID.h"
 
 /*
 
@@ -7,40 +9,56 @@ C++‚Ì‹@”\‚Æ‚©‘‚¢‚Ä‚Ý‚½‚¢‚â‚Â‚ª‚©‚¯‚é‚©‚È‚Ç‚¨‚ê‚ªŽŽ‚·êŠ@‚»‚Ì‚P
 
 */
 
-auto main() -> int {
-	
-	TaskScheduler::Create();
+template <typename Key>
+struct KeyPair {
+	Key key;
+	UUID uuid;
 
-	TaskScheduler::AddTask(TaskScheduler::Priority::Higher, [] {
-		std::cout << "[Higher] Hello" << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout << "[Higher] Goodbye" << std::endl;
-	});
-
-	TaskScheduler::AddTask(TaskScheduler::Priority::Highest, [] {
-		std::cout << "[Highest] Hello #1" << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout << "[Highest] Goodbye #1" << std::endl;
-	});
-
-	TaskScheduler::AddTask(TaskScheduler::Priority::Highest, [] {
-		std::cout << "[Highest] Hello #2" << std::endl;
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout << "[Highest] Goodbye #2" << std::endl;
-	});
-
-	TaskScheduler::ExecTasks();
-
-	std::cout << "‚É‚ã‚¤‚è‚å‚­‚Ü‚¿" << std::endl;
-	getchar();
-
-	if (!TaskScheduler::IsThreadRunning()) {
-		std::cout << "‚É‚á‚ñ" << std::endl;
-		TaskScheduler::ExecTasks();
+	bool operator==(const KeyPair & rhs) const {
+		return rhs.key == key && rhs.uuid == uuid;
 	}
 
-	std::cout << "‚É‚ã‚¤‚è‚å‚­‚Ü‚¿" << std::endl;
-	getchar();
+	bool operator!=(const KeyPair & rhs) const {
+		return !(rhs == *this);
+	}
+};
+
+template <typename Key>
+struct Hash {
+	std::size_t operator()(const KeyPair<Key> & key) const {
+		return std::hash<std::string>{}(std::string(reinterpret_cast<const char*>(&key), sizeof KeyPair<Key>));
+	}
+};
+
+using Fogo::Game::ContainerBase;
+
+template <class Key, class Val>
+using Container = ContainerBase<KeyPair<Key>, Val, Hash<Key>>;
+
+auto main() -> int {
+	
+	enum class Key {
+		Foo,
+		Bar,
+		Baz
+	};
+
+	const UUID uuid;
+
+	const KeyPair<Key> key1 { Key::Foo, uuid };
+	const KeyPair<Key> key2 { Key::Bar, uuid };
+	const KeyPair<Key> key3 { Key::Foo, uuid };
+
+	using map = Container<Key, int>;
+
+	map::shared[key1] = 100;
+	map::shared[key2] = 400;
+	map::shared[key3] = 500;
+
+	std::cout << map::shared[key1] << std::endl;
+	std::cout << map::shared[key2] << std::endl;
+	std::cout << map::shared[key3] << std::endl;
+
 
 	return 0;
 }
