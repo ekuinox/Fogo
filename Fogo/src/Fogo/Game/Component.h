@@ -26,6 +26,7 @@ namespace Fogo::Game {
 
 	protected:
 		template <typename Element, typename ... Args> Handler<Element> & create(Args ... args) const;
+		template <typename Element, typename Key> Utility::Result<Store::Error, Element*> get(const Key & key) const;
 		template <typename Element> Handler<Element> & bind(Element * element) const;
 		template <typename Element> void free() const;
 	};
@@ -35,9 +36,14 @@ namespace Fogo::Game {
 		return Store::Create<Element>(uuid, args ...);
 	}
 
+	template <typename Element, typename Key>
+	Utility::Result<Store::Error, Element*> Component::get(const Key & key) const {
+		return Store::Get<Element>(key, uuid);
+	}
+
 	template<typename Element>
 	Handler<Element>& Component::bind(Element * element) const {
-		return Store::Bind<Element>(element);
+		return Store::Bind<Element>(element, uuid);
 	}
 
 	template<typename Element>

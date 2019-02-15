@@ -141,6 +141,12 @@
     <ClInclude Include="src\Fogo\Game\System.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="src\Fogo\Game\ContainerIndexKeyPair.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Game\Hash.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Fogo\Utility\Time.cpp">

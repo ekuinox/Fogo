@@ -23,6 +23,8 @@
     <ClInclude Include="src\Fogo\Game.h" />
     <ClInclude Include="src\Fogo\Game\Component.h" />
     <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
+    <ClInclude Include="src\Fogo\Game\ContainerIndexKeyPair.h" />
+    <ClInclude Include="src\Fogo\Game\Hash.h" />
     <ClInclude Include="src\Fogo\Game\System.h" />
     <ClInclude Include="src\Fogo\Game\LifeCycled.h" />
     <ClInclude Include="src\Fogo\Game\Handler.h" />
@@ -141,22 +143,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\debug;$(LibraryPath);..\Debug</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath);;..\x64\Debug;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x86\release;$(LibraryPath);..\Release</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(FBXSDK)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(FBXSDK)\lib\vs2015\x64\release;$(LibraryPath);..\x64\Release;</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

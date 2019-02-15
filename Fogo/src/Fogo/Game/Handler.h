@@ -2,12 +2,17 @@
 
 #include "./UUID.h"
 #include "./ContainerBase.h"
+#include "./ContainerIndexKeyPair.h"
+#include "./Hash.h"
 
 namespace Fogo::Game {
 
 	template <typename Element>
 	class Handler {
 	public:
+		template <typename Key>
+		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>;
+
 		Element * element;
 		UUID parentId;
 
@@ -25,7 +30,7 @@ namespace Fogo::Game {
 
 		template <typename Key> Handler & makeIndex(const Key & key) {
 			try {
-				ContainerBase<Key, Element *>::shared.insert(std::make_pair(key, element));
+				IndexedStore<Key>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
 			}
 			catch (std::out_of_range e) {
 
@@ -34,7 +39,7 @@ namespace Fogo::Game {
 		}
 
 		template <typename Key> Handler & destroyIndex(const Key & key) {
-			ContainerBase<Key, Element *>::shared.erase(key);
+			IndexedStore<Key>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
 			return *this;
 		}
 

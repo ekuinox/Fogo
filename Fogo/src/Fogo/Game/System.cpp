@@ -12,7 +12,7 @@ using Fogo::Utility::Window;
 System * System::__instance = nullptr;
 
 void System::exec() {
-	const auto & currentScene = Store::Get<Scene>(__current_key);
+	const auto & currentScene = get<Scene>(__current_key);
 	if (!currentScene) return;
 
 	Time::Start();
@@ -22,7 +22,7 @@ void System::exec() {
 	currentScene->render();
 
 	if (__go_next) {
-		const auto & nextScene = Store::Get<Scene>(__next_key);
+		const auto & nextScene = get<Scene>(__next_key);
 		if (nextScene) {
 			__go_next = false;
 			nextScene->start();
@@ -30,7 +30,7 @@ void System::exec() {
 			// キーの切り替え
 			__current_key = __next_key;
 			Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
-				const auto & finalizeScene = Store::Get<Scene>(__finalizer.scene);
+				const auto & finalizeScene = get<Scene>(__finalizer.scene);
 				finalizeScene->stop();
 				finalizeScene->finalize();
 				__finalizer.isFinaliing = false;
@@ -50,7 +50,7 @@ void System::onNext() {
 	}
 
 	// 初期化されてなかったら初期化しましょう
-	const auto & nextScene = Store::Get<Scene>(__next_key);
+	const auto & nextScene = get<Scene>(__next_key);
 	if (!nextScene) return;
 
 	if (nextScene->getState() != Scene::State::Initialized) {
@@ -71,7 +71,7 @@ void System::onDestroy() {
 	__is_thread_running = false;
 	if (__thread.joinable()) __thread.join();
 	for (const auto & key : keys) {
-		if (const auto & scene = Store::Get<Scene>(Store::Get<Scene>(key)->uuid)) {
+		if (const auto & scene = Store::Get<Scene>(get<Scene>(key)->uuid)) {
 			scene.get()->destroyIndex(key);
 		}
 	}
@@ -91,7 +91,7 @@ System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
 	}
 
 	// 最初のシーンを初期化して開始
-	const auto & currentScene = Store::Get<Scene>(__current_key);
+	const auto & currentScene = get<Scene>(__current_key);
 	currentScene->initialize();
 	currentScene->start();
 
@@ -124,7 +124,7 @@ void System::LoadNext() {
 	if (__instance->__finalizer.isFinaliing) return;
 
 	TaskScheduler::AddTask(TaskScheduler::Priority::Highest, [&] {
-		Store::Get<Scene>(__instance->__next_key)->initialize();
+		__instance->get<Scene>(__instance->__next_key)->initialize();
 	});
 }
 
@@ -132,11 +132,11 @@ void System::LoadNextSync() {
 	// 前のシーンの終了中にやるなバカ
 	if (__instance->__finalizer.isFinaliing) return;
 
-	Store::Get<Scene>(__instance->__next_key)->initialize();
+	__instance->get<Scene>(__instance->__next_key)->initialize();
 }
 
 bool System::IsNextSceneInitialized() {
-	const auto result = Store::Get<Scene>(__instance->__next_key)->getState() == Scene::State::Initialized;
+	const auto result = __instance->get<Scene>(__instance->__next_key)->getState() == Scene::State::Initialized;
 	if (result && __instance->__load_next_scene.joinable()) {
 		__instance->__load_next_scene.join();
 	}

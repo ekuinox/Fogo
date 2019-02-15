@@ -65,7 +65,7 @@ namespace Fogo::Game {
 
 		// 指定したキーで管理しているComponentを取得する
 		template <typename Element, typename Key>
-		static Utility::Result<Error, Element*> Get(const Key & key);
+		static Utility::Result<Error, Element*> Get(const Key & key, const UUID & parentId);
 
 		// 指定したComponentの親を取得する
 		template <typename Element = Component>
@@ -153,10 +153,10 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element, typename Key>
-	Utility::Result<Store::Error, Element*> Store::Get(const Key & key) {
+	Utility::Result<Store::Error, Element*> Store::Get(const Key & key, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			return ContainerBase<Key, Element *>::shared.at(key);
+			return ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared.at(ContainerIndexKeyPair<Key> { key, parentId });
 		}
 		catch (std::out_of_range e) {
 			return Error::NotExist;
