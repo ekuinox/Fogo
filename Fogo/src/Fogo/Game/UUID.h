@@ -10,7 +10,7 @@ namespace Fogo::Game {
 	struct UUID {
 		using Engine = std::independent_bits_engine<std::mt19937, 64, std::uint64_t>;
 
-		static const auto Generate() {
+		static auto Generate() {
 			static const auto & seed = std::random_device()();
 			static Engine engine(seed);
 
@@ -37,7 +37,7 @@ namespace Fogo::Game {
 			return rhs.raw != raw;
 		}
 
-		const std::string toString() const {
+		std::string toString() const {
 			return std::to_string(raw);
 		}
 
