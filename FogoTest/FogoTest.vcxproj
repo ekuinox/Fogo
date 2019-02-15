@@ -30,6 +30,8 @@
     <ClInclude Include="src\FBXSample.h" />
     <ClInclude Include="src\Scenes\MainScene.h" />
     <ClInclude Include="src\Square.h" />
+    <ClInclude Include="src\Tests\Test1.h" />
+    <ClInclude Include="src\Tests\Test2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
