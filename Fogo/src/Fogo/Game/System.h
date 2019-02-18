@@ -54,6 +54,9 @@ namespace Fogo::Game {
 		static void LoadNext();
 		static void LoadNextSync();
 		static bool IsNextSceneInitialized();
+		static System & GetInstance();
+		static Scene & GetCurrentScene();
+		static Scene & GetScene(const Key & key);
 
 	};
 }

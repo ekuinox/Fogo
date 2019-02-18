@@ -142,3 +142,15 @@ bool System::IsNextSceneInitialized() {
 	}
 	return result;
 }
+
+System & System::GetInstance() {
+	return * __instance;
+}
+
+Scene & System::GetCurrentScene() {
+	return *(__instance->get<Scene>(__instance->__current_key).get().value());
+}
+
+Scene & System::GetScene(const Key & key) {
+	return *(__instance->get<Scene>(key).get().value());
+}
