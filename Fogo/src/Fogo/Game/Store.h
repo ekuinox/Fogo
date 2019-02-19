@@ -131,7 +131,7 @@ namespace Fogo::Game {
 
 		if constexpr (LifeCycled::IsDerived<Element>()) Insert<LifeCycled>(element, parentId, element->uuid);
 
-		if constexpr (std::is_base_of<Element, Scene>()) Insert<Element>(element, parentId, element->uuid);
+		if constexpr (std::is_base_of<Element, Scene>()) Insert<Scene>(element, parentId, element->uuid);
 
 		return Container<Element>::shared.at(element->uuid);
 	}
