@@ -12,10 +12,13 @@ namespace Fogo {
 
 		*/
 		std::unordered_map<const char *, Game::Scene*> scenes;
+		std::function<void(Game::System &)> createScenes;
 		Utility::Window::Properties window;
-		const char * first_key = "";
-		Properties & setFirstSceneKey(const char * newFirstKey) { first_key = newFirstKey; return * this; }
-		Properties & setScenes(const std::unordered_map<const char *, Game::Scene*> & newScenes) { scenes = newScenes; return * this; }
+		Game::System::Key first_key;
+
+		Properties & setFirstSceneKey(Game::System::Key newFirstKey) { first_key = newFirstKey; return * this; }
+		Properties & setScenes(const std::unordered_map<const char *, Game::Scene*> & newScenes) { scenes = newScenes; return *this; }
+		Properties & setCreateScenes(const std::function<void(Game::System &)> newCreateScenes) { createScenes = newCreateScenes; return * this; }
 		Properties & setWidth(const UINT & newWidth) { window.setWidth(newWidth); return *this; }
 		Properties & setHeight(const UINT & newHeight) { window.setHeight(newHeight); return *this; }
 		Properties & setProcedure(const WNDPROC & newProcedure) { window.setProcedure(newProcedure); return *this; }

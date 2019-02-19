@@ -25,7 +25,6 @@ namespace Fogo::Game {
 		template <typename Element> void execute(const std::function<void(Element &)> func) const;
 		template <typename Element, typename Key> Utility::Result<Store::Error, Element*> get(const Key & key) const;
 
-	protected:
 		template <typename Element, typename ... Args> Handler<Element> & create(Args ... args) const;
 		template <typename Element> Handler<Element> & bind(Element * element) const;
 		template <typename Element> void free() const;

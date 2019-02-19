@@ -31,6 +31,8 @@ namespace Fogo::Game {
 		template <typename Key> Handler & makeIndex(const Key & key) {
 			try {
 				IndexedStore<Key>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
+				const auto & shared = IndexedStore<Key>::shared;
+				int n = 0;
 			}
 			catch (std::out_of_range e) {
 

@@ -5,6 +5,7 @@
 #include "./Component.h"
 #include "../Utility.h"
 #include <vector>
+#include <functional>
 #include <thread>
 
 namespace Fogo::Game {
@@ -43,12 +44,14 @@ namespace Fogo::Game {
 		void onEnd();
 		void onDestroy();
 		System(Key firstKey, std::unordered_map<Key, Scene*> scenes);
+		System(const Key & firstKey, const std::function<void(System &)> & createScenes);
 		~System();
 
 		static System * __instance;
 
 	public:
 		static void Create(Key firstKey, const std::unordered_map<Key, Scene*> & scenes);
+		static void Create(const Key & firstKey, const std::function<void(System &)> & createScenes);
 		static void Destroy();
 		static void SetNext(Key key);
 		static void LoadNext();

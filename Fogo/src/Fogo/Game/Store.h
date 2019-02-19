@@ -131,7 +131,7 @@ namespace Fogo::Game {
 
 		if constexpr (LifeCycled::IsDerived<Element>()) Insert<LifeCycled>(element, parentId, element->uuid);
 
-		if constexpr (std::is_base_of<Element, Scene>()) Insert<Scene>(element, parentId, element->uuid);
+		if constexpr (std::is_base_of<Scene, Element>()) Insert<Scene>(element, parentId);
 
 		return Container<Element>::shared.at(element->uuid);
 	}
@@ -156,7 +156,8 @@ namespace Fogo::Game {
 	Utility::Result<Store::Error, Element*> Store::Get(const Key & key, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			return ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared.at(ContainerIndexKeyPair<Key> { key, parentId });
+			auto & container = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared;
+			return container.at(ContainerIndexKeyPair<Key> { key, parentId });
 		}
 		catch (std::out_of_range e) {
 			return Error::NotExist;

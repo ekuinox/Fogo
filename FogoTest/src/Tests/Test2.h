@@ -62,11 +62,13 @@ inline void test2() {
 
 	Initialize(
 		Fogo::Properties()
-		.setScenes({
-			{ "MainScene1", new MainScene1 },
-			{ "MainScene2", new MainScene2 },
-			})
-			.setFirstSceneKey("MainScene1")
+		.setCreateScenes([](System & system) {
+			system.create<MainScene1>().makeIndex(static_cast<const char *>("MainScene1"));
+			Fogo::Game::Store::Get<Fogo::Game::Scene>(system.get<MainScene1>(static_cast<const char*>("MainScene1"))->uuid).get().value().makeIndex(static_cast<const char *>("MainScene1"));
+			system.create<MainScene2>().makeIndex(static_cast<const char *>("MainScene2"));
+			Fogo::Game::Store::Get<Fogo::Game::Scene>(system.get<MainScene2>(static_cast<const char*>("MainScene2"))->uuid).get().value().makeIndex(static_cast<const char *>("MainScene2"));
+		})
+		.setFirstSceneKey("MainScene1")
 		.setWidth(800)
 		.setHeight(640)
 		.setTitle(L"FogoTest")
