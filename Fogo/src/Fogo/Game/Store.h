@@ -168,7 +168,7 @@ namespace Fogo::Game {
 	Utility::Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			auto parentId = Container<Element>::shared.at(uuid).parentId;
+			auto parentId = Container<Component>::shared.at(uuid).parentId;
 			if (parentId == rootId) {
 				return Error::YourParentIsRoot;
 			}
@@ -183,7 +183,7 @@ namespace Fogo::Game {
 	void Store::Execute(const std::function<void(Element &)> & func) {
 		static_assert(IsCorrectElement<Element>());
 		for (const auto &[_, element] : Container<Element>::shared) {
-			func(*(element.second));
+			func(*(element.element));
 		}
 	}
 

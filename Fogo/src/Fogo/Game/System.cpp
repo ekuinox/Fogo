@@ -104,31 +104,25 @@ System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
 
 System::System(const Key & firstKey, const std::function<void(System &)> & createScenes)
 	: __current_key(firstKey), __next_key(firstKey), __is_thread_running(true) {
-		PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
-		PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
+	PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
+	PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
 
-		std::cout << "this->uuid: " << this->uuid << std::endl;
+	Store::Bind(this);
 
-		createScenes(*this);
+	createScenes(*this);
 		
-		std::cout << "execute" << std::endl;
-		execute<Scene>([](Scene & scene) {
-			std::cout << scene.uuid << std::endl;
-		});
+	// 最初のシーンを初期化して開始
+	const auto & currentScene = get<Scene>(__current_key);
+	// Sceneの継承クラスに対してインデックスをつけているのでSceneで引っぱってきても返却されない　おそらく
 
-		// 最初のシーンを初期化して開始
-		const auto & currentScene = get<Scene>(__current_key);
+	currentScene->initialize();
+	currentScene->start();
 
-		// Sceneの継承クラスに対してインデックスをつけているのでSceneで引っぱってきても返却されない　おそらく
-
-		currentScene->initialize();
-		currentScene->start();
-
-		Input::Initialize();
-		TaskScheduler::Create();
-		__thread = std::thread([&] {
-			while (__is_thread_running) { exec(); }
-		});
+	Input::Initialize();
+	TaskScheduler::Create();
+	__thread = std::thread([&] {
+		while (__is_thread_running) { exec(); }
+	});
 }
 
 System::~System() {
