@@ -10,8 +10,8 @@ namespace Fogo::Game {
 	template <typename Element>
 	class Handler {
 	public:
-		template <typename Key>
-		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>;
+		template <typename Key, typename Elm = Element>
+		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Elm*, Hash<Key>>;
 
 		Element * element;
 		UUID parentId;
@@ -28,14 +28,15 @@ namespace Fogo::Game {
 			return std::move(Handler(element, parentId));
 		}
 
-		template <typename Key>
+		template <typename Key, typename Elm = Element>
 		Handler & makeIndex(const Key & key) {
-			IndexedStore<Key>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
+			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
 			return *this;
 		}
 
-		template <typename Key> Handler & destroyIndex(const Key & key) {
-			IndexedStore<Key>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
+		template <typename Key, typename Elm = Element>
+		Handler & destroyIndex(const Key & key) {
+			IndexedStore<Key, Elm>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
 			return *this;
 		}
 
