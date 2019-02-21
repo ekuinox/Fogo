@@ -54,7 +54,6 @@
     <ClInclude Include="src\Fogo\Utility\Result.h" />
     <ClInclude Include="src\Fogo\Utility\SimplePromise.h" />
     <ClInclude Include="src\Fogo\Utility\SingletonWrapper.h" />
-    <ClInclude Include="src\Fogo\Utility\Store.h" />
     <ClInclude Include="src\Fogo\Utility\Subject.h" />
     <ClInclude Include="src\Fogo\Utility\TaskScheduler.h" />
     <ClInclude Include="src\Fogo\Utility\Time.h" />
