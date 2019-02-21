@@ -74,7 +74,7 @@ struct FBX : Component, LifeCycled, Updatable, Renderable {
 	}
 };
 
-void MainScene::initialize() {
+MainScene::MainScene() {
 	static auto once = true;
 	if (once) {
 		ResourceStore::Insert(VertexShader::BOX, Graphics::CompileVertexShader(L"./resources/shader/VertexShader.hlsl", 0, "main", "vs_5_1"));
@@ -90,14 +90,4 @@ void MainScene::initialize() {
 	fbx->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
 	auto & inputDebugger = create<InputDebugger>().makeIndex(Key::InputDebugger1);
-
-	Scene::initialize();
-}
-
-void MainScene::update() {
-	Scene::update();
-}
-
-void MainScene::finalize() {
-	Scene::finalize();
 }
