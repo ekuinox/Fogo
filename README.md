@@ -1,23 +1,25 @@
 # Fogo
 
-ƒQ[ƒ€ƒvƒƒOƒ‰ƒ€—pƒ‰ƒCƒuƒ‰ƒŠ for me [@ekuinox](https://twitter.com/ekuinox)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c757618f26244ebcbced57299fdb771b)](https://app.codacy.com/app/lm9/Fogo?utm_source=github.com&utm_medium=referral&utm_content=lm9/Fogo&utm_campaign=Badge_Grade_Dashboard)
 
-## –Ú•W
+ã‚²ãƒ¼ãƒ ãƒ—ãƒ­ã‚°ãƒ©ãƒ ç”¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒª for me [@ekuinox](https://twitter.com/ekuinox)
 
-- DirectX12‚ÌƒTƒ|[ƒg
-- FBXŒ`®‚Ìƒ‚ƒfƒ‹‚ÌƒTƒ|[ƒgiƒ‚ƒfƒ‹‚³‚¦—pˆÓ‚µ‚Ä“Ç‚İ‚Ü‚¹‚½‚ç‚Æ‚è‚ ‚¦‚¸•`‰æ‚Å‚«‚é‚æ‚¤‚É‚µ‚½‚¢j
-- ƒeƒ“ƒvƒŒ[ƒg‚ğ—‰ğ
+## ç›®æ¨™
 
-## ŠJ”­ŠÂ‹«, “®ìŠÂ‹«
+- DirectX12ã®ã‚µãƒãƒ¼ãƒˆ
+- FBXå½¢å¼ã®ãƒ¢ãƒ‡ãƒ«ã®ã‚µãƒãƒ¼ãƒˆï¼ˆãƒ¢ãƒ‡ãƒ«ã•ãˆç”¨æ„ã—ã¦èª­ã¿è¾¼ã¾ã›ãŸã‚‰ã¨ã‚Šã‚ãˆãšæç”»ã§ãã‚‹ã‚ˆã†ã«ã—ãŸã„ï¼‰
+- ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’ç†è§£
+
+## é–‹ç™ºç’°å¢ƒ, å‹•ä½œç’°å¢ƒ
 
 - Windows 10 Pro + GeForce GTX1060
 - Windows 10 + GeForce MX150
 
-## ˆË‘¶
+## ä¾å­˜
 
 - DirectTex Windows 10
 - Autodesk FBXSDK
 
-## ‚»‚Ì‚½
+## ãã®ãŸ
 
-DirectX9‚µ‚©‚â‚Á‚½‚±‚Æ‚È‚¢lŠÔ‚ª‚¢‚«‚È‚è‚â‚Á‚Ä‚¢‚Ü‚·B‚Ç‚¤‚µ‚ÄDirectX12‚ğ‘I‘ğ‚µ‚½‚Ì‚©A1ƒ–Œ‚Ù‚Ç‘O‚Ì„‚É–â‚¢‹l‚ß‚½‚¢B
+DirectX9ã—ã‹ã‚„ã£ãŸã“ã¨ãªã„äººé–“ãŒã„ããªã‚Šã‚„ã£ã¦ã„ã¾ã™ã€‚ã©ã†ã—ã¦DirectX12ã‚’é¸æŠã—ãŸã®ã‹ã€1ãƒ¶æœˆã»ã©å‰ã®ç§ã«å•ã„è©°ã‚ãŸã„ã€‚
