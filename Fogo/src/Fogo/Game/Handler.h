@@ -28,14 +28,14 @@ namespace Fogo::Game {
 			return std::move(Handler(element, parentId));
 		}
 
-		template <typename Key, typename Elm = Element>
-		Handler & makeIndex(const Key & key) {
+		template <typename Elm = Element, typename Key>
+		Handler & makeIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
 			return *this;
 		}
 
-		template <typename Key, typename Elm = Element>
-		Handler & destroyIndex(const Key & key) {
+		template <typename Elm = Element, typename Key>
+		Handler & destroyIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
 			return *this;
 		}

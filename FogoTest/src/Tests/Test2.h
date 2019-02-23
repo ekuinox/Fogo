@@ -72,10 +72,10 @@ inline void test2() {
 			.setCreateScenes([](System & system) {
 				system.create<MainScene1>()
 					.makeIndex(SceneKey::MainScene1) // MainScene‚É‘Î‚µ‚Ä
-					.makeIndex<const char *, Scene>(SceneKey::MainScene1); // Scene‚É‘Î‚µ‚Ä
+					.makeIndex<Scene>(SceneKey::MainScene1); // Scene‚É‘Î‚µ‚Ä
 				system.create<MainScene2>()
 					.makeIndex(SceneKey::MainScene2)
-					.makeIndex<const char *, Scene>(SceneKey::MainScene2);
+					.makeIndex<Scene>(SceneKey::MainScene2);
 			})
 			.setFirstSceneKey(SceneKey::MainScene1)
 			.setWidth(800)
