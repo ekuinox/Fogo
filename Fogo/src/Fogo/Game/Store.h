@@ -43,6 +43,7 @@ namespace Fogo::Game {
 		enum class Error {
 			NotExist, // Elementが取得できなかったときに投げる
 			YourParentIsRoot, // rootがparentを検索したときに投げる
+			ChildrenNotOne, // GetOne時に個数が1じゃなかった場合
 		};
 
 		static const UUID rootId;
@@ -63,9 +64,13 @@ namespace Fogo::Game {
 		template <typename Element>
 		static Utility::Result<Error, Handler<Element>> Get(const UUID & uuid);
 
+		// UUIDを用いてComponentを取得する
+		template <typename Element>
+		static Utility::Result<Error, Handler<Element>> GetOne(const UUID & parentId);
+
 		// 指定したキーで管理しているComponentを取得する
 		template <typename Element, typename Key>
-		static Utility::Result<Error, Element*> Get(const Key & key, const UUID & parentId);
+		static Utility::Result<Error, Element*> Get(Key key, const UUID & parentId);
 
 		// 指定したComponentの親を取得する
 		template <typename Element = Component>
@@ -152,8 +157,25 @@ namespace Fogo::Game {
 		}
 	}
 
+	template <typename Element>
+	Utility::Result<Store::Error, Handler<Element>> Store::GetOne(const UUID & parentId) {
+		static_assert(IsCorrectElement<Element>());
+
+		std::vector<UUID> uuids {};
+
+		for (const auto &[uuid, element] : Container<Element>::shared) {
+			if (element.parentId == parentId) uuids.emplace_back(uuid);
+		}
+
+		if (uuids.size() == 1) {
+			return Container<Element>::shared.at(uuids.front());
+		}
+
+		return Error::ChildrenNotOne;
+	}
+
 	template <typename Element, typename Key>
-	Utility::Result<Store::Error, Element*> Store::Get(const Key & key, const UUID & parentId) {
+	Utility::Result<Store::Error, Element*> Store::Get(Key key, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		try {
 			auto & container = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared;

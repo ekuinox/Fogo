@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# GitHub linguist
+FogoTest/* linguist-vendored
+Playground01/* linguist-vendored
+UnitTest1/* linguist-vendored
