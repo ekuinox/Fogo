@@ -59,6 +59,10 @@ namespace Fogo::Game {
 		// 子インスタンスをすべて解放する
 		template <typename Element>
 		void free() const;
+
+		// 子インスタンスの数を取得する
+		template <typename Element = Component>
+		std::size_t getChildrenSize() const;
 	};
 
 	template<typename Element, typename ... Args>
@@ -99,5 +103,10 @@ namespace Fogo::Game {
 	template<typename Element>
 	void Component::free() const {
 		Store::Free<Element>(uuid);
+	}
+
+	template <typename Element>
+	std::size_t Component::getChildrenSize() const {
+		return Store::GetChildrenSize<Element>(uuid);
 	}
 }

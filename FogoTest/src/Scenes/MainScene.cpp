@@ -77,6 +77,31 @@ struct FBX : Component, LifeCycled {
 	}
 };
 
+struct Debugger : Component {
+	struct CheckUKey : Component {
+		CheckUKey() {
+			create<Updater>([] {
+				if (Input::GetTrigger(KeyCode::U)) {
+					std::cout << "Triggered U Key" << std::endl;
+				}
+			});
+		}
+	};
+	struct CheckTKey : Component {
+		CheckTKey() {
+			create<Updater>([] {
+				if (Input::GetTrigger(KeyCode::T)) {
+					std::cout << "Triggered T Key" << std::endl;
+				}
+			});
+		}
+	};
+	Debugger() {
+		create<CheckUKey>();
+		create<CheckTKey>();
+	}
+};
+
 MainScene::MainScene() {
 	static auto once = true;
 	if (once) {
@@ -93,4 +118,6 @@ MainScene::MainScene() {
 	fbx->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
 	auto & inputDebugger = create<InputDebugger>().makeIndex(Key::InputDebugger1);
+
+	create<Debugger>();
 }

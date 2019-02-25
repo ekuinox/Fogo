@@ -98,6 +98,10 @@ namespace Fogo::Game {
 
 		static std::size_t GetSize();
 
+		// q‚Ì”‚ğæ“¾‚·‚é
+		template <typename Element = Component>
+		static std::size_t GetChildrenSize(const UUID & parentId);
+
 	};
 
 	template <typename Element>
@@ -259,5 +263,15 @@ namespace Fogo::Game {
 	template <typename Element>
 	std::size_t Store::GetSize() {
 		return Container<Element>::shared.size();
+	}
+
+	template <typename Element>
+	std::size_t Store::GetChildrenSize(const UUID & parentId) {
+		static_assert(IsCorrectElement<Element>());
+		std::size_t size = 0;
+		for (const auto &[_, element] : Container<Element>::shared) {
+			if (element.parentId == parentId) ++size;
+		}
+		return size;
 	}
 }

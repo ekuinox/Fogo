@@ -6,6 +6,17 @@
 using namespace Fogo::Game;
 using namespace Fogo::Graphics::DX12;
 
+template <typename T>
+void RecursiveExecute(Component & parent) {
+	if (parent.getChildrenSize() < 1) return;
+	parent.execute<Component>([](Component & component) {
+		RecursiveExecute<T>(component);
+		component.execute<T>([](T & child) {
+			child();
+		});
+	});
+}
+
 void Scene::initialize() {
 	execute<LifeCycled>([](LifeCycled & component) {
 		component.initialize();
@@ -21,19 +32,11 @@ void Scene::start() {
 }
 
 void Scene::update() {
-	execute<Component>([](Component & component) {
-		component.execute<Updater>([](Updater & updater) {
-			updater();
-		});
-	});
+	RecursiveExecute<Updater>(*(*get<Component>(uuid)).element);
 }
 
 void Scene::render() const {
-	execute<Component>([](Component & component) {
-		component.execute<Renderer>([](Renderer & renderer) {
-			renderer();
-		});
-	});
+	RecursiveExecute<Renderer>(*(*get<Component>(uuid)).element);
 	::Graphics::Render();
 }
 
