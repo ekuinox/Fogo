@@ -26,10 +26,6 @@ void Scene::update() {
 			updater();
 		});
 	});
-
-	execute<Updatable>([](Updatable & component) {
-		component.update();
-	});
 }
 
 void Scene::render() const {
@@ -37,10 +33,6 @@ void Scene::render() const {
 		component.execute<Renderer>([](Renderer & renderer) {
 			renderer();
 		});
-	});
-
-	execute<Renderable>([](Renderable & component) {
-		component.render();
 	});
 	::Graphics::Render();
 }

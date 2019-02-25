@@ -114,12 +114,6 @@
     <ClInclude Include="src\Fogo\Game\Handler.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Game\Renderable.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Fogo\Game\Updatable.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Fogo\Game\UUID.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

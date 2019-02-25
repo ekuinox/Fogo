@@ -11,8 +11,6 @@ using Microsoft::WRL::ComPtr;
 using Fogo::Game::Store;
 using Fogo::Game::Component;
 using Fogo::Game::LifeCycled;
-using Fogo::Game::Updatable;
-using Fogo::Game::Renderable;
 using Fogo::Game::Updater;
 using Fogo::Game::Renderer;
 

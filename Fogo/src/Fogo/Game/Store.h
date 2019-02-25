@@ -5,8 +5,6 @@
 #include <functional>
 #include "./Handler.h"
 #include "./ContainerBase.h"
-#include "./Renderable.h"
-#include "./Updatable.h"
 #include "./LifeCycled.h"
 #include "../Utility/Result.h"
 
@@ -116,8 +114,6 @@ namespace Fogo::Game {
 	constexpr bool Store::IsCorrectElement() {
 		return
 			std::is_base_of<Component, Element>()
-			|| std::is_same<Element, Updatable>()
-			|| std::is_same<Element, Renderable>()
 			|| std::is_same<Element, LifeCycled>()
 			;
 	}
@@ -129,10 +125,6 @@ namespace Fogo::Game {
 		Insert<Element>(element, parentId);
 
 		Insert<Component>(element, parentId);
-
-		if constexpr (Updatable::IsDerived<Element>()) Insert<Updatable>(element, parentId, element->uuid);
-
-		if constexpr (Renderable::IsDerived<Element>()) Insert<Renderable>(element, parentId, element->uuid);
 
 		if constexpr (LifeCycled::IsDerived<Element>()) Insert<LifeCycled>(element, parentId, element->uuid);
 
@@ -227,14 +219,6 @@ namespace Fogo::Game {
 
 		Container<Component>::shared.erase(uuid);
 
-		if constexpr (std::is_base_of<Updatable, Element>()) {
-			Container<Updatable>::shared.erase(uuid);
-		}
-
-		if constexpr (std::is_base_of<Renderable, Element>()) {
-			Container<Renderable>::shared.erase(uuid);
-		}
-
 		if constexpr (std::is_base_of<LifeCycled, Element>()) {
 			Container<LifeCycled>::shared.erase(uuid);
 		}
@@ -259,11 +243,7 @@ namespace Fogo::Game {
 		}
 
 		for (const auto & uuid : uuids) {
-			if constexpr (!(
-				std::is_same<Element, Updatable>()
-				|| std::is_same<Element, Renderable>()
-				|| std::is_same<Element, LifeCycled>()
-				)) {
+			if constexpr (!std::is_same<Element, LifeCycled>()) {
 				delete Container<Element>::shared[uuid].element;
 				Container<Element>::shared[uuid].element = nullptr;
 			}
