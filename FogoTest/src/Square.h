@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include <Fogo.h>
 
-class Square : public Fogo::Game::Component, Fogo::Game::LifeCycled, public Fogo::Game::Updatable, public Fogo::Game::Renderable {
+class Square : public Fogo::Game::Component, Fogo::Game::LifeCycled {
 private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
@@ -23,6 +23,4 @@ public:
 	};
 
 	Square(const Option & option);
-	auto update() -> void override;
-	auto render() const -> void override;
 };

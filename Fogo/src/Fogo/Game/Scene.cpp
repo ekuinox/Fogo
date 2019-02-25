@@ -1,5 +1,7 @@
 #include "./Scene.h"
 #include "../Graphics.h"
+#include "./Updater.h"
+#include "./Renderer.h"
 
 using namespace Fogo::Game;
 using namespace Fogo::Graphics::DX12;
@@ -19,12 +21,24 @@ void Scene::start() {
 }
 
 void Scene::update() {
+	execute<Component>([](Component & component) {
+		component.execute<Updater>([](Updater & updater) {
+			updater();
+		});
+	});
+
 	execute<Updatable>([](Updatable & component) {
 		component.update();
 	});
 }
 
 void Scene::render() const {
+	execute<Component>([](Component & component) {
+		component.execute<Renderer>([](Renderer & renderer) {
+			renderer();
+		});
+	});
+
 	execute<Renderable>([](Renderable & component) {
 		component.render();
 	});

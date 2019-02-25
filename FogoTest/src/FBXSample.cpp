@@ -2,7 +2,6 @@
 #include <utility>
 #include "Fogo.h"
 #include "d3dx12.h"
-#include <iostream>
 
 using namespace Fogo;
 using namespace Utility;
@@ -262,6 +261,8 @@ void FBXSample::initialize() {
 	createVertexBuffer();
 	createConstantBuffer();
 	initializeGameData();
+	create<Game::Updater>([&] { update(); });
+	create<Game::Renderer>([&] { render(); });
 	LifeCycled::initialize();
 }
 

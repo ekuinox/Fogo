@@ -1,6 +1,4 @@
 #include "Square.h"
-#include <utility>
-#include <vector>
 #include <d3dcompiler.h>
 
 using Microsoft::WRL::ComPtr;
@@ -158,19 +156,18 @@ Square::Square(const Option & option) {
 	__plain->matrix = XMMatrixIdentity();
 	__plain->matrix *= XMMatrixScaling(option.size.x, option.size.y, 0);
 	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
-}
 
-auto Square::update() -> void {
+	create<Fogo::Game::Updater>([&] {
+		__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
+	});
 
-	__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
-}
-
-auto Square::render() const -> void {
-	Fogo::Graphics::DX12::Graphics::Render([&](ComPtr<ID3D12GraphicsCommandList> commandList) {
-		__plain->render(
-			commandList,
-			XMMatrixLookAtLH({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }),
-			XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 640.0f / 480.0f, 1.0f, 20.0f)
-		);
+	create<Fogo::Game::Renderer>([&] {
+		Graphics::Render([&](ComPtr<ID3D12GraphicsCommandList> commandList) {
+			__plain->render(
+				commandList,
+				XMMatrixLookAtLH({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }),
+				XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 640.0f / 480.0f, 1.0f, 20.0f)
+			);
+		});
 	});
 }

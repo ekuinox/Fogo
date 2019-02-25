@@ -1,20 +1,16 @@
 #pragma once
 
 #include "./LifeCycled.h"
-#include "./Renderable.h"
-#include "./Updatable.h"
 #include "./Component.h"
-#include <vector>
-#include <memory>
 
 namespace Fogo::Game {
-	class Scene : public Component, public LifeCycled, public Renderable, public Updatable {
+	class Scene : public Component, public LifeCycled {
 	public:
 		virtual ~Scene() = default;
 		void initialize() override;
 		void start() override;
-		void update() override;
-		void render() const override;
+		virtual void update();
+		virtual void render() const;
 		void stop() override;
 		void finalize() override;
 	};
