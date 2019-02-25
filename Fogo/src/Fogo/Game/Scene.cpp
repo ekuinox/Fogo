@@ -32,11 +32,11 @@ void Scene::start() {
 }
 
 void Scene::update() {
-	RecursiveExecute<Updater>(*(*get<Component>(uuid)).element);
+	RecursiveExecute<Updater>(**get<Component>(uuid));
 }
 
 void Scene::render() const {
-	RecursiveExecute<Renderer>(*(*get<Component>(uuid)).element);
+	RecursiveExecute<Renderer>(**get<Component>(uuid));
 	::Graphics::Render();
 }
 
