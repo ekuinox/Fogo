@@ -35,8 +35,6 @@ namespace Fogo::Utility {
 	public:
 		Result(const E & e) : variant(e), success(false) {}
 		Result(const V & v) : variant(v), success(true) {}
-		Result(const Result &) = delete;
-		Result & operator=(const Result &) = delete;
 
 		bool operator==(const E & e) const {
 			if (success) return false;
