@@ -40,6 +40,9 @@ namespace Fogo::Game {
 		// 単一であることを保証するために、0か複数の場合はエラーが返る
 		template <typename Element>
 		Utility::Result<Store::Error, Handler<Element>> get() const;
+
+		// 自分を持っているSceneを取得する
+		Utility::Result<Store::Error, Handler<Scene>> getMyScene() const;
 		
 		// 親インスタンスのハンドラを取得をする
 		template <typename Element = Component>
