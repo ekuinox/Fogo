@@ -1,12 +1,12 @@
 #pragma once
 
-#include "./Scene.h"
-#include "./Store.h"
-#include "./Component.h"
-#include "../Utility.h"
 #include <vector>
 #include <functional>
 #include <thread>
+#include "./Store.h"
+#include "./Component.h"
+#include "./Components/Scene.h"
+#include "../Utility.h"
 
 namespace Fogo::Game {
 	class System : public Component {

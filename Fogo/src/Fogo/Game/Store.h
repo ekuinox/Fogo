@@ -5,7 +5,7 @@
 #include <functional>
 #include "./Handler.h"
 #include "./ContainerBase.h"
-#include "./LifeCycled.h"
+#include "./Components/LifeCycled.h"
 #include "../Utility/Result.h"
 
 namespace Fogo::Game {

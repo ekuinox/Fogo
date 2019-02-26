@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./Component.h"
+#include "../Component.h"
 #include <functional>
 
 namespace Fogo::Game {

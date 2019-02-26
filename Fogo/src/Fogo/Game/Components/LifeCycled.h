@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Utility/HelperFunctions.h"
+#include "../../Utility/HelperFunctions.h"
 
 namespace Fogo::Game {
 	class LifeCycled {

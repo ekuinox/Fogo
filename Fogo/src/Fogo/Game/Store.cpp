@@ -1,5 +1,5 @@
 #include "./Store.h"
-#include "./Scene.h"
+#include "./Components/Scene.h"
 
 using Fogo::Game::Store;
 using Fogo::Game::UUID;

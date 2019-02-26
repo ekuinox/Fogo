@@ -1,5 +1,5 @@
 #include "./System.h"
-#include "./Scene.h"
+#include "./Components/Scene.h"
 
 using Fogo::Game::System;
 using Fogo::Game::Scene;

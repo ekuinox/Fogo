@@ -1,7 +1,7 @@
 #include "./Scene.h"
-#include "../Graphics.h"
 #include "./Updater.h"
 #include "./Renderer.h"
+#include "../../Graphics.h"
 
 using namespace Fogo::Game;
 using namespace Fogo::Graphics::DX12;
