@@ -6,6 +6,8 @@
 #include "./Game/Components/Initializer.h"
 #include "./Game/Components/Renderer.h"
 #include "./Game/Components/Scene.h"
+#include "./Game/Components/Starter.h"
+#include "./Game/Components/Stopper.h"
 #include "./Game/Components/Updater.h"
 #include "./Game/ContainerBase.h"
 #include "./Game/Handler.h"

@@ -1,8 +1,10 @@
 #include "./Scene.h"
-#include "./Updater.h"
-#include "./Renderer.h"
-#include "./Initializer.h"
 #include "./Finalizer.h"
+#include "./Initializer.h"
+#include "./Renderer.h"
+#include "./Starter.h"
+#include "./Stopper.h"
+#include "./Updater.h"
 #include "../../Graphics.h"
 
 using namespace Fogo::Game;
@@ -29,6 +31,7 @@ void Scene::initialize() {
 }
 
 void Scene::start() {
+	RecursiveExecute<Starter>(**get<Component>(uuid));
 	__state = State::Started;
 }
 
@@ -46,7 +49,8 @@ void Scene::render() const {
 }
 
 void Scene::stop() {
-
+	RecursiveExecute<Stopper>(**get<Component>(uuid));
+	__state = State::Initialized;
 }
 
 void Scene::finalize() {
