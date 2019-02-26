@@ -19,23 +19,25 @@ void RecursiveExecute(Component & parent) {
 	});
 }
 
+Scene::Scene() : __state(State::Created) {
+
+}
+
 void Scene::initialize() {
 	RecursiveExecute<Initializer>(**get<Component>(uuid));
-	execute<LifeCycled>([](LifeCycled & component) {
-		component.initialize();
-	});
-	LifeCycled::initialize();
+	__state = State::Initialized;
 }
 
 void Scene::start() {
-	execute<LifeCycled>([](LifeCycled & component) {
-		component.start();
-	});
-	LifeCycled::start();
+	__state = State::Started;
 }
 
 void Scene::update() {
 	RecursiveExecute<Updater>(**get<Component>(uuid));
+}
+
+Scene::State Scene::getState() const {
+	return __state;
 }
 
 void Scene::render() const {
@@ -44,16 +46,10 @@ void Scene::render() const {
 }
 
 void Scene::stop() {
-	execute<LifeCycled>([](LifeCycled & component) {
-		component.stop();
-	});
-	LifeCycled::stop();
+
 }
 
 void Scene::finalize() {
 	RecursiveExecute<Finalizer>(**get<Component>(uuid));
-	execute<LifeCycled>([](LifeCycled & component) {
-		component.finalize();
-	});
-	LifeCycled::finalize();
+	__state = State::Created;
 }

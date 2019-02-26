@@ -4,14 +4,25 @@
 #include "./LifeCycled.h"
 
 namespace Fogo::Game {
-	class Scene : public Component, public LifeCycled {
+	class Scene : public Component {
 	public:
-		virtual ~Scene() = default;
-		void initialize() override;
-		void start() override;
-		virtual void update();
+		enum class State {
+			Created, // new
+			Initialized, // initialize
+			Started, // start
+		};
+
+	protected:
+		State __state;
+
+	public:
+		Scene();
+		virtual void initialize();
+		virtual void start();
+		virtual void stop();
+		virtual void finalize();
 		virtual void render() const;
-		void stop() override;
-		void finalize() override;
+		virtual void update();
+		State getState() const;
 	};
 }
