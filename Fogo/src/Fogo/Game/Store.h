@@ -17,7 +17,7 @@ namespace Fogo::Game {
 	/*
 	
 	Componentと継承関係にあるクラスElementを管理する．
-	また，Renderable, Updatable, LifeCycledを継承している場合に個別のコンテナを確保する．
+	また，Sceneに対して独自コンテナを用意する．
 	呼び出し時には，Elementの型やRenderableなどのInterfaceの役割を担うクラスをテンプレート引数にて指定し，uuidを持って取得する．
 	取得時にはResultを返す．
 	UUIDだと認識しずらいと思うので，Handler経由で要素に対して任意のキー型を用いでインデックスをつけることも可能．
