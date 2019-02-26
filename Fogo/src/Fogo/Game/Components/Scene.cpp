@@ -1,10 +1,5 @@
 #include "./Scene.h"
-#include "./Finalizer.h"
-#include "./Initializer.h"
-#include "./Renderer.h"
-#include "./Starter.h"
-#include "./Stopper.h"
-#include "./Updater.h"
+#include "./CallableComponents.h"
 #include "../../Graphics.h"
 
 using namespace Fogo::Game;
