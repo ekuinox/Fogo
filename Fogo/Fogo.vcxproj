@@ -23,6 +23,8 @@
     <ClInclude Include="src\Fogo\Game.h" />
     <ClInclude Include="src\Fogo\Game\Components\CallableComponent.h" />
     <ClInclude Include="src\Fogo\Game\Component.h" />
+    <ClInclude Include="src\Fogo\Game\Components\Finalizer.h" />
+    <ClInclude Include="src\Fogo\Game\Components\Initializer.h" />
     <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
     <ClInclude Include="src\Fogo\Game\ContainerIndexKeyPair.h" />
     <ClInclude Include="src\Fogo\Game\Hash.h" />
@@ -68,6 +70,8 @@
     <ClCompile Include="src\Fogo.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\CallableComponent.cpp" />
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
+    <ClCompile Include="src\Fogo\Game\Components\Finalizer.cpp" />
+    <ClCompile Include="src\Fogo\Game\Components\Initializer.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Renderer.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
