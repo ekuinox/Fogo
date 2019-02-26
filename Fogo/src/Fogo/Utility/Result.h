@@ -46,7 +46,7 @@ namespace Fogo::Utility {
 		}
 
 		std::optional<V> get() const {
-			if (success) return std::move(std::get<V>(variant));
+			if (success) return std::get<V>(variant);
 			return std::nullopt;
 		}
 
