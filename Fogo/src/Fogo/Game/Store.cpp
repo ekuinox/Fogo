@@ -5,7 +5,7 @@ using Fogo::Game::Store;
 using Fogo::Game::UUID;
 
 void Store::Free(const UUID & parentId) {
-	Free<LifeCycled, Scene, Component>(parentId);
+	Free<Scene, Component>(parentId);
 }
 
 std::size_t Store::GetSize() {

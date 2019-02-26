@@ -4,7 +4,6 @@
 #include "./Game/Components/CallableComponent.h"
 #include "./Game/Components/Finalizer.h"
 #include "./Game/Components/Initializer.h"
-#include "./Game/Components/LifeCycled.h"
 #include "./Game/Components/Renderer.h"
 #include "./Game/Components/Scene.h"
 #include "./Game/Components/Updater.h"

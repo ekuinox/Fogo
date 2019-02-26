@@ -30,7 +30,6 @@
     <ClInclude Include="src\Fogo\Game\Hash.h" />
     <ClInclude Include="src\Fogo\Game\Components\Renderer.h" />
     <ClInclude Include="src\Fogo\Game\System.h" />
-    <ClInclude Include="src\Fogo\Game\Components\LifeCycled.h" />
     <ClInclude Include="src\Fogo\Game\Handler.h" />
     <ClInclude Include="src\Fogo\Game\Components\Scene.h" />
     <ClInclude Include="src\Fogo\Game\Store.h" />

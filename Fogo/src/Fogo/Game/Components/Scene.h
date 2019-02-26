@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../Component.h"
-#include "./LifeCycled.h"
 
 namespace Fogo::Game {
 	class Scene : public Component {

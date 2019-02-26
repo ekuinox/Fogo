@@ -144,9 +144,6 @@
     <ClInclude Include="src\Fogo\Game\Components\Scene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Game\Components\LifeCycled.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Fogo\Game\Components\Initializer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
