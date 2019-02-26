@@ -1,6 +1,8 @@
 #include "./Scene.h"
 #include "./Updater.h"
 #include "./Renderer.h"
+#include "./Initializer.h"
+#include "./Finalizer.h"
 #include "../../Graphics.h"
 
 using namespace Fogo::Game;
@@ -18,6 +20,7 @@ void RecursiveExecute(Component & parent) {
 }
 
 void Scene::initialize() {
+	RecursiveExecute<Initializer>(**get<Component>(uuid));
 	execute<LifeCycled>([](LifeCycled & component) {
 		component.initialize();
 	});
@@ -48,6 +51,7 @@ void Scene::stop() {
 }
 
 void Scene::finalize() {
+	RecursiveExecute<Finalizer>(**get<Component>(uuid));
 	execute<LifeCycled>([](LifeCycled & component) {
 		component.finalize();
 	});
