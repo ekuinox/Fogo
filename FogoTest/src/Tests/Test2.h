@@ -28,7 +28,7 @@ inline void test2() {
 				System::SetNext(SceneKey::MainScene2);
 				System::LoadNext();
 			}
-			if (Input::GetTrigger(KeyCode::ESCAPE)) {
+			if (Input::GetTrigger(KeyCode::Escape)) {
 				PubSub<System::Event, void>::Publish(System::Event::End);
 			}
 			if (System::IsNextSceneInitialized()) {
@@ -53,7 +53,7 @@ inline void test2() {
 				System::SetNext(SceneKey::MainScene1);
 				System::LoadNext();
 			}
-			if (Input::GetTrigger(KeyCode::ESCAPE)) {
+			if (Input::GetTrigger(KeyCode::Escape)) {
 				PubSub<System::Event, void>::Publish(System::Event::End);
 			}
 			if (System::IsNextSceneInitialized()) {

@@ -5,7 +5,7 @@
 namespace Fogo::Utility {
 
 	enum class KeyCode : unsigned int {
-		ESCAPE = DIK_ESCAPE,
+		Escape = DIK_ESCAPE,
 		Zero = DIK_0,
 		One = DIK_1,
 		Two = DIK_2,
