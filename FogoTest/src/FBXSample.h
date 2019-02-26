@@ -3,7 +3,7 @@
 #include "./FBX2016Loader.h"
 #include "Fogo.h"
 
-class FBXSample : public Fogo::Game::Component, public Fogo::Game::LifeCycled {
+class FBXSample : public Fogo::Game::Component {
 public:
 	static constexpr UINT CONSTANT_BUFFER_NUMBER = 2;
 	static constexpr D3D12_INPUT_ELEMENT_DESC INPUT_LAYOUT[3] = {
@@ -54,7 +54,7 @@ public:
 		Microsoft::WRL::ComPtr<ID3DBlob> pixelShader,
 		std::shared_ptr<Fogo::Graphics::DX12::Texture> texture
 	);
-	void initialize() override;
+	void initialize();
 	void update();
 	void render() const;
 };

@@ -13,6 +13,8 @@ using Fogo::Game::Component;
 using Fogo::Game::LifeCycled;
 using Fogo::Game::Updater;
 using Fogo::Game::Renderer;
+using Fogo::Game::Initializer;
+using Fogo::Game::Finalizer;
 
 enum class Key {
 	FBX1,
@@ -28,21 +30,20 @@ using ResourceStore = Fogo::Utility::MappedStore<
 	TextureType, std::shared_ptr<Fogo::Graphics::DX12::Texture>
 >;
 
-struct InputDebugger : Component, LifeCycled {
-	// nothing
-};
-
-struct FBX : Component, LifeCycled {
+struct FBX : Component {
 	Microsoft::WRL::ComPtr<ID3DBlob> vertexShader, pixelShader;
 	const char * modelFile;
 	std::unique_ptr<Fogo::Graphics::DX12::FBXModel> model;
-	void initialize() override {
-		model = std::make_unique<Fogo::Graphics::DX12::FBXModel>(
-			modelFile,
-			Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
-			.setPixelShader(pixelShader).setVertexShader(vertexShader)
-		);
-		model->matrix = DirectX::XMMatrixIdentity();
+
+	FBX() {
+		create<Initializer>([&] {
+			model = std::make_unique<Fogo::Graphics::DX12::FBXModel>(
+				modelFile,
+				Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
+				.setPixelShader(pixelShader).setVertexShader(vertexShader)
+				);
+			model->matrix = DirectX::XMMatrixIdentity();
+		});
 
 		create<Updater>([&] {
 			using namespace DirectX;
@@ -72,33 +73,17 @@ struct FBX : Component, LifeCycled {
 		create<Renderer>([&] {
 			model->render();
 		});
-
-		LifeCycled::initialize();
 	}
 };
 
 struct Debugger : Component {
-	struct CheckUKey : Component {
-		CheckUKey() {
-			create<Updater>([] {
-				if (Input::GetTrigger(KeyCode::U)) {
-					std::cout << "Triggered U Key" << std::endl;
-				}
-			});
-		}
-	};
-	struct CheckTKey : Component {
-		CheckTKey() {
-			create<Updater>([] {
-				if (Input::GetTrigger(KeyCode::T)) {
-					std::cout << "Triggered T Key" << std::endl;
-				}
-			});
-		}
-	};
 	Debugger() {
-		create<CheckUKey>();
-		create<CheckTKey>();
+		create<Initializer>([&] {
+			std::cout << "Debugger initialized" << std::endl;
+		});
+		create<Finalizer>([&] {
+			std::cout << "Debugger finalized" << std::endl;
+		});
 	}
 };
 
@@ -117,7 +102,6 @@ MainScene::MainScene() {
 	fbx->vertexShader = ResourceStore::Get<ComPtr<ID3DBlob>>(VertexShader::BOX);
 	fbx->pixelShader = ResourceStore::Get<ComPtr<ID3DBlob>>(PixelShader::BOX);
 
-	auto & inputDebugger = create<InputDebugger>().makeIndex(Key::InputDebugger1);
 
 	create<Debugger>();
 }

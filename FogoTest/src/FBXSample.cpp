@@ -249,8 +249,11 @@ FBXSample::FBXSample(
 	ComPtr<ID3DBlob> vertexShader,
 	ComPtr<ID3DBlob> pixelShader,
 	std::shared_ptr<DX12::Texture> texture
-) : __texture(std::move(texture)), __vertex_shader(std::move(vertexShader)), __pixel_shader(std::move(pixelShader)), __model_file_name(modelFileName) {
-	
+) : __texture(std::move(texture))
+, __vertex_shader(std::move(vertexShader))
+, __pixel_shader(std::move(pixelShader))
+, __model_file_name(modelFileName) {
+	create<Fogo::Game::Initializer>([&] { initialize();  });
 }
 
 void FBXSample::initialize() {
@@ -263,7 +266,6 @@ void FBXSample::initialize() {
 	initializeGameData();
 	create<Game::Updater>([&] { update(); });
 	create<Game::Renderer>([&] { render(); });
-	LifeCycled::initialize();
 }
 
 void FBXSample::update() {

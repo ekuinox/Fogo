@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 #include <Fogo.h>
 
-class Square : public Fogo::Game::Component, Fogo::Game::LifeCycled {
+class Square : public Fogo::Game::Component {
 private:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState;
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature;
