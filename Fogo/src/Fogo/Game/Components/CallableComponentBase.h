@@ -17,4 +17,8 @@ namespace Fogo::Game {
 			__function(args...);
 		}
 	};
+
+	template <typename ... Args>
+	using CallableComponent = CallableComponentBase<0, Args...>;
+
 }
