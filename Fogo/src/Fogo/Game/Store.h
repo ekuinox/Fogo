@@ -53,9 +53,17 @@ namespace Fogo::Game {
 		template <typename Element>
 		static Handler<Element> & Bind(Element * element, const UUID & parentId = rootId);
 
+		// ポインタをバインドする
+		template <typename Element, typename ElementAs, bool Both = true>
+		static Handler<ElementAs> & BindAs(Element * element, const UUID & parentId = rootId);
+
 		// 構築する
 		template <typename Element, typename ... Args>
 		static Handler<Element> & Create(const UUID & parentId = rootId, Args ... args);
+
+		// 構築する
+		template <typename Element, typename ElementAs, bool Both = true, typename ... Args>
+		static Handler<ElementAs> & CreateAs(const UUID & parentId = rootId, Args ... args);
 
 		// UUIDを用いてComponentを取得する
 		template <typename Element>
@@ -131,9 +139,24 @@ namespace Fogo::Game {
 		return Container<Element>::shared.at(element->uuid);
 	}
 
+	template<typename Element, typename ElementAs, bool Both>
+	Handler<ElementAs> & Store::BindAs(Element * element, const UUID & parentId) {
+		static_assert(std::is_base_of<ElementAs, Element>());
+		if constexpr (Both) {
+			Bind<Element>(element, parentId);
+		}
+		Insert<ElementAs>(element, parentId);
+	}
+
 	template <typename Element, typename ... Args>
 	Handler<Element> & Store::Create(const UUID & parentId, Args ... args) {
 		return Bind(new Element(args...), parentId);
+	}
+
+	template<typename Element, typename ElementAs, bool Both, typename ...Args>
+	Handler<ElementAs>& Store::CreateAs(const UUID & parentId, Args ...args) {
+		static_assert(std::is_base_of<ElementAs, Element>());
+		return BindAs<Element, ElementAs, Both>(new Element(args...), parentId);
 	}
 
 	template <typename Element>

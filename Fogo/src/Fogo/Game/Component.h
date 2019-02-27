@@ -52,9 +52,16 @@ namespace Fogo::Game {
 		template <typename Element, typename ... Args>
 		Handler<Element> & create(Args ... args) const;
 
-		// 子インスタンスとしてバインドする
+		// 子インスタンスを生成する
+		template <typename Element, typename ElementAs, bool Both = true, typename ... Args>
+		Handler<ElementAs> & createAs(Args ... args) const;
+
 		template <typename Element>
 		Handler<Element> & bind(Element * element) const;
+
+		// 子インスタンスとしてバインドする
+		template <typename Element, typename ElementAs, bool Both = true>
+		Handler<ElementAs> & bindAs(Element * element) const;
 
 		// 子インスタンスをすべて解放する
 		template <typename Element>
@@ -90,9 +97,19 @@ namespace Fogo::Game {
 		return Store::GetParent<Element>(uuid);
 	}
 
+	template<typename Element, typename ElementAs, bool Both, typename ...Args>
+	Handler<ElementAs>& Component::createAs(Args ...args) const {
+		return Store::CreateAs<Element, ElementAs, Both>(uuid, args...);
+	}
+
 	template<typename Element>
 	Handler<Element>& Component::bind(Element * element) const {
 		return Store::Bind<Element>(element, uuid);
+	}
+
+	template<typename Element, typename ElementAs, bool Both>
+	Handler<ElementAs>& Component::bindAs(Element * element) const {
+		return Store::BindAs<Element, ElementAs, Both>(element, uuid);
 	}
 
 	template<typename Element>
