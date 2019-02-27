@@ -260,8 +260,12 @@ namespace Fogo::Game {
 		}
 
 		for (const auto & uuid : uuids) {
-			// ÅŒã‚ÉComponent‚ª‰ñ‚Á‚Ä‚­‚é‚Ì‚Å‚»‚±‚Ådelete
-			if constexpr (std::is_same<Component, Element>()) {
+			// ÅŒã‚ÌÄ‹Aˆ—‚Åíœ‚·‚é, Store::Free‚ÅŒÄ‚Ô‚±‚Æ‚ÅÅŒã‚ÉComponent‚ª‚­‚é
+			if constexpr (sizeof...(Elements) == 0) {
+				// Component‚¶‚á‚È‚¢ê‡, Component‚Í—¬‚ê‚Ä‚«‚Ä‚¢‚È‚¢‚±‚Æ‚ª‘½‚¢‚Ì‚Å‚±‚±‚Åíœ‚ğ‰ñ‚·
+				if constexpr (!std::is_same<Element, Component>()) {
+					Container<Component>::shared.erase(uuid);
+				}
 				delete Container<Element>::shared[uuid].element;
 				Container<Element>::shared[uuid].element = nullptr;
 			}
