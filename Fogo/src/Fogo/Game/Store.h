@@ -261,7 +261,7 @@ namespace Fogo::Game {
 
 		for (const auto & uuid : uuids) {
 			// ÅŒã‚ÉComponent‚ª‰ñ‚Á‚Ä‚­‚é‚Ì‚Å‚»‚±‚Ådelete
-			if constexpr (!std::is_same<Component, Element>()) {
+			if constexpr (std::is_same<Component, Element>()) {
 				delete Container<Element>::shared[uuid].element;
 				Container<Element>::shared[uuid].element = nullptr;
 			}
