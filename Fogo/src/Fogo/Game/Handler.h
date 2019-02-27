@@ -28,6 +28,15 @@ namespace Fogo::Game {
 			return std::move(Handler(element, parentId));
 		}
 
+		template <typename ElementAs>
+		Handler<ElementAs> as() const {
+			static_assert(std::is_base_of<ElementAs, Element>());
+			if (const auto & elementAs = Store::Get<ElementAs>(element->uuid)) {
+				return *elementAs;
+			}
+			return Store::BindAs<Element, ElementAs, false>(element, parentId);
+		}
+
 		template <typename Elm = Element, typename Key>
 		Handler & makeIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
