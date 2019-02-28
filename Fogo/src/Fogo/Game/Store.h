@@ -177,7 +177,7 @@ namespace Fogo::Game {
 		std::vector<UUID> uuids {};
 
 		for (const auto &[uuid, element] : Container<Element>::shared) {
-			if (element.parentId == parentId) uuids.emplace_back(uuid);
+			if (element.getParentUUID() == parentId) uuids.emplace_back(uuid);
 		}
 
 		if (uuids.size() == 1) {
@@ -203,7 +203,7 @@ namespace Fogo::Game {
 	Utility::Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			auto parentId = Container<Component>::shared.at(uuid).parentId;
+			auto parentId = Container<Component>::shared.at(uuid).getParentUUID();
 			if (parentId == rootId) {
 				return Error::YourParentIsRoot;
 			}
@@ -218,7 +218,7 @@ namespace Fogo::Game {
 	void Store::Execute(const std::function<void(Element &)> & func) {
 		static_assert(IsCorrectElement<Element>());
 		for (const auto &[_, element] : Container<Element>::shared) {
-			func(*(element.element));
+			func(*element);
 		}
 	}
 
@@ -226,7 +226,7 @@ namespace Fogo::Game {
 	void Store::Execute(const std::function<void(Element &)> & func, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		for (const auto &[_, element] : Container<Element>::shared) {
-			if (element.parentId == parentId) func(*(element.element));
+			if (element.getParentUUID() == parentId) func(*element);
 		}
 	}
 
@@ -254,7 +254,7 @@ namespace Fogo::Game {
 		std::vector<UUID> uuids{};
 
 		for (const auto &[uuid, element] : Container<Element>::shared) {
-			if (element.parentId == parentId) {
+			if (element.getParentUUID() == parentId) {
 				uuids.emplace_back(uuid);
 			}
 		}
@@ -266,8 +266,7 @@ namespace Fogo::Game {
 				if constexpr (!std::is_same<Element, Component>()) {
 					Container<Component>::shared.erase(uuid);
 				}
-				delete Container<Element>::shared[uuid].element;
-				Container<Element>::shared[uuid].element = nullptr;
+				Container<Element>::shared[uuid].release();
 			}
 
 			Container<Element>::shared.erase(uuid);
@@ -288,7 +287,7 @@ namespace Fogo::Game {
 		static_assert(IsCorrectElement<Element>());
 		std::size_t size = 0;
 		for (const auto &[_, element] : Container<Element>::shared) {
-			if (element.parentId == parentId) ++size;
+			if (element.getParentUUID() == parentId) ++size;
 		}
 		return size;
 	}

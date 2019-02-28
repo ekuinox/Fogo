@@ -84,12 +84,20 @@ public:
 };
 
 struct Debugger : Component {
+	struct Foo : Component {
+		~Foo() {
+			std::cout << "[Foo] destructor" << std::endl;
+		}
+	};
+
 	Debugger() {
 		create<Initializer>([&] {
 			std::cout << "Debugger initialized" << std::endl;
+			create<Foo>();
 		});
 		create<Finalizer>([&] {
 			std::cout << "Debugger finalized" << std::endl;
+			free<Foo>();
 		});
 	}
 };
