@@ -28,38 +28,50 @@ namespace Fogo::Game {
 			return std::move(Handler(element, parentId));
 		}
 
+		// 継承元クラスでの取得
 		template <typename ElementAs>
 		Handler<ElementAs> as() const {
 			static_assert(std::is_base_of<ElementAs, Element>());
 			if (const auto & elementAs = Store::Get<ElementAs>(element->uuid)) {
 				return *elementAs;
 			}
+			// 格納されていない場合新たに格納して返却
 			return Store::BindAs<Element, ElementAs, false>(element, parentId);
 		}
 
+		// インデックスの作成
 		template <typename Elm = Element, typename Key>
 		Handler & makeIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
 			return *this;
 		}
 
+		// インデックスの削除
 		template <typename Elm = Element, typename Key>
 		Handler & destroyIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
 			return *this;
 		}
 
+		// 親の挿げ替え
 		Handler & assign(const UUID & newParentId) {
 			parentId = newParentId;
 			return *this;
 		}
 
+		// elementへのメンバアクセス
 		Element * operator->() const {
 			return element;
 		}
 
+		// elementへの参照を得る
 		Element & operator*() const {
 			return *element;
+		}
+
+		// elementのポインタを得る
+		Element * operator&() const {
+			return element;
 		}
 	};
 
