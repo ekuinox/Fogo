@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Fogo.h>
+#include <fstream>
 #include "../Scenes/MainScene.h"
 
 struct SceneKey {
@@ -38,6 +39,8 @@ inline void test2() {
 				PubSub<System::Event, void>::Publish(System::Event::Next);
 			}
 			if (Input::GetTrigger(KeyCode::P)) {
+				std::ofstream output("./componentTree.json", std::ios_base::trunc);
+				Fogo::Debug::DumpComponent(output, System::GetInstance(), 0, '\t', 1);
 				Fogo::Debug::Console::Log(System::GetInstance());
 			}
 

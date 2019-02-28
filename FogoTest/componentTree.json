@@ -1,0 +1,98 @@
+{
+	"class Fogo::Game::System": {
+		"uuid": 13148427459373630536,
+		"class `void __cdecl test2(void)'::`2'::MainScene1": {
+			"uuid": 13072435929657672397,
+			"name": "MainScene1",
+			"tag": "MainScene1",
+			"layer": 0,
+			"class Model": {
+				"uuid": 1857943497337023953,
+				"name": "Model",
+				"tag": "Model",
+				"layer": 0,
+				"class Fogo::Game::CallableComponentBase<2>": {
+					"uuid": 3137861604292270735,
+				},
+				"class Fogo::Game::CallableComponentBase<0>": {
+					"uuid": 12871520782149112854,
+				},
+				"class Fogo::Game::CallableComponentBase<1>": {
+					"uuid": 6803932172744022935,
+				},
+				"struct Fogo::Game::Meta": {
+					"uuid": 2758136382384333345,
+				},
+			},
+			"struct Debugger": {
+				"uuid": 18221915135964934702,
+				"name": "Debugger",
+				"tag": "Debugger",
+				"layer": 0,
+				"class Fogo::Game::CallableComponentBase<2>": {
+					"uuid": 303507584513165310,
+				},
+				"struct Fogo::Game::Meta": {
+					"uuid": 5179677057564681612,
+				},
+				"class Fogo::Game::CallableComponentBase<3>": {
+					"uuid": 14559691599505365570,
+				},
+				"struct Debugger::Foo": {
+					"uuid": 13981473946284904319,
+					"name": "Foo",
+					"tag": "Foo",
+					"layer": 0,
+					"struct Fogo::Game::Meta": {
+						"uuid": 13772976108417759741,
+					},
+				},
+			},
+			"struct Fogo::Game::Meta": {
+				"uuid": 12035399556936679402,
+			},
+		},
+		"class `void __cdecl test2(void)'::`2'::MainScene2": {
+			"uuid": 2477560328192612838,
+			"name": "MainScene2",
+			"tag": "MainScene2",
+			"layer": 0,
+			"class Model": {
+				"uuid": 5577360946056990929,
+				"name": "Model",
+				"tag": "Model",
+				"layer": 0,
+				"class Fogo::Game::CallableComponentBase<2>": {
+					"uuid": 8214499674738417166,
+				},
+				"class Fogo::Game::CallableComponentBase<0>": {
+					"uuid": 9765544673000825828,
+				},
+				"class Fogo::Game::CallableComponentBase<1>": {
+					"uuid": 3623424924399653833,
+				},
+				"struct Fogo::Game::Meta": {
+					"uuid": 16032801308920864386,
+				},
+			},
+			"struct Debugger": {
+				"uuid": 4598518956086468466,
+				"name": "Debugger",
+				"tag": "Debugger",
+				"layer": 0,
+				"struct Fogo::Game::Meta": {
+					"uuid": 9289403595055503758,
+				},
+				"class Fogo::Game::CallableComponentBase<2>": {
+					"uuid": 3502035915633778198,
+				},
+				"class Fogo::Game::CallableComponentBase<3>": {
+					"uuid": 6338560410655092982,
+				},
+			},
+			"struct Fogo::Game::Meta": {
+				"uuid": 17029354857664669450,
+			},
+		},
+	},
+}
