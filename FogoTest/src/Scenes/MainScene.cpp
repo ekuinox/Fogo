@@ -16,6 +16,7 @@ using Fogo::Game::Updater;
 using Fogo::Game::Renderer;
 using Fogo::Game::Initializer;
 using Fogo::Game::Finalizer;
+using Fogo::Game::Meta;
 
 enum class Key {
 	FBX1,
@@ -80,17 +81,19 @@ public:
 		create<Initializer>([&] { initialize(); });
 		create<Updater>([&] { update(); });
 		create<Renderer>([&] { render(); });
+		create<Meta>("Model", "Model", 0);
 	}
 };
 
 struct Debugger : Component {
 	struct Foo : Component {
-		~Foo() {
-			std::cout << "[Foo] destructor" << std::endl;
+		Foo() {
+			create<Meta>("Foo", "Foo", 0);
 		}
 	};
 
 	Debugger() {
+		create<Meta>("Debugger", "Debugger", 0);
 		create<Initializer>([&] {
 			std::cout << "Debugger initialized" << std::endl;
 			create<Foo>();

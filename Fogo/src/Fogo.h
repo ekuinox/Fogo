@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Fogo/Utility.h"
-#include "Fogo/Graphics.h"
-#include "Fogo/Game.h"
+#include "./Fogo/Debug.h"
+#include "./Fogo/Game.h"
+#include "./Fogo/Graphics.h"
+#include "./Fogo/Utility.h"
 
 namespace Fogo {
 	struct Properties {

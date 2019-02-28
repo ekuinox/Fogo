@@ -19,6 +19,9 @@ inline void test2() {
 
 	class MainScene1 : public MainScene {
 	public:
+		MainScene1() : MainScene() {
+			create<Fogo::Game::Meta>("MainScene1", "MainScene1", 0);
+		}
 		void initialize() override {
 			std::cout << "[MainScene1] initialized" << std::endl;
 			MainScene::initialize();
@@ -34,6 +37,10 @@ inline void test2() {
 			if (System::IsNextSceneInitialized()) {
 				PubSub<System::Event, void>::Publish(System::Event::Next);
 			}
+			if (Input::GetTrigger(KeyCode::P)) {
+				Fogo::Debug::Console::Log(System::GetInstance());
+			}
+
 			MainScene::update();
 		}
 		void finalize() override {
@@ -44,6 +51,9 @@ inline void test2() {
 
 	class MainScene2 : public MainScene {
 	public:
+		MainScene2() : MainScene() {
+			create<Fogo::Game::Meta>("MainScene2", "MainScene2", 0);
+		}
 		void initialize() override {
 			std::cout << "[MainScene2] initialized" << std::endl;
 			MainScene::initialize();
