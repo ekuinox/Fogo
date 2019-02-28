@@ -64,7 +64,7 @@ namespace Fogo::Game {
 		Handler<ElementAs> & bindAs(Element * element) const;
 
 		// 子インスタンスをすべて解放する
-		template <typename Element = Component>
+		template <typename Element = Component, typename ... Elements>
 		void free() const;
 
 		// 子インスタンスの数を取得する
@@ -117,9 +117,9 @@ namespace Fogo::Game {
 		Store::Execute<Element>(func, uuid);
 	}
 
-	template<typename Element>
+	template<typename Element, typename ... Elements>
 	void Component::free() const {
-		Store::Free<Element>(uuid);
+		Store::Free<Element, Elements ...>(uuid);
 	}
 
 	template <typename Element>
