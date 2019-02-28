@@ -9,13 +9,14 @@ namespace Fogo::Game {
 
 	template <typename Element>
 	class Handler {
-	public:
+	private:
 		template <typename Key, typename Elm = Element>
 		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Elm*, Hash<Key>>;
-
+		
 		Element * element;
 		UUID parentId;
 
+	public:
 		Handler(Element * element, const UUID & parentId) : element(element), parentId(parentId) {
 
 		}
@@ -77,6 +78,12 @@ namespace Fogo::Game {
 		// eUUID‚ğ“¾‚é
 		const UUID getParentUUID() const {
 			return parentId;
+		}
+
+		// ‰ğ•ú‚·‚é
+		void release() {
+			delete element;
+			element = nullptr;
 		}
 	};
 
