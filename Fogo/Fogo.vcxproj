@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\Fogo.h" />
     <ClInclude Include="src\Fogo\Debug.h" />
+    <ClInclude Include="src\Fogo\Debug\DumpComponent.h" />
     <ClInclude Include="src\Fogo\Debug\Console.h" />
     <ClInclude Include="src\Fogo\Game.h" />
     <ClInclude Include="src\Fogo\Game\Components\CallableComponentBase.h" />
@@ -68,6 +69,7 @@
   <ItemGroup>
     <ClCompile Include="src\Fogo.cpp" />
     <ClCompile Include="src\Fogo\Debug\Console.cpp" />
+    <ClCompile Include="src\Fogo\Debug\DumpComponent.cpp" />
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Meta.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
