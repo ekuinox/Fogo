@@ -3,6 +3,8 @@
 #include <Fogo.h>
 #include <fstream>
 #include "../Scenes/MainScene.h"
+#include "../Store.h"
+#include "../Components/Model.h"
 
 struct SceneKey {
 	static constexpr auto MainScene1 = "MainScene1";
@@ -22,6 +24,11 @@ inline void test2() {
 	public:
 		MainScene1() : MainScene() {
 			create<Fogo::Game::Meta>("MainScene1", "MainScene1", 0);
+			create<Model>(
+				"./resources/2.fbx",
+				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),
+				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(PixelShader::BOX)
+			).makeIndex("Box");
 		}
 		void initialize() override {
 			std::cout << "[MainScene1] initialized" << std::endl;
@@ -56,6 +63,11 @@ inline void test2() {
 	public:
 		MainScene2() : MainScene() {
 			create<Fogo::Game::Meta>("MainScene2", "MainScene2", 0);
+			create<Model>(
+				"./resources/model/unitychan.fbx",
+				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),
+				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(PixelShader::BOX)
+			).makeIndex("UnityChan");
 		}
 		void initialize() override {
 			std::cout << "[MainScene2] initialized" << std::endl;
