@@ -190,7 +190,7 @@ void FBXSample::createVertexBuffer() {
 	// 頂点バッファビュー設定
 	__vertex_buffer_view.BufferLocation = __vertex_buffer_resource->GetGPUVirtualAddress();
 	__vertex_buffer_view.StrideInBytes = sizeof(VertexData);
-	__vertex_buffer_view.SizeInBytes = desc_resource.Width;
+	__vertex_buffer_view.SizeInBytes = static_cast<UINT>(desc_resource.Width);
 }
 
 void FBXSample::createConstantBuffer() {
@@ -320,19 +320,19 @@ void FBXSample::render() const {
 		// コンスタントバッファを設定
 		{
 			std::vector<ID3D12DescriptorHeap*> heaps = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
-			commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
+			commandList->SetDescriptorHeaps(static_cast<UINT>(heaps.size()), heaps.data());
 			commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
 		}
 		// テクスチャをセット
 		{
 			std::vector<ID3D12DescriptorHeap*> heaps = { __texture->getDescriptorHeap().Get() };
-			commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
+			commandList->SetDescriptorHeaps(static_cast<UINT>(heaps.size()), heaps.data());
 			commandList->SetGraphicsRootDescriptorTable(1, __texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 		}
 
 		// 三角形描画
 		commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &__vertex_buffer_view);
-		commandList->DrawInstanced(__vertexes.size(), __vertexes.size() / 3, 0, 0);
+		commandList->DrawInstanced(static_cast<UINT>(__vertexes.size()), __vertexes.size() / 3, 0, 0);
 	});
 }

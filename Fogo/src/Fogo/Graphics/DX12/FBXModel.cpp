@@ -373,13 +373,13 @@ void FBXModel::render() const {
 			// コンスタントバッファを設定
 			{
 				std::vector<ID3D12DescriptorHeap*> heaps = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
-				commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
+				commandList->SetDescriptorHeaps(static_cast<UINT>(heaps.size()), heaps.data());
 				commandList->SetGraphicsRootDescriptorTable(0, __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetGPUDescriptorHandleForHeapStart());
 			}
 			// テクスチャをセット
 			if (mesh.material.texture) {
 				std::vector<ID3D12DescriptorHeap*> heaps = {mesh.material.texture->getDescriptorHeap().Get() };
-				commandList->SetDescriptorHeaps(heaps.size(), heaps.data());
+				commandList->SetDescriptorHeaps(static_cast<UINT>(heaps.size()), heaps.data());
 				commandList->SetGraphicsRootDescriptorTable(1, mesh.material.texture->getDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 			}
 			// 三角形描画
@@ -387,7 +387,7 @@ void FBXModel::render() const {
 			commandList->IASetVertexBuffers(0, 1, &mesh.vertexBuffer.view);
 			commandList->IASetIndexBuffer(&mesh.indexBuffer.view);
 		//	commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
-			commandList->DrawIndexedInstanced(mesh.indexes.size(), 1, 0, 0, 0);
+			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh.indexes.size()), 1, 0, 0, 0);
 		}
 	});
 }
