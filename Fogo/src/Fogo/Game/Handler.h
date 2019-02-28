@@ -73,6 +73,11 @@ namespace Fogo::Game {
 		Element * operator&() const {
 			return element;
 		}
+
+		// eUUID‚ğ“¾‚é
+		const UUID getParentUUID() const {
+			return parentId;
+		}
 	};
 
 }
