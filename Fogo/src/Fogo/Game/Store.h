@@ -146,6 +146,7 @@ namespace Fogo::Game {
 			Bind<Element>(element, parentId);
 		}
 		Insert<ElementAs>(element, parentId);
+		return Container<ElementAs>::shared.at(element->uuid);
 	}
 
 	template <typename Element, typename ... Args>
