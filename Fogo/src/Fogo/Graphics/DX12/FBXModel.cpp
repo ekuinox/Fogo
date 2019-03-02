@@ -257,16 +257,14 @@ void FBXModel::createVertexBuffers() {
 		);
 
 		UINT8 * data_begin;
-		Utility::SimplePromise([&] {
-			return resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-		}).then([&] {
+		if (SUCCEEDED(resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 			const auto temp = reinterpret_cast<FBXParser::Vertex*>(data_begin);
-			for (size_t i = 0; i < mesh.vertexes.size(); ++i)
-			{
+			for (size_t i = 0; i < mesh.vertexes.size(); ++i) {
 				temp[i] = mesh.vertexes[i];
+				temp[i].texture.y = 1.0f - temp[i].texture.y;
 			}
 			resource->Unmap(0, nullptr);
-		});
+		}
 
 		mesh.vertexBuffer = {
 			resource,
