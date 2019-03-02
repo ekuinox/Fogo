@@ -386,7 +386,6 @@ void FBXModel::render() const {
 			commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			commandList->IASetVertexBuffers(0, 1, &mesh.vertexBuffer.view);
 			commandList->IASetIndexBuffer(&mesh.indexBuffer.view);
-		//	commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
 			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh.indexes.size()), 1, 0, 0, 0);
 		}
 	});
