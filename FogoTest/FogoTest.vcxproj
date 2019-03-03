@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\Model.cpp" />
     <ClCompile Include="src\FBX2016Loader.cpp" />
     <ClCompile Include="src\FBXSample.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -26,10 +27,12 @@
     <ClCompile Include="src\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\Model.h" />
     <ClInclude Include="src\FBX2016Loader.h" />
     <ClInclude Include="src\FBXSample.h" />
     <ClInclude Include="src\Scenes\MainScene.h" />
     <ClInclude Include="src\Square.h" />
+    <ClInclude Include="src\Store.h" />
     <ClInclude Include="src\Tests\Test1.h" />
     <ClInclude Include="src\Tests\Test2.h" />
   </ItemGroup>

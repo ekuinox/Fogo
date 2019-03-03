@@ -232,13 +232,7 @@ FBXParser::Mesh FBXParser::Parse(FbxMesh* mesh) {
 	// 頂点データ取得
 	const auto & positions = GetPositions(mesh, indexes);		// 頂点座標を取得（面の構成情報に合わせる）
 	const auto & normals = GetNormals(mesh, indexes);			// 法線ベクトルを取得（面の構成情報に合わせる）
-	const auto & uvs = [&] {
-		auto uvs = GetUVs(mesh, indexes);
-		for (auto && uv : uvs) {
-			uv.y = 1.0f - uv.y;
-		}
-		return uvs; 
-	}();						// UV座標を取得（面の構成情報に合わせる）
+	const auto & uvs = GetUVs(mesh, indexes);					// UV座標を取得（面の構成情報に合わせる）
 
 	// 念のためサイズチェック
 

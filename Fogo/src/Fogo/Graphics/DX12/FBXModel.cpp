@@ -131,7 +131,7 @@ void FBXModel::createPipelineStateObject() {
 	// 頂点シェーダとピクセルシェーダがないと、作成に失敗する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC descPSO;
 	ZeroMemory(&descPSO, sizeof(descPSO));
-	descPSO.InputLayout = { INPUT_LAYOUT, ARRAYSIZE(INPUT_LAYOUT) };										// インプットレイアウト設定
+	descPSO.InputLayout = { FBXParser::Vertex::INPUT_LAYOUT, ARRAYSIZE(FBXParser::Vertex::INPUT_LAYOUT) };										// インプットレイアウト設定
 	descPSO.pRootSignature = __root_signature.Get();														// ルートシグニチャ設定
 	descPSO.VS = { reinterpret_cast<BYTE*>(__properties.vertexShader->GetBufferPointer()), __properties.vertexShader->GetBufferSize() };	// 頂点シェーダ設定
 	descPSO.PS = { reinterpret_cast<BYTE*>(__properties.pixelShader->GetBufferPointer()), __properties.pixelShader->GetBufferSize() };	// ピクセルシェーダ設定
@@ -257,16 +257,14 @@ void FBXModel::createVertexBuffers() {
 		);
 
 		UINT8 * data_begin;
-		Utility::SimplePromise([&] {
-			return resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-		}).then([&] {
+		if (SUCCEEDED(resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 			const auto temp = reinterpret_cast<FBXParser::Vertex*>(data_begin);
-			for (size_t i = 0; i < mesh.vertexes.size(); ++i)
-			{
+			for (size_t i = 0; i < mesh.vertexes.size(); ++i) {
 				temp[i] = mesh.vertexes[i];
+				temp[i].texture.y = 1.0f - temp[i].texture.y;
 			}
 			resource->Unmap(0, nullptr);
-		});
+		}
 
 		mesh.vertexBuffer = {
 			resource,
@@ -386,7 +384,6 @@ void FBXModel::render() const {
 			commandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			commandList->IASetVertexBuffers(0, 1, &mesh.vertexBuffer.view);
 			commandList->IASetIndexBuffer(&mesh.indexBuffer.view);
-		//	commandList->DrawInstanced(__meshes[i].vertexes.size(), __meshes[i].vertexes.size() / 3, 0, 0);
 			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh.indexes.size()), 1, 0, 0, 0);
 		}
 	});

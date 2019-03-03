@@ -17,6 +17,19 @@ namespace Fogo::Graphics::DX12 {
 			bool operator == (const Vertex & v) const {		//　＝＝演算子のオーバーロード 
 				return std::memcmp(this, &v, sizeof(Vertex)) == 0;
 			}
+
+			/*
+			 * struct VS_INPUT { 
+			 *	float4 pos		: POSITION;	// 頂点座標
+			 *	float4 normal	: NORMAL;	// 頂点カラー
+			 *	float2 uv		: TEXCOORD;	// UV座標
+			 * };
+			*/
+			static constexpr D3D12_INPUT_ELEMENT_DESC INPUT_LAYOUT[3] = {
+				{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+				{ "NORMAL",		0, DXGI_FORMAT_R32G32B32_FLOAT,	0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+				{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,	0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			};
 		};
 
 		struct Material {
