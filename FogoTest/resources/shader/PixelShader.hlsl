@@ -6,5 +6,4 @@ SamplerState samp0 : register(s0);
 float4 main(VS_OUT vsin) : SV_TARGET
 {
 	return tex0.Sample(samp0, vsin.uv);
-//	return abs(vsin.color);
 }

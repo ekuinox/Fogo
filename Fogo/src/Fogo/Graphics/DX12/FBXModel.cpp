@@ -131,7 +131,7 @@ void FBXModel::createPipelineStateObject() {
 	// 頂点シェーダとピクセルシェーダがないと、作成に失敗する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC descPSO;
 	ZeroMemory(&descPSO, sizeof(descPSO));
-	descPSO.InputLayout = { INPUT_LAYOUT, ARRAYSIZE(INPUT_LAYOUT) };										// インプットレイアウト設定
+	descPSO.InputLayout = { FBXParser::Vertex::INPUT_LAYOUT, ARRAYSIZE(FBXParser::Vertex::INPUT_LAYOUT) };										// インプットレイアウト設定
 	descPSO.pRootSignature = __root_signature.Get();														// ルートシグニチャ設定
 	descPSO.VS = { reinterpret_cast<BYTE*>(__properties.vertexShader->GetBufferPointer()), __properties.vertexShader->GetBufferSize() };	// 頂点シェーダ設定
 	descPSO.PS = { reinterpret_cast<BYTE*>(__properties.pixelShader->GetBufferPointer()), __properties.pixelShader->GetBufferSize() };	// ピクセルシェーダ設定

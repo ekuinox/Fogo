@@ -10,7 +10,7 @@ cbuffer cbMatrix : register(b0)
 struct VS_IN 
 {
 	float4 pos		: POSITION;	// 頂点座標
-	float4 color	: COLOR;	// 頂点カラー
+	float4 normal	: NORMAL;	// 頂点カラー
 	float2 uv		: TEXCOORD;	// UV座標
 };
 
@@ -18,7 +18,7 @@ struct VS_IN
 struct VS_OUT
 {
 	float4 pos		: SV_POSITION;	// 頂点座標
-	float4 color	: COLOR;		// 頂点カラー
+	float4 normal	: NORMAL;		// 頂点カラー
 	float2 uv		: TEXCOORD;	// UV座標
 };
 
