@@ -5,7 +5,7 @@
 
 namespace Fogo::Utility {
 
-	template <typename E, typename V>
+	template <typename E, typename V = void>
 	class Result final {
 	/*
 	
@@ -56,6 +56,28 @@ namespace Fogo::Utility {
 
 		const V & operator*() const {
 			return std::get<V>(variant);
+		}
+	};
+
+	template <typename E>
+	class Result<E, void> final{
+	private:
+		std::optional<E> error;
+		bool success;
+
+	public:
+		Result(const E & e) : error(e), success(false) {}
+		Result() : success(true) {
+			std::cout << "pokeee" << std::endl;
+		}
+
+		bool operator==(const E & e) const {
+			if (success) return false;
+			return e == error.value();
+		}
+
+		operator bool() const {
+			return success;
 		}
 	};
 }
