@@ -75,9 +75,6 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\Fogo\Utility\SimplePromise.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\Fogo\Utility\Input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>

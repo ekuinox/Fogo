@@ -55,7 +55,6 @@
     <ClInclude Include="src\Fogo\Utility\Mouse.h" />
     <ClInclude Include="src\Fogo\Utility\PubSub.h" />
     <ClInclude Include="src\Fogo\Utility\Result.h" />
-    <ClInclude Include="src\Fogo\Utility\SimplePromise.h" />
     <ClInclude Include="src\Fogo\Utility\SingletonWrapper.h" />
     <ClInclude Include="src\Fogo\Utility\Subject.h" />
     <ClInclude Include="src\Fogo\Utility\TaskScheduler.h" />

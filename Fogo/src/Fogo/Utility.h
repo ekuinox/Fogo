@@ -8,7 +8,6 @@
 #include "./Utility/Mouse.h"
 #include "./Utility/PubSub.h"
 #include "./Utility/Result.h"
-#include "./Utility/SimplePromise.h"
 #include "./Utility/SingletonWrapper.h"
 #include "./Utility/Subject.h"
 #include "./Utility/TaskScheduler.h"

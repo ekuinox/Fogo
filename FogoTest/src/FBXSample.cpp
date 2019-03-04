@@ -176,16 +176,14 @@ void FBXSample::createVertexBuffer() {
 		IID_PPV_ARGS(__vertex_buffer_resource.GetAddressOf()));
 
 	UINT8 * data_begin;
-	SimplePromise([&] {
-		return __vertex_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-	}).then([&] {
+	if (SUCCEEDED(__vertex_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 		const auto temp = reinterpret_cast<VertexData*>(data_begin);
 		for (size_t i = 0; i < __vertexes.size(); ++i)
 		{
 			temp[i] = __vertexes[i];
 		}
 		__vertex_buffer_resource->Unmap(0, nullptr);
-	});
+	}
 
 	// 頂点バッファビュー設定
 	__vertex_buffer_view.BufferLocation = __vertex_buffer_resource->GetGPUVirtualAddress();
@@ -310,12 +308,9 @@ void FBXSample::render() const {
 		const MatrixConstantBuffer buffer { XMMatrixTranspose(__matrix * view * proj) };
 
 		UINT8 * data_begin;
-		SimplePromise([&] {
-			return __constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-		}).then([&] {
-			memcpy(data_begin, &buffer, sizeof buffer);
+		if (SUCCEEDED(__constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 			__constant_buffer_resource->Unmap(0, nullptr);
-		});
+		}
 		
 		// コンスタントバッファを設定
 		{

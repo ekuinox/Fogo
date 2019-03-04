@@ -199,15 +199,13 @@ void FBXModel::createIndexBuffers() {
 		);
 
 		UINT8 * data_begin;
-		Utility::SimplePromise([&] {
-			return resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-		}).then([&] {
+		if (SUCCEEDED(resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 			const auto temp = reinterpret_cast<unsigned int*>(data_begin);
 			for (size_t i = 0; i < mesh.indexes.size(); ++i) {
 				temp[i] = mesh.indexes[i];
 			}
 			resource->Unmap(0, nullptr);
-		});
+		}
 
 		mesh.indexBuffer = {
 			resource,
@@ -360,14 +358,12 @@ void FBXModel::render() const {
 		const MatrixConstantBuffer buffer{ XMMatrixTranspose(matrix * view * proj) };
 
 		UINT8 * data_begin;
-		Utility::SimplePromise([&] {
-			return __constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin));
-		}).then([&] {
+		if (SUCCEEDED(__constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {
 			memcpy(data_begin, &buffer, sizeof buffer);
 			__constant_buffer_resource->Unmap(0, nullptr);
-		});
+		}
 
-		for (const auto& mesh : __meshes) {
+		for (const auto & mesh : __meshes) {
 			// コンスタントバッファを設定
 			{
 				std::vector<ID3D12DescriptorHeap*> heaps = { __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].Get() };
