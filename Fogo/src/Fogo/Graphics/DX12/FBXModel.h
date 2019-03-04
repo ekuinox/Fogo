@@ -63,7 +63,9 @@ namespace Fogo::Graphics::DX12 {
 		void createConstantBuffer();
 
 	public:
-		DirectX::XMMATRIX matrix;
+		DirectX::XMMATRIX world;
+		DirectX::XMMATRIX projection;
+		DirectX::XMMATRIX view;
 
 		FBXModel(const char * fileName, const Properties & properties = {});
 		const std::vector<Mesh> & getMeshes() const;

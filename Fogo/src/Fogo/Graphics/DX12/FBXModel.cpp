@@ -344,18 +344,7 @@ void FBXModel::render() const {
 		commandList->SetGraphicsRootSignature(__root_signature.Get());
 		commandList->SetPipelineState(__pipeline_state_object.Get());
 
-		// コンスタントバッファ更新
-		using namespace DirectX;
-
-		const auto view = XMMatrixLookAtLH({ 0, 0, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
-		const auto proj = XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(60),
-			static_cast<float>(Utility::Window::GetWidth()) / static_cast<float>(Utility::Window::GetHeight()),
-			1,
-			1000
-		);
-
-		const MatrixConstantBuffer buffer{ XMMatrixTranspose(matrix * view * proj) };
+		const MatrixConstantBuffer buffer { XMMatrixTranspose(world * view * projection) };
 
 		UINT8 * data_begin;
 		if (SUCCEEDED(__constant_buffer_resource->Map(0, nullptr, reinterpret_cast<void**>(&data_begin)))) {

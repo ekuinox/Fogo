@@ -13,7 +13,7 @@ void Model::initialize() {
 		Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
 		.setPixelShader(pixelShader).setVertexShader(vertexShader)
 		);
-	model->matrix = DirectX::XMMatrixIdentity();
+	model->world = DirectX::XMMatrixIdentity();
 }
 
 void Model::update() {
@@ -38,7 +38,17 @@ void Model::update() {
 
 	const auto translation_matrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
 
-	model->matrix = rotation_matrix * translation_matrix * model->matrix;
+	// コンスタントバッファ更新
+	using namespace DirectX;
+
+	model->world = rotation_matrix * translation_matrix * model->world;
+	model->view = XMMatrixLookAtLH({ 0, 0, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
+	model->projection = XMMatrixPerspectiveFovLH(
+		XMConvertToRadians(60),
+		static_cast<float>(Window::GetWidth()) / static_cast<float>(Window::GetHeight()),
+		1,
+		1000
+	);
 }
 
 void Model::render() {
