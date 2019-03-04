@@ -1,5 +1,6 @@
 #include "MainScene.h"
 #include "../Store.h"
+#include "../Components/Camera.h"
 #include <iostream>
 
 using Microsoft::WRL::ComPtr;
@@ -27,4 +28,13 @@ MainScene::MainScene() {
 		ResourceStore::Insert(TextureType::BOX, std::make_shared<Texture>(L"./resources/Textures/KUTIJE/M_1.jpg"));
 		once = false;
 	}
+	const auto & camera = create<Camera>().makeIndex("MainCamera");
+
+	using namespace DirectX;
+
+	camera->target = XMVECTOR { 0, 0, 0 };
+	camera->position = XMVECTOR { 0, 0, -50 };
+	camera->fov = 60;
+	camera->nearZ = 1;
+	camera->farZ = 1000;
 }

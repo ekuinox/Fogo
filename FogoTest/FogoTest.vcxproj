@@ -19,12 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\Camera.cpp" />
     <ClCompile Include="src\Components\Model.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Scenes\MainScene.cpp" />
     <ClCompile Include="src\Square.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Components\Camera.h" />
     <ClInclude Include="src\Components\Model.h" />
     <ClInclude Include="src\Scenes\MainScene.h" />
     <ClInclude Include="src\Square.h" />

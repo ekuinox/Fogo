@@ -1,4 +1,5 @@
 #include "./Model.h"
+#include "./Camera.h"
 
 using Fogo::Game::Meta;
 using Fogo::Game::Initializer;
@@ -42,13 +43,12 @@ void Model::update() {
 	using namespace DirectX;
 
 	model->world = rotation_matrix * translation_matrix * model->world;
-	model->view = XMMatrixLookAtLH({ 0, 0, -50 }, { 0, 0, 0 }, { 0, 1, 0 });
-	model->projection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60),
-		static_cast<float>(Window::GetWidth()) / static_cast<float>(Window::GetHeight()),
-		1,
-		1000
-	);
+	if (const auto & scene = getMyScene()) {
+		if (const auto & camera = scene->get<Camera>("MainCamera")) {
+			model->view = camera->getView();
+			model->projection = camera->getProjection();
+		}
+	}
 }
 
 void Model::render() {
