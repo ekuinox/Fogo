@@ -1,5 +1,6 @@
 #include "./System.h"
 #include "./Components/Scene.h"
+#include "../Graphics.h"
 
 using Fogo::Game::System;
 using Fogo::Game::Scene;
@@ -8,39 +9,51 @@ using Fogo::Utility::Time;
 using Fogo::Utility::Input;
 using Fogo::Utility::PubSub;
 using Fogo::Utility::Window;
+using Fogo::Graphics::DX12::Graphics;
 
 System * System::__instance = nullptr;
 
 void System::exec() {
-	const auto & currentScene = get<Scene>(__current_key);
-	if (!currentScene) return;
+	try {
+		const auto & currentScene = get<Scene>(__current_key);
+		if (!currentScene) return;
 
-	Time::Start();
-	Input::Update();
-	
-	currentScene->update();
-	currentScene->render();
+		Time::Start();
+		Input::Update();
 
-	if (__go_next) {
-		const auto & nextScene = get<Scene>(__next_key);
-		if (nextScene) {
-			__go_next = false;
-			nextScene->start();
-			__finalizer = { __current_key, true };
-			// キーの切り替え
-			__current_key = __next_key;
-			Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
-				const auto & finalizeScene = get<Scene>(__finalizer.scene);
-				finalizeScene->stop();
-				finalizeScene->finalize();
-				__finalizer.isFinaliing = false;
-			});
+		currentScene->update();
+		currentScene->render();
+
+		if (__go_next) {
+			const auto & nextScene = get<Scene>(__next_key);
+			if (nextScene) {
+				__go_next = false;
+				nextScene->start();
+				__finalizer = { __current_key, true };
+				// キーの切り替え
+				__current_key = __next_key;
+				Time::RegisterTimer("FinalizingScene", 1.0f, [&] {
+					const auto & finalizeScene = get<Scene>(__finalizer.scene);
+					finalizeScene->stop();
+					finalizeScene->finalize();
+					__finalizer.isFinaliing = false;
+				});
+			}
 		}
-	}
 
-	Time::Stop();
-	Time::CheckTimers();
-	TaskScheduler::ExecTasks();
+		Time::Stop();
+		Time::CheckTimers();
+		TaskScheduler::ExecTasks();
+	}
+	catch (::Graphics::exception & e) {
+		Utility::Log(e.what());
+	}
+	catch (std::exception & e) {
+		Utility::Log(e.what());
+	}
+	catch (...) {
+		Utility::Log("[System] 不明な例外がスローされました");
+	}
 }
 
 void System::onNext() {
