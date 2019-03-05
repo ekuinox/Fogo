@@ -2,11 +2,8 @@
 #include <Fogo.h>
 
 inline void test1() {
-	using namespace Fogo::Utility;
-	using namespace Fogo::Graphics::DX12;
+	using namespace Fogo;
 	using namespace Microsoft::WRL;
-	using Fogo::Game::System;
-	using Fogo::Game::Component;
 
 	class FooComponent : public Component {
 		const char * name = "";

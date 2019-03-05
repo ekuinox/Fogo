@@ -2,8 +2,7 @@
 #include "./CallableComponents.h"
 #include "../../Graphics.h"
 
-using namespace Fogo::Game;
-using namespace Fogo::Graphics::DX12;
+using namespace Fogo;
 
 template <typename T>
 void RecursiveExecute(Component & parent) {

@@ -4,7 +4,7 @@
 #include <fbxsdk.h>
 #include <iostream>
 
-using namespace Fogo::Graphics::DX12;
+using namespace Fogo;
 using Microsoft::WRL::ComPtr;
 
 void FBXModel::loadModel(const char * fileName)  {
@@ -82,14 +82,14 @@ void FBXModel::createRootSignature() {
 
 	ComPtr<ID3DBlob> blob;
 
-	Fogo::Utility::ExecOrFail(D3D12SerializeRootSignature(
+	ExecOrFail(D3D12SerializeRootSignature(
 		&root_signature_desc,
 		D3D_ROOT_SIGNATURE_VERSION_1,
 		&blob,
 		nullptr
 	));
 
-	Utility::ExecOrFail(Graphics::GetDevice()->CreateRootSignature(
+	ExecOrFail(Graphics::GetDevice()->CreateRootSignature(
 		0x00000001,
 		blob->GetBufferPointer(),
 		blob->GetBufferSize(),
@@ -144,7 +144,7 @@ void FBXModel::createPipelineStateObject() {
 	descPSO.NumRenderTargets = 1;																			// レンダーターゲット数
 	descPSO.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;														// レンダーターゲットフォーマット
 	descPSO.SampleDesc.Count = 1;																			// サンプルカウント
-	Utility::ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
+	ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
 }
 
 void FBXModel::createDescriptorHeaps() {
@@ -309,16 +309,16 @@ void FBXModel::createConstantBuffer() {
 	desc_constant_buffer_view.BufferLocation = __constant_buffer_resource->GetGPUVirtualAddress();
 	desc_constant_buffer_view.SizeInBytes = sizeof(MatrixConstantBuffer) + 255 & ~255;	// コンスタントバッファは256バイトアラインメントで配置する必要がある
 
-	DX12::Graphics::GetDevice()->CreateConstantBufferView(
+	Graphics::GetDevice()->CreateConstantBufferView(
 		&desc_constant_buffer_view,
 		__descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetCPUDescriptorHandleForHeapStart()
 	);
 
-	const auto stride_handle_bytes = DX12::Graphics::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	const auto stride_handle_bytes = Graphics::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	for (auto i = 0u; i < CONSTANT_BUFFER_NUMBER; ++i) {
 		__constant_buffer_handles[i] = __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV]->GetCPUDescriptorHandleForHeapStart();
 		__constant_buffer_handles[i].ptr += i * stride_handle_bytes;
-		DX12::Graphics::GetDevice()->CreateConstantBufferView(&desc_constant_buffer_view, __constant_buffer_handles[i]);
+		Graphics::GetDevice()->CreateConstantBufferView(&desc_constant_buffer_view, __constant_buffer_handles[i]);
 	}
 }
 
@@ -373,4 +373,3 @@ void FBXModel::render() const {
 		}
 	});
 }
-

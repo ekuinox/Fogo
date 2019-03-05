@@ -1,10 +1,10 @@
 #include "./DumpComponent.h"
 #include "../Game/Components/Meta.h"
 
-using Fogo::Game::Component;
-using Fogo::Game::Meta;
+using Fogo::Component;
+using Fogo::Meta;
 
-void Fogo::Debug::DumpComponent(std::ostream & output, Component & parent, int depth, char indentCharacter, char indentLength) {
+void Fogo::DumpComponent(std::ostream & output, Component & parent, int depth, char indentCharacter, char indentLength) {
 	std::string indent1, indent2;
 	
 	for (auto i = 0; i < indentLength; ++i) {
@@ -21,7 +21,7 @@ void Fogo::Debug::DumpComponent(std::ostream & output, Component & parent, int d
 
 	output << indent2 << "\"" << typeid(parent).name() << "\": {" << std::endl;
 	output << indent2 << indent1 << "\"uuid\": " << parent.uuid << "," << std::endl;
-	if (const auto & meta = parent.get<Fogo::Game::Meta>()) {
+	if (const auto & meta = parent.get<Fogo::Meta>()) {
 		output << indent2 << indent1 << "\"name\": \"" << meta->name << "\"," << std::endl;
 		output << indent2 << indent1 << "\"tag\": \"" << meta->tag << "\"," << std::endl;
 		output << indent2 << indent1 << "\"layer\": " << meta->layer << "," << std::endl;

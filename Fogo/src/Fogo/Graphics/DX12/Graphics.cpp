@@ -7,15 +7,14 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "libfbxsdk-md.lib")
 
-using namespace Fogo::Graphics::DX12;
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 Graphics * Graphics::instance = nullptr;
 std::array<float, 4> Graphics::clearColor = { 0.0f, 0.0f, 0.5f, 1.0f };
 
 auto Graphics::createFactory() -> void {
 	ExecOrFail<exception>(CreateDXGIFactory2(
-		Fogo::Utility::DEBUG ? DXGI_CREATE_FACTORY_DEBUG : 0,
+		DEBUG ? DXGI_CREATE_FACTORY_DEBUG : 0,
 		IID_PPV_ARGS(factory.GetAddressOf())
 	));
 }
@@ -161,7 +160,7 @@ auto Graphics::render() -> void {
 
 Graphics::Graphics()
 	: windowHandle(Window::GetWindowHandle()), windowSize({Window::GetWidth(), Window::GetHeight()}), frames(0), rtvIndex(0) {
-	if constexpr (Fogo::Utility::DEBUG) {
+	if constexpr (DEBUG) {
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugger.GetAddressOf())))) {
 			debugger->EnableDebugLayer();
 		}

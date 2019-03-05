@@ -4,7 +4,7 @@
 #include <wrl/client.h>
 #include <stdexcept>
 
-namespace Fogo::Graphics::DX12 {
+namespace Fogo {
 	class Texture {
 	public:
 		struct exception : std::exception { exception() : std::exception("[DX12Texture] error") { } };

@@ -5,7 +5,7 @@
 #include <memory>
 #include "./FBXParser.h"
 
-namespace Fogo::Graphics::DX12 {
+namespace Fogo {
 	class FBXModel {
 	public:
 		struct Properties {
@@ -51,7 +51,7 @@ namespace Fogo::Graphics::DX12 {
 		Microsoft::WRL::ComPtr<ID3D12Resource> __constant_buffer_resource;
 		D3D12_CPU_DESCRIPTOR_HANDLE __constant_buffer_handles[CONSTANT_BUFFER_NUMBER];
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
-		std::shared_ptr<Fogo::Graphics::DX12::Texture> __texture;
+		std::shared_ptr<Texture> __texture;
 
 		void loadModel(const char * fileName);
 		void compileShaders();

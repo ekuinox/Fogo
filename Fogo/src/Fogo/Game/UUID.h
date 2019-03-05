@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-namespace Fogo::Game {
+namespace Fogo {
 
 	struct UUID {
 		using Engine = std::independent_bits_engine<std::mt19937, 64, std::uint64_t>;

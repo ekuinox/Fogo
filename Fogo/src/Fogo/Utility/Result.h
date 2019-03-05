@@ -3,7 +3,7 @@
 #include <variant>
 #include <optional>
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	template <typename E, typename V = void>
 	class Result final {

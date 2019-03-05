@@ -6,7 +6,7 @@
 
 namespace DirectX { struct XMFLOAT3; }
 
-namespace Fogo::Utility {
+namespace Fogo {
 	class Keyboard;
 	class Mouse;
 

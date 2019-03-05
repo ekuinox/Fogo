@@ -5,7 +5,7 @@
 #include "../Texture.h"
 #include <DirectXMath.h>
 
-namespace Fogo::Graphics::DX12::DrawObject {
+namespace Fogo {
 	class Plain
 	{
 	public:

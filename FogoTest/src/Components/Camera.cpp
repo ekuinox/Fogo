@@ -1,7 +1,7 @@
 #include "./Camera.h"
 
 using namespace DirectX;
-using Fogo::Utility::Window;
+using Fogo::Window;
 
 XMMATRIX Camera::getView() const {
 	return XMMatrixLookAtLH (

@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-namespace Fogo::Game {
+namespace Fogo {
 
 	template <typename Key, typename Element, typename ... Args>
 	class ContainerBase : public std::unordered_map<Key, Element, Args ...> {

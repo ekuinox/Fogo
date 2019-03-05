@@ -5,7 +5,7 @@
 #include "./ContainerIndexKeyPair.h"
 #include "./Hash.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 
 	template <typename Element>
 	class Handler {

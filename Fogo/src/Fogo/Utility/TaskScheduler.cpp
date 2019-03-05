@@ -1,6 +1,6 @@
 #include "./TaskScheduler.h"
 
-using Fogo::Utility::TaskScheduler;
+using Fogo::TaskScheduler;
 
 TaskScheduler::TaskScheduler() : state(ThreadState::Dead) {
 

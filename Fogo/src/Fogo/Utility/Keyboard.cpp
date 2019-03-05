@@ -6,7 +6,7 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dinput8.lib")
 
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 Keyboard::Keyboard(LPDIRECTINPUT8 input) {
 	ExecOrFail(input->CreateDevice(GUID_SysKeyboard, &__device, nullptr));

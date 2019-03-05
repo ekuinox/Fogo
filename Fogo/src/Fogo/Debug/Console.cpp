@@ -3,8 +3,8 @@
 #include "../Game/Components/Meta.h"
 #include <typeinfo>
 
-using Fogo::Debug::Console;
-using Fogo::Game::Component;
+using Fogo::Console;
+using Fogo::Component;
 
 void Console::Log(Component & parent, int depth, char indentCharacter, char indentLength) {
 	DumpComponent(std::cout, parent, depth, indentCharacter, indentLength);

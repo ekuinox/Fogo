@@ -7,7 +7,7 @@
 #include "./ContainerBase.h"
 #include "../Utility/Result.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 
 	class Component;
 	class Scene;
@@ -67,19 +67,19 @@ namespace Fogo::Game {
 
 		// UUIDを用いてComponentを取得する
 		template <typename Element>
-		static Utility::Result<Error, Handler<Element>> Get(const UUID & uuid);
+		static Result<Error, Handler<Element>> Get(const UUID & uuid);
 
 		// UUIDを用いてComponentを取得する
 		template <typename Element>
-		static Utility::Result<Error, Handler<Element>> GetOne(const UUID & parentId);
+		static Result<Error, Handler<Element>> GetOne(const UUID & parentId);
 
 		// 指定したキーで管理しているComponentを取得する
 		template <typename Element, typename Key>
-		static Utility::Result<Error, Element*> Get(Key key, const UUID & parentId);
+		static Result<Error, Element*> Get(Key key, const UUID & parentId);
 
 		// 指定したComponentの親を取得する
 		template <typename Element = Component>
-		static Utility::Result<Error, Handler<Element>> GetParent(const UUID & uuid);
+		static Result<Error, Handler<Element>> GetParent(const UUID & uuid);
 
 		// コンテナの要素に対して実行する
 		template <typename Element>
@@ -168,7 +168,7 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Store::Get(const UUID & uuid) {
+	Result<Store::Error, Handler<Element>> Store::Get(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 		try {
 			return Container<Element>::shared.at(uuid);
@@ -179,7 +179,7 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Store::GetOne(const UUID & parentId) {
+	Result<Store::Error, Handler<Element>> Store::GetOne(const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 
 		std::vector<UUID> uuids {};
@@ -196,7 +196,7 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element, typename Key>
-	Utility::Result<Store::Error, Element*> Store::Get(Key key, const UUID & parentId) {
+	Result<Store::Error, Element*> Store::Get(Key key, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		try {
 			auto & container = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared;
@@ -208,7 +208,7 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
+	Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 		try {
 			auto parentId = Container<Component>::shared.at(uuid).getParentUUID();

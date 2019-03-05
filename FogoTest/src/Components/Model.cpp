@@ -2,17 +2,17 @@
 #include "./Camera.h"
 #include <DirectXMath.h>
 
-using Fogo::Game::Meta;
-using Fogo::Game::Initializer;
-using Fogo::Game::Finalizer;
-using Fogo::Game::Updater;
-using Fogo::Game::Renderer;
+using Fogo::Meta;
+using Fogo::Initializer;
+using Fogo::Finalizer;
+using Fogo::Updater;
+using Fogo::Renderer;
 using Microsoft::WRL::ComPtr;
 
 void Model::initialize() {
-	model = std::make_unique<Fogo::Graphics::DX12::FBXModel>(
+	model = std::make_unique<Fogo::FBXModel>(
 		modelFile,
-		Fogo::Graphics::DX12::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
+		Fogo::FBXModel::Properties().setTextureDirectory(L"./resources/Textures/")
 		.setPixelShader(pixelShader).setVertexShader(vertexShader)
 		);
 	model->world = DirectX::XMMatrixIdentity();
@@ -20,7 +20,8 @@ void Model::initialize() {
 
 void Model::update() {
 	using namespace DirectX;
-	using namespace Fogo::Utility;
+	using namespace Fogo;
+
 	static constexpr auto SPEED = 10.0f;
 
 	XMFLOAT3 translation{ 0, 0, 0 };

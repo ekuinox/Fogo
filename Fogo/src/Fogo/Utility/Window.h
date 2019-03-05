@@ -5,7 +5,7 @@
 #include <utility>
 #include "PubSub.h"
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	class Window
 	{

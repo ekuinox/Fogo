@@ -3,7 +3,7 @@
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
-using namespace Fogo::Graphics::DX12;
+using namespace Fogo;
 
 auto Square::createRootSignature() -> void {
 	static constexpr D3D12_DESCRIPTOR_RANGE range[1] = { D3D12_DESCRIPTOR_RANGE {
@@ -50,14 +50,14 @@ auto Square::createRootSignature() -> void {
 
 	ComPtr<ID3DBlob> blob;
 
-	Fogo::Utility::ExecOrFail(D3D12SerializeRootSignature(
+	ExecOrFail(D3D12SerializeRootSignature(
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1,
 		&blob,
 		nullptr
 	));
 
-	Fogo::Utility::ExecOrFail(Graphics::GetDevice()->CreateRootSignature(
+	ExecOrFail(Graphics::GetDevice()->CreateRootSignature(
 		0,
 		blob->GetBufferPointer(),
 		blob->GetBufferSize(),
@@ -66,8 +66,8 @@ auto Square::createRootSignature() -> void {
 }
 
 auto Square::createPipelineStateObject() -> void {
-	const auto & vertexShader = Fogo::Graphics::DX12::Graphics::CompileVertexShader(L"resources/shaders.hlsl");
-	const auto & pixelShader = Fogo::Graphics::DX12::Graphics::CompilePixelShader(L"resources/shaders.hlsl");
+	const auto & vertexShader = Graphics::CompileVertexShader(L"resources/shaders.hlsl");
+	const auto & pixelShader = Graphics::CompilePixelShader(L"resources/shaders.hlsl");
 
 	constexpr D3D12_INPUT_ELEMENT_DESC inputElementDesc[3] {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -145,23 +145,23 @@ auto Square::createPipelineStateObject() -> void {
 		D3D12_PIPELINE_STATE_FLAGS::D3D12_PIPELINE_STATE_FLAG_NONE
 	};
 
-	Fogo::Utility::ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
+	ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(&pipelineState)));
 }
 
 Square::Square(const Option & option) {
 	createRootSignature();
 	createPipelineStateObject();
 
-	__plain = std::make_unique<Fogo::Graphics::DX12::DrawObject::Plain>(Graphics::GetDevice(), option.texture, pipelineState, rootSignature);
+	__plain = std::make_unique<Plain>(Graphics::GetDevice(), option.texture, pipelineState, rootSignature);
 	__plain->matrix = XMMatrixIdentity();
 	__plain->matrix *= XMMatrixScaling(option.size.x, option.size.y, 0);
 	__plain->matrix *= XMMatrixTranslation(option.center.x, option.center.y, 0);
 
-	create<Fogo::Game::Updater>([&] {
-		__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
+	create<Updater>([&] {
+		__plain->matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Time::GetElapsedTime()));
 	});
 
-	create<Fogo::Game::Renderer>([&] {
+	create<Renderer>([&] {
 		Graphics::Render([&](ComPtr<ID3D12GraphicsCommandList> commandList) {
 			__plain->render(
 				commandList,

@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Fogo::Utility {
+namespace Fogo {
 	
 	class Time {
 	private:

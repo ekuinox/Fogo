@@ -3,7 +3,7 @@
 #include <map>
 #include <thread>
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	class TaskScheduler final {
 	public:

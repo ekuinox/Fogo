@@ -2,7 +2,7 @@
 
 #include <dinput.h>
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	enum class KeyCode : unsigned int {
 		Escape = DIK_ESCAPE,

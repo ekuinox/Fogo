@@ -9,7 +9,7 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dinput8.lib")
 
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 Input * Input::__instance = nullptr;
 

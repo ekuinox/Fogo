@@ -2,8 +2,7 @@
 #include "../../Utility/HelperFunctions.h"
 
 using namespace Microsoft::WRL;
-using namespace Fogo::Graphics::DX12;
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 RenderTargetView::RenderTargetView(
 	const ComPtr<ID3D12Device> & device,

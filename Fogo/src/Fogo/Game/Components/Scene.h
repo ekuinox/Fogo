@@ -2,7 +2,7 @@
 
 #include "../Component.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	class Scene : public Component {
 	public:
 		enum class State {

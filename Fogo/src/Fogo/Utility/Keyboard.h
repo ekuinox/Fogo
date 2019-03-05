@@ -2,7 +2,7 @@
 
 #include <dinput.h>
 
-namespace Fogo::Utility {
+namespace Fogo {
 	class Keyboard {
 	private:
 		static constexpr unsigned int NUM_KEY_MAX = 256;

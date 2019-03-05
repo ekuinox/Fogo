@@ -3,7 +3,7 @@
 #include <functional>
 #include "../Component.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	template <int N = 0, typename ... Args>
 	class CallableComponentBase : public Component {
 		using Function = std::function<void(Args...)>;

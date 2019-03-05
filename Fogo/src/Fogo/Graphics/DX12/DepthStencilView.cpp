@@ -1,8 +1,7 @@
 #include "DepthStencilView.h"
 #include "../../Utility/HelperFunctions.h"
 
-using namespace Fogo::Graphics::DX12;
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 DepthStencilView::DepthStencilView(const Microsoft::WRL::ComPtr<ID3D12Device> & device, const UINT width, const UINT height) {
 	static constexpr D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc {

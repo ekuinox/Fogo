@@ -2,14 +2,14 @@
 
 #pragma comment(lib, "winmm.lib")	
 
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 Window * Window::instance = nullptr;
 
 WNDPROC Window::default_procedure = [](HWND handle, const UINT message, const WPARAM wParam, const LPARAM lParam) -> LRESULT {
 	if (message == WM_DESTROY) {
 		PostQuitMessage(0);
-		Fogo::Utility::PubSub<Fogo::Utility::Window::Event, void>::Publish(Fogo::Utility::Window::Event::OnDestroy);
+		Fogo::PubSub<Event, void>::Publish(Event::OnDestroy);
 	}
 	return DefWindowProc(handle, message, wParam, lParam);
 };

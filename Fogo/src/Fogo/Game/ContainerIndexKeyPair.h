@@ -2,7 +2,7 @@
 
 #include "./UUID.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	template <typename Key>
 	struct ContainerIndexKeyPair {
 		Key key;

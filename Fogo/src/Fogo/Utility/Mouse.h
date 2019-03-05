@@ -2,7 +2,7 @@
 
 #include <dinput.h>
 namespace DirectX { struct XMFLOAT3; }
-namespace Fogo::Utility {
+namespace Fogo {
 	class Mouse {
 	private:
 		static constexpr unsigned int LIMIT_COUNT_REPEAT = 20;

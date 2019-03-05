@@ -8,7 +8,7 @@
 #include "./Components/Scene.h"
 #include "../Utility.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	class System : public Component {
 	/*
 

@@ -4,7 +4,7 @@
 #include "./Handler.h"
 #include "./Store.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 
 	class Component {
 	/*
@@ -30,23 +30,23 @@ namespace Fogo::Game {
 
 		// インデックス用キーを用いて子インスタンスを取得する
 		template <typename Element, typename Key>
-		Utility::Result<Store::Error, Element*> get(Key key) const;
+		Result<Store::Error, Element*> get(Key key) const;
 
 		// UUIDを用いて子インスタンスのハンドラを取得する
 		template <typename Element>
-		Utility::Result<Store::Error, Handler<Element>> get(const UUID & uuid) const;
+		Result<Store::Error, Handler<Element>> get(const UUID & uuid) const;
 
 		// 一つの子インスタンスのハンドラを取得する
 		// 単一であることを保証するために、0か複数の場合はエラーが返る
 		template <typename Element>
-		Utility::Result<Store::Error, Handler<Element>> get() const;
+		Result<Store::Error, Handler<Element>> get() const;
 
 		// 自分を持っているSceneを取得する
-		Utility::Result<Store::Error, Handler<Scene>> getMyScene() const;
+		Result<Store::Error, Handler<Scene>> getMyScene() const;
 		
 		// 親インスタンスのハンドラを取得をする
 		template <typename Element = Component>
-		Utility::Result<Store::Error, Handler<Element>> getParent() const;
+		Result<Store::Error, Handler<Element>> getParent() const;
 
 		// 子インスタンスを生成する
 		template <typename Element, typename ... Args>
@@ -78,22 +78,22 @@ namespace Fogo::Game {
 	}
 
 	template <typename Element, typename Key>
-	Utility::Result<Store::Error, Element*> Component::get(Key key) const {
+	Result<Store::Error, Element*> Component::get(Key key) const {
 		return Store::Get<Element>(key, uuid);
 	}
 
 	template <typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Component::get(const UUID & uuid) const {
+	Result<Store::Error, Handler<Element>> Component::get(const UUID & uuid) const {
 		return Store::Get<Element>(uuid);
 	}
 
 	template <typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Component::get() const {
+	Result<Store::Error, Handler<Element>> Component::get() const {
 		return Store::GetOne<Element>(uuid);
 	}
 
 	template<typename Element>
-	Utility::Result<Store::Error, Handler<Element>> Component::getParent() const	{
+	Result<Store::Error, Handler<Element>> Component::getParent() const	{
 		return Store::GetParent<Element>(uuid);
 	}
 

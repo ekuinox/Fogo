@@ -15,7 +15,7 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 
-namespace Fogo::Graphics::DX12 {
+namespace Fogo {
 	class Graphics
 	{
 	private:

@@ -1,7 +1,7 @@
 #include "./Degree.h"
 #include <DirectXMath.h>
 
-using Fogo::Utility::Degree;
+using Fogo::Degree;
 
 Degree::Degree(float initValue) : raw(initValue) {
 

@@ -5,21 +5,22 @@
 #include "../Components/Model.h"
 
 using Microsoft::WRL::ComPtr;
-using Fogo::Graphics::DX12::Graphics;
-using Fogo::Graphics::DX12::Texture;
-using Fogo::Graphics::DX12::FBXModel;
-using Fogo::Utility::Input;
-using Fogo::Utility::KeyCode;
-using Fogo::Utility::PubSub;
-using Fogo::Utility::MappedStore;
-using Fogo::Game::System;
-using Fogo::Game::Store;
-using Fogo::Game::Component;
-using Fogo::Game::Updater;
-using Fogo::Game::Renderer;
-using Fogo::Game::Initializer;
-using Fogo::Game::Finalizer;
-using Fogo::Game::Meta;
+using Fogo::Graphics;
+using Fogo::Texture;
+using Fogo::FBXModel;
+using Fogo::Input;
+using Fogo::KeyCode;
+using Fogo::PubSub;
+using Fogo::MappedStore;
+using Fogo::System;
+using Fogo::Store;
+using Fogo::Component;
+using Fogo::Updater;
+using Fogo::Renderer;
+using Fogo::Initializer;
+using Fogo::Finalizer;
+using Fogo::Meta;
+using Fogo::Time;
 
 MainScene::MainScene() {
 	static auto once = true;
@@ -44,16 +45,16 @@ MainScene::MainScene() {
 void MainScene::update() {
 	static constexpr auto CAMERA_SPEED = 100.0f;
 	if (Input::GetPress(KeyCode::UpArrow)) {
-		camera->position.y += CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+		camera->position.y += CAMERA_SPEED * Time::GetElapsedTime();
 	}
 	if (Input::GetPress(KeyCode::DownArrow)) {
-		camera->position.y -= CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+		camera->position.y -= CAMERA_SPEED * Time::GetElapsedTime();
 	}
 	if (Input::GetPress(KeyCode::LeftArrow)) {
-		camera->position.x += CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+		camera->position.x += CAMERA_SPEED * Time::GetElapsedTime();
 	}
 	if (Input::GetPress(KeyCode::RightArrow)) {
-		camera->position.x -= CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+		camera->position.x -= CAMERA_SPEED * Time::GetElapsedTime();
 	}
 	const auto pos = get<Model>()->getPosition();
 

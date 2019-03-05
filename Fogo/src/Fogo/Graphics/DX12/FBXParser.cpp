@@ -1,7 +1,7 @@
 #include "FBXParser.h"
 #include "../../Utility/HelperFunctions.h"
 
-using namespace Fogo::Graphics::DX12;
+using namespace Fogo;
 using namespace DirectX;
 
 std::pair<FbxDouble3, std::vector<std::string>> GetMaterialProperty(const FbxSurfaceMaterial * material, const char * propertyName, const char * factorPropertyName) {
@@ -417,8 +417,8 @@ FBXParser::FBXParser() {
 FBXParser & FBXParser::import(const char * file) {
 	const auto importer = FbxImporter::Create(__manager, "");
 
-	Utility::ExecOrFail(importer->Initialize(file, -1, __manager->GetIOSettings()));
-	Utility::ExecOrFail(importer->Import(__scene));
+	ExecOrFail(importer->Initialize(file, -1, __manager->GetIOSettings()));
+	ExecOrFail(importer->Import(__scene));
 
 	importer->Destroy();
 

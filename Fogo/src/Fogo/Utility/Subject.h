@@ -4,7 +4,7 @@
 #include <functional>
 #include "TypeTraitsHelper.h"
 
-namespace Fogo::Utility {
+namespace Fogo {
 	template <typename ... Args>
 	class Subject
 	{

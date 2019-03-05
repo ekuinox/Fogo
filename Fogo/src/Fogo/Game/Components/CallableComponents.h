@@ -2,7 +2,7 @@
 
 #include "./CallableComponentBase.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	using Updater = CallableComponentBase<0>;
 	using Renderer = CallableComponentBase<1>;
 	using Initializer = CallableComponentBase<2>;

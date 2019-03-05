@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <functional>
 
-namespace Fogo::Utility {
+namespace Fogo {
 #ifdef _DEBUG
 	static constexpr auto DEBUG = true;
 #else

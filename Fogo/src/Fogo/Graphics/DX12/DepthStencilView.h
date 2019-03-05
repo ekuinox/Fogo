@@ -6,7 +6,7 @@
 #include <vector>
 #include <stdexcept>
 
-namespace Fogo::Graphics::DX12 {
+namespace Fogo {
 	class DepthStencilView {
 	public:
 		struct exception : std::exception { exception() : std::exception("[DepthBuffer] error") { } };

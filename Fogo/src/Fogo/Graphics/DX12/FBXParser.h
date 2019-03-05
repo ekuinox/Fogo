@@ -7,7 +7,7 @@
 #include <fbxsdk.h>
 #include "./Texture.h"
 
-namespace Fogo::Graphics::DX12 {
+namespace Fogo {
 	class FBXParser {
 	public:
 		struct Vertex {

@@ -2,7 +2,7 @@
 #include <vector>
 #include <stdexcept>
 
-namespace Fogo::Utility {
+namespace Fogo {
 	class VectoredStore
 	{
 	public:

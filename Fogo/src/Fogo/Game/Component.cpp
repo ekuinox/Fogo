@@ -1,12 +1,12 @@
 #include "./Component.h"
 #include "./System.h"
 
-using Fogo::Utility::Result;
-using Fogo::Game::Component;
-using Fogo::Game::Store;
-using Fogo::Game::Handler;
-using Fogo::Game::Scene;
-using Fogo::Game::System;
+using Fogo::Result;
+using Fogo::Component;
+using Fogo::Store;
+using Fogo::Handler;
+using Fogo::Scene;
+using Fogo::System;
 
 Component::Component() : uuid() {
 }

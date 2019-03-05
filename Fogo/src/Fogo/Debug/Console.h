@@ -2,10 +2,10 @@
 
 #include "../Game/Component.h"
 
-namespace Fogo::Debug {
+namespace Fogo {
 	class Console {
-		static void Log(Game::Component & parent, int depth, char indentCharacter, char indentLength);
+		static void Log(Component & parent, int depth, char indentCharacter, char indentLength);
 	public:
-		static void Log(Game::Component & parent, char indentCharacter = ' ', char indentLength = 2);
+		static void Log(Component & parent, char indentCharacter = ' ', char indentLength = 2);
 	};
 }

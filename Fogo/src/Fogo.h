@@ -7,12 +7,6 @@
 
 namespace Fogo {
 	
-	// –¼‘O‹óŠÔ‚ð“WŠJ‚·‚é
-	using namespace Debug;
-	using namespace Game;
-	using namespace Graphics;
-	using namespace Utility;
-
 	struct Properties {
 		/*
 
@@ -20,7 +14,7 @@ namespace Fogo {
 
 		*/
 		std::unordered_map<const char *, Scene*> scenes;
-		std::function<void(Game::System &)> createScenes;
+		std::function<void(System &)> createScenes;
 		Window::Properties window;
 		System::Key first_key;
 

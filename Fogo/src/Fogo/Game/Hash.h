@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include "./ContainerIndexKeyPair.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	template <typename Key>
 	struct Hash {
 		std::size_t operator()(const ContainerIndexKeyPair<Key> & key) const {

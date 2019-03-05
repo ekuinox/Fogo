@@ -14,16 +14,11 @@ struct SceneKey {
 inline void test2() {
 
 	using namespace Fogo;
-	using Game::Scene;
-	using Game::System;
-	using Utility::KeyCode;
-	using Utility::Input;
-	using Utility::PubSub;
 
 	class MainScene1 : public MainScene {
 	public:
 		MainScene1() : MainScene() {
-			create<Fogo::Game::Meta>("MainScene1", "MainScene1", 0);
+			create<Meta>("MainScene1", "MainScene1", 0);
 			create<Model>(
 				"./resources/2.fbx",
 				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),
@@ -47,8 +42,8 @@ inline void test2() {
 			}
 			if (Input::GetTrigger(KeyCode::P)) {
 				std::ofstream output("./componentTree.json", std::ios_base::trunc);
-				Fogo::Debug::DumpComponent(output, System::GetInstance(), 0, '\t', 1);
-				Fogo::Debug::Console::Log(System::GetInstance());
+				DumpComponent(output, System::GetInstance(), 0, '\t', 1);
+				Console::Log(System::GetInstance());
 			}
 
 			MainScene::update();
@@ -62,7 +57,7 @@ inline void test2() {
 	class MainScene2 : public MainScene {
 	public:
 		MainScene2() : MainScene() {
-			create<Fogo::Game::Meta>("MainScene2", "MainScene2", 0);
+			create<Meta>("MainScene2", "MainScene2", 0);
 			create<Model>(
 				"./resources/model/unitychan.fbx",
 				ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),

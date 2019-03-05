@@ -2,14 +2,14 @@
 #include "./Components/Scene.h"
 #include "../Graphics.h"
 
-using Fogo::Game::System;
-using Fogo::Game::Scene;
-using Fogo::Utility::TaskScheduler;
-using Fogo::Utility::Time;
-using Fogo::Utility::Input;
-using Fogo::Utility::PubSub;
-using Fogo::Utility::Window;
-using Fogo::Graphics::DX12::Graphics;
+using Fogo::System;
+using Fogo::Scene;
+using Fogo::TaskScheduler;
+using Fogo::Time;
+using Fogo::Input;
+using Fogo::PubSub;
+using Fogo::Window;
+using Fogo::Graphics;
 
 System * System::__instance = nullptr;
 
@@ -46,13 +46,13 @@ void System::exec() {
 		TaskScheduler::ExecTasks();
 	}
 	catch (::Graphics::exception & e) {
-		Utility::Log(e.what());
+		Log(e.what());
 	}
 	catch (std::exception & e) {
-		Utility::Log(e.what());
+		Log(e.what());
 	}
 	catch (...) {
-		Utility::Log("[System] 不明な例外がスローされました");
+		Log("[System] 不明な例外がスローされました");
 	}
 }
 

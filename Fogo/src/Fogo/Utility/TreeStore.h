@@ -16,7 +16,7 @@
 * Base‚Évoid‚ğw’è‚·‚é‚ÆŒp³ŠÖŒW‚ğ–³‹‚Å‚«‚é
 */
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	template <class Base, typename Key, typename ... Elms>
 	class TreeStore

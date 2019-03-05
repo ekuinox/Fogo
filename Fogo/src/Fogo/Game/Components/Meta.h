@@ -2,7 +2,7 @@
 
 #include "../Component.h"
 
-namespace Fogo::Game {
+namespace Fogo {
 	struct Meta : public Component {
 		std::string name;
 		std::string tag;

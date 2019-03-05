@@ -1,8 +1,8 @@
 #include "./Store.h"
 #include "./Components/Scene.h"
 
-using Fogo::Game::Store;
-using Fogo::Game::UUID;
+using Fogo::Store;
+using Fogo::UUID;
 
 void Store::Free(const UUID & parentId) {
 	Free<Scene, Component>(parentId);

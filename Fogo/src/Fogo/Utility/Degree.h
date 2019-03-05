@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Fogo::Utility {
+namespace Fogo {
 	class Degree {
 	private:
 		float raw;

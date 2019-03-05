@@ -7,11 +7,11 @@
 #include "../../../Utility/HelperFunctions.h"
 #include "../../../Utility/Time.h"
 
-using namespace Fogo::Graphics::DX12::DrawObject;
+using namespace Fogo;
 
 Plain::Plain(
 	const Microsoft::WRL::ComPtr<ID3D12Device> & device,
-	std::shared_ptr<Fogo::Graphics::DX12::Texture> texture,
+	std::shared_ptr<Texture> texture,
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState,
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature
 ) : __vertex_buffer({}),
@@ -40,7 +40,7 @@ Plain::Plain(
 		D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR
 	};
 
-	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
+	ExecOrFail(device->CreateCommittedResource(
 		&HEAP_PROPERTIES,
 		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
 		&RESOURCE_DESC,
@@ -49,7 +49,7 @@ Plain::Plain(
 		IID_PPV_ARGS(&__vertex_buffer)
 	));
 
-	Fogo::Utility::ExecOrFail(device->CreateCommittedResource(
+	ExecOrFail(device->CreateCommittedResource(
 		&HEAP_PROPERTIES,
 		D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
 		&RESOURCE_DESC,
@@ -60,7 +60,7 @@ Plain::Plain(
 
 	TexturedVertex3D * buffer{ };
 
-	Utility::ExecOrFail(__vertex_buffer->Map(0, nullptr, reinterpret_cast<void**>(&buffer)));
+	ExecOrFail(__vertex_buffer->Map(0, nullptr, reinterpret_cast<void**>(&buffer)));
 
 	buffer[0].position = { Option::LEFT, Option::TOP, 0.0f };
 	buffer[1].position = { Option::RIGHT, Option::TOP, 0.0f };
@@ -83,7 +83,7 @@ Plain::Plain(
 auto Plain::update() -> void {
 	using namespace DirectX;
 
-	matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Fogo::Utility::Time::GetElapsedTime()));
+	matrix *= XMMatrixRotationY(XMConvertToRadians(360 * Time::GetElapsedTime()));
 }
 
 auto Plain::render(

@@ -7,7 +7,7 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dinput8.lib")
 
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 Mouse::Mouse(LPDIRECTINPUT8 input) {
 	ExecOrFail(input->CreateDevice(GUID_SysMouse, &__device, nullptr));

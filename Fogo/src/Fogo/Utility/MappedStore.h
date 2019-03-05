@@ -9,7 +9,7 @@
 * 継承関係のないオブジェクトを管理するためのクラス
 */
 
-namespace Fogo::Utility {
+namespace Fogo {
 
 	template <typename ... Pairs>
 	class MappedStore

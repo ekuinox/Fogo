@@ -2,7 +2,7 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 float Time::getSeconds() const {
 	return static_cast<float>(duration_cast<nanoseconds>(__ended_time - __begun_time).count()) / nano::den;
@@ -43,17 +43,17 @@ time_point<system_clock> Time::GetCurrent()
 	return system_clock::now();
 }
 
-float Fogo::Utility::Time::GetElapsedTime()
+float Time::GetElapsedTime()
 {
 	return getInstance().__elapsed_time;
 }
 
-void Fogo::Utility::Time::RegisterTimer(const char * key, float time, const std::function<void(void)> & func)
+void Time::RegisterTimer(const char * key, float time, const std::function<void(void)> & func)
 {
 	getInstance().__timers[key] = Timer { func, time, GetCurrent() };
 }
 
-void Fogo::Utility::Time::CheckTimers()
+void Time::CheckTimers()
 {
 	auto & timers = getInstance().__timers;
 

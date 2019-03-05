@@ -3,8 +3,7 @@
 #include <DirectXTex.h>
 #include "../DX12.h"
 
-using namespace Fogo::Graphics::DX12;
-using namespace Fogo::Utility;
+using namespace Fogo;
 
 auto Texture::load(LPCWSTR filename, Type type) -> void {
 	DirectX::TexMetadata metadata {};
