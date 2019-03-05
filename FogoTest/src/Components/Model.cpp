@@ -24,8 +24,8 @@ void Model::update() {
 
 	static constexpr auto SPEED = 10.0f;
 
-	XMFLOAT3 translation{ 0, 0, 0 };
-	XMFLOAT3 rotation{ 0, 0, 0 };
+	XMFLOAT3 translation { 0, 0, 0 };
+	XMFLOAT3 rotation { 0, 0, 0 };
 
 	if (Input::GetPress(KeyCode::A)) rotation.y -= Time::GetElapsedTime() * SPEED;
 	if (Input::GetPress(KeyCode::D)) rotation.y += Time::GetElapsedTime() * SPEED;
@@ -34,17 +34,16 @@ void Model::update() {
 	if (Input::GetPress(KeyCode::LShift)) translation.y -= Time::GetElapsedTime() * SPEED;
 	if (Input::GetPress(KeyCode::Space)) translation.y += Time::GetElapsedTime() * SPEED;
 
-	const auto rotation_matrix
-		= XMMatrixRotationX(XMConvertToRadians(rotation.x * Time::GetElapsedTime() * 360))
-		* XMMatrixRotationY(XMConvertToRadians(rotation.y * Time::GetElapsedTime() * 360))
-		* XMMatrixRotationZ(XMConvertToRadians(rotation.z * Time::GetElapsedTime() * 360));
-
-	const auto translation_matrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
-
 	// コンスタントバッファ更新
 	using namespace DirectX;
 
-	model->world = rotation_matrix * translation_matrix * model->world;
+	model->world
+		= XMMatrixRotationX(Degree(rotation.x * Time::GetElapsedTime() * 360).toRadian())
+		* XMMatrixRotationY(Degree(rotation.y * Time::GetElapsedTime() * 360).toRadian())
+		* XMMatrixRotationZ(Degree(rotation.z * Time::GetElapsedTime() * 360).toRadian())
+		* XMMatrixTranslation(translation.x, translation.y, translation.z)
+		* model->world;
+
 	if (const auto & scene = getMyScene()) {
 		if (const auto & camera = scene->get<Camera>("MainCamera")) {
 			model->view = camera->getView();
