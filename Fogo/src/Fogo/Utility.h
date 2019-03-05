@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./Utility/Degree.h"
 #include "./Utility/HelperFunctions.h"
 #include "./Utility/Input.h"
 #include "./Utility/Keyboard.h"

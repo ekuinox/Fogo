@@ -47,6 +47,7 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\Texture.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\FBXParser.h" />
     <ClInclude Include="src\Fogo\Utility.h" />
+    <ClInclude Include="src\Fogo\Utility\Degree.h" />
     <ClInclude Include="src\Fogo\Utility\HelperFunctions.h" />
     <ClInclude Include="src\Fogo\Utility\Input.h" />
     <ClInclude Include="src\Fogo\Utility\Keyboard.h" />
@@ -81,6 +82,7 @@
     <ClCompile Include="src\Fogo\Graphics\DX12\Graphics.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\RenderTargetView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\Texture.cpp" />
+    <ClCompile Include="src\Fogo\Utility\Degree.cpp" />
     <ClCompile Include="src\Fogo\Utility\HelperFunctions.cpp" />
     <ClCompile Include="src\Fogo\Utility\Input.cpp" />
     <ClCompile Include="src\Fogo\Utility\Keyboard.cpp" />
