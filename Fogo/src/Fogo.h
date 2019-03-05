@@ -6,20 +6,27 @@
 #include "./Fogo/Utility.h"
 
 namespace Fogo {
+	
+	// 名前空間を展開する
+	using namespace Debug;
+	using namespace Game;
+	using namespace Graphics;
+	using namespace Utility;
+
 	struct Properties {
 		/*
 
 		Systemにわたすパラメタをメソッドチェーンで指定できるようにするのが目的
 
 		*/
-		std::unordered_map<const char *, Game::Scene*> scenes;
+		std::unordered_map<const char *, Scene*> scenes;
 		std::function<void(Game::System &)> createScenes;
-		Utility::Window::Properties window;
-		Game::System::Key first_key;
+		Window::Properties window;
+		System::Key first_key;
 
-		Properties & setFirstSceneKey(Game::System::Key newFirstKey) { first_key = newFirstKey; return * this; }
-		Properties & setScenes(const std::unordered_map<const char *, Game::Scene*> & newScenes) { scenes = newScenes; return *this; }
-		Properties & setCreateScenes(const std::function<void(Game::System &)> newCreateScenes) { createScenes = newCreateScenes; return * this; }
+		Properties & setFirstSceneKey(System::Key newFirstKey) { first_key = newFirstKey; return * this; }
+		Properties & setScenes(const std::unordered_map<const char *, Scene*> & newScenes) { scenes = newScenes; return *this; }
+		Properties & setCreateScenes(const std::function<void(System &)> newCreateScenes) { createScenes = newCreateScenes; return * this; }
 		Properties & setWidth(const UINT & newWidth) { window.setWidth(newWidth); return *this; }
 		Properties & setHeight(const UINT & newHeight) { window.setHeight(newHeight); return *this; }
 		Properties & setProcedure(const WNDPROC & newProcedure) { window.setProcedure(newProcedure); return *this; }
