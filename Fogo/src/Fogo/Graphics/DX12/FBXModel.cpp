@@ -116,15 +116,15 @@ void FBXModel::createPipelineStateObject() {
 	D3D12_BLEND_DESC descBlend;
 	descBlend.AlphaToCoverageEnable = FALSE;
 	descBlend.IndependentBlendEnable = FALSE;
-	descBlend.RenderTarget[0].BlendEnable = FALSE;
+	descBlend.RenderTarget[0].BlendEnable = TRUE;
 	descBlend.RenderTarget[0].LogicOpEnable = FALSE;
-	descBlend.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
-	descBlend.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+	descBlend.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	descBlend.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 	descBlend.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 	descBlend.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
 	descBlend.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 	descBlend.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	descBlend.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	descBlend.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_AND;
 	descBlend.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	// パイプラインステートオブジェクト作成
