@@ -13,5 +13,5 @@ class Model : public Fogo::Game::Component {
 
 public:
 	Model(const char * modelFile, Microsoft::WRL::ComPtr<ID3DBlob> vertexShader, Microsoft::WRL::ComPtr<ID3DBlob> pixelShader);
-
+	DirectX::XMFLOAT3 getPosition() const;
 };

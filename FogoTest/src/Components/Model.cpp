@@ -1,5 +1,6 @@
 #include "./Model.h"
 #include "./Camera.h"
+#include <DirectXMath.h>
 
 using Fogo::Game::Meta;
 using Fogo::Game::Initializer;
@@ -61,4 +62,11 @@ Model::Model(const char * modelFile, ComPtr<ID3DBlob> vertexShader, ComPtr<ID3DB
 	create<Updater>([&] { update(); });
 	create<Renderer>([&] { render(); });
 	create<Meta>("Model", "Model", 0);
+}
+
+DirectX::XMFLOAT3 Model::getPosition() const {
+	using namespace DirectX;
+	XMFLOAT4X4 mat;
+	XMStoreFloat4x4(&mat, model->world);
+	return { mat._41, mat._42, mat._43 };
 }

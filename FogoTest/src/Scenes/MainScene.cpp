@@ -2,6 +2,7 @@
 #include "../Store.h"
 #include "../Components/Camera.h"
 #include <iostream>
+#include "../Components/Model.h"
 
 using Microsoft::WRL::ComPtr;
 using Fogo::Graphics::DX12::Graphics;
@@ -28,13 +29,35 @@ MainScene::MainScene() {
 		ResourceStore::Insert(TextureType::BOX, std::make_shared<Texture>(L"./resources/Textures/KUTIJE/M_1.jpg"));
 		once = false;
 	}
-	const auto & camera = create<Camera>().makeIndex("MainCamera");
+	
+	camera = &create<Camera>().makeIndex("MainCamera");
 
 	using namespace DirectX;
 
-	camera->target = XMVECTOR { 0, 0, 0 };
-	camera->position = XMVECTOR { 0, 0, -50 };
+	camera->target = XMFLOAT3 { 0, 0, 0 };
+	camera->position = XMFLOAT3{ 0, 0, -50 };
 	camera->fov = 60;
 	camera->nearZ = 1;
 	camera->farZ = 1000;
+}
+
+void MainScene::update() {
+	static constexpr auto CAMERA_SPEED = 100.0f;
+	if (Input::GetPress(KeyCode::UpArrow)) {
+		camera->position.y += CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+	}
+	if (Input::GetPress(KeyCode::DownArrow)) {
+		camera->position.y -= CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+	}
+	if (Input::GetPress(KeyCode::LeftArrow)) {
+		camera->position.x += CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+	}
+	if (Input::GetPress(KeyCode::RightArrow)) {
+		camera->position.x -= CAMERA_SPEED * Fogo::Utility::Time::GetElapsedTime();
+	}
+	const auto pos = get<Model>()->getPosition();
+
+	camera->target = pos;
+	
+	Scene::update();
 }

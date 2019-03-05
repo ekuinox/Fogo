@@ -15,9 +15,9 @@ public:
 		Degree & operator=(const float newValue);
 	};
 
-	DirectX::XMVECTOR target;
-	DirectX::XMVECTOR position;
-	DirectX::XMVECTOR up = { 0, 1, 0 };
+	DirectX::XMFLOAT3 target;
+	DirectX::XMFLOAT3 position;
+	DirectX::XMFLOAT3 up = { 0, 1, 0 };
 	Degree fov;
 	float nearZ, farZ;
 
