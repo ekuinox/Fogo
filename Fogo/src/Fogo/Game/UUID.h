@@ -37,6 +37,11 @@ namespace Fogo::Game {
 			return rhs.raw != raw;
 		}
 
+		UUID & operator=(const UUID & v) {
+			const_cast<Engine::result_type&>(raw) = v.raw;
+			return * this;
+		}
+
 		std::string toString() const {
 			return std::to_string(raw);
 		}
