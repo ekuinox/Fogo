@@ -109,6 +109,13 @@ namespace Fogo::Game {
 		template <typename Element = Component>
 		static std::size_t GetChildrenSize(const UUID & parentId);
 
+		// コピーを生成する（UUIDは再生成する）
+		template <typename Element>
+		static Handler<Element> & Instantiate(Element & source, const UUID & parentId);
+
+		template <typename Element>
+		static Handler<Element> & Instantiate(Element & source);
+
 	};
 
 	template <typename Element>
@@ -292,4 +299,23 @@ namespace Fogo::Game {
 		}
 		return size;
 	}
+
+	template <typename Element>
+	Handler<Element> & Store::Instantiate(Element & source, const UUID & parentId) {
+		static_assert(std::is_base_of<Component, Element>());
+
+		auto clone = new Element;
+
+		std::memcpy(clone, &source, sizeof Element);
+
+		const_cast<UUID::Engine::result_type&>(clone->uuid.raw) = UUID::Generate();
+
+		return Bind(clone, parentId);
+	}
+
+	template <typename Element>
+	Handler<Element> & Store::Instantiate(Element & source) {
+		return Instantiate(source, (*Get<Component>(source.uuid)).getParentUUID());
+	}
+
 }
