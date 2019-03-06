@@ -7,13 +7,15 @@
 using namespace Fogo;
 using Microsoft::WRL::ComPtr;
 
+std::unordered_map<const char *, std::vector<FBXParser::Mesh>> FBXModel::__meshes_memos = {};
+
 void FBXModel::loadModel(const char * fileName)  {
-	for (const auto & mesh : FBXParser()
-		.import(fileName)
-		.triangulate()
-		.parse()
-		.loadTextures(__properties.textureDirectory)
-		.getMeshes()) {
+	if (__meshes_memos.count(fileName) == 0) {
+		const auto & meshes = FBXParser().import(fileName).triangulate().parse().loadTextures(__properties.textureDirectory).getMeshes();
+		__meshes_memos[fileName] = meshes;
+	}
+
+	for (const auto & mesh : __meshes_memos[fileName]) {
 		__meshes.emplace_back(mesh);
 	}
 }
@@ -372,4 +374,8 @@ void FBXModel::render() const {
 			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh.indexes.size()), 1, 0, 0, 0);
 		}
 	});
+}
+
+void FBXModel::FlushMemos() {
+	__meshes_memos.clear();
 }

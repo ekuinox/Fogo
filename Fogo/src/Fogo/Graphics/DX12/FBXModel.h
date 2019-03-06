@@ -53,6 +53,8 @@ namespace Fogo {
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> __descriptor_heaps[DESCRIPTOR_HEAP_TYPE_MAX];
 		std::shared_ptr<Texture> __texture;
 
+		static std::unordered_map<const char *, std::vector<FBXParser::Mesh>> FBXModel::__meshes_memos;
+
 		void loadModel(const char * fileName);
 		void compileShaders();
 		void createRootSignature();
@@ -70,5 +72,7 @@ namespace Fogo {
 		FBXModel(const char * fileName, const Properties & properties = {});
 		const std::vector<Mesh> & getMeshes() const;
 		void render() const;
+
+		static void FlushMemos();
 	};
 }
