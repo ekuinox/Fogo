@@ -20,8 +20,6 @@ CameraController::CameraController() : currentType(CameraType::Main) {
 
 	const auto & sub1Camera = create<Camera>().makeIndex(CameraType::Sub1);
 
-	currentCamera = &mainCamera;
-
 	create<Updater>([&] {
 		const auto camera = get<Camera>(currentType);
 
