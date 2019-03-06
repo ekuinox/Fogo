@@ -6,12 +6,11 @@ using namespace Fogo;
 
 template <typename T>
 void RecursiveExecute(Component & parent) {
-	if (parent.getChildrenSize() < 1) return;
+	parent.execute<T>([](T & child) {
+		child();
+	});
 	parent.execute<Component>([](Component & component) {
 		RecursiveExecute<T>(component);
-		component.execute<T>([](T & child) {
-			child();
-		});
 	});
 }
 
