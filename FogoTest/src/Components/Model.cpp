@@ -34,7 +34,6 @@ void Model::update() {
 	if (Input::GetPress(KeyCode::LShift)) translation.y -= Time::GetElapsedTime() * SPEED;
 	if (Input::GetPress(KeyCode::Space)) translation.y += Time::GetElapsedTime() * SPEED;
 
-	// コンスタントバッファ更新
 	using namespace DirectX;
 
 	model->world
