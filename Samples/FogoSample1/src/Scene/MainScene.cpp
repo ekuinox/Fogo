@@ -47,4 +47,8 @@ MainScene::MainScene() {
 			Console::Log(System::GetInstance());
 		}
 	});
+
+	create<Finalizer>([] {
+		FBXModel::FlushMemos();
+	});
 }
