@@ -38,7 +38,7 @@ Scene::State Scene::getState() const {
 
 void Scene::render() const {
 	RecursiveExecute<Renderer>(**get<Component>(uuid));
-	::Graphics::Render();
+	Graphics::Render();
 }
 
 void Scene::stop() {
