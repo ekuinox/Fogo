@@ -35,11 +35,11 @@ void Model::render() const {
 	model->render();
 }
 
-void Model::setWorldMatrix(::DirectX::XMFLOAT4X4 & matrix) const{
+void Model::setWorldMatrix(XMFLOAT4X4 & matrix) const{
 	model->world = XMLoadFloat4x4(&matrix);
 }
 
-void Model::setWorldMatrix(::DirectX::XMMATRIX & matrix) const {
+void Model::setWorldMatrix(XMMATRIX & matrix) const {
 	model->world = matrix;
 }
 

@@ -46,8 +46,6 @@ MainScene::MainScene() {
 		if (Input::GetTrigger(KeyCode::P)) {
 			Console::Log(System::GetInstance());
 		}
-
-		const auto & camera = get<CameraController>()->getCurrentCamera();
 	});
 
 	create<Finalizer>([] {
