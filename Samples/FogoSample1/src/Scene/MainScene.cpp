@@ -34,7 +34,7 @@ MainScene::MainScene() {
 			if (const auto & boxes = get<Component>("boxes")) {
 				auto n = 0;
 				boxes->execute<Model>([&](Model & model) {
-					model.setPosition({-50.0f + n++  * 10.0f, 0.0f, 0.0f});
+					model.setPosition({ -50.0f + n++  * 10.0f, 0.0f, 0.0f });
 				});
 			}
 		}
@@ -46,6 +46,8 @@ MainScene::MainScene() {
 		if (Input::GetTrigger(KeyCode::P)) {
 			Console::Log(System::GetInstance());
 		}
+
+		const auto & camera = get<CameraController>()->getCurrentCamera();
 	});
 
 	create<Finalizer>([] {

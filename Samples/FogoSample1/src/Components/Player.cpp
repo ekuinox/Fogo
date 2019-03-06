@@ -9,12 +9,14 @@ Player::Player() {
 		"./resources/model/unitychan.fbx",
 		ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),
 		ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(PixelShader::BOX)
-	);
+	)->create<Initializer>([&] {
+		get<Model>()->setWorldMatrix(DirectX::XMMatrixIdentity() * DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f));
+	});
 	create<Updater>([&] { update(); });
 }
 
 void Player::update() {
-	static constexpr auto SPEED = 10.0f;
+	static constexpr auto SPEED = 40.0f;
 
 	const auto & model = get<Model>();
 	if (!model) return;

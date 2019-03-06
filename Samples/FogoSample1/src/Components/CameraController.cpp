@@ -1,5 +1,7 @@
 #include "./CameraController.h"
 #include "./Camera.h"
+#include "./Player.h"
+#include "./Model.h"
 
 using namespace Fogo;
 using namespace DirectX;
@@ -25,13 +27,16 @@ CameraController::CameraController() : currentType(CameraType::Main) {
 
 		if (!camera) return;
 
-		static constexpr auto CAMERA_SPEED = 10.0f;
+		static constexpr auto DISTANCE = 70.0f;
+		static constexpr auto HEIGHT = 15.0f;
 
-		if (Input::GetPress(KeyCode::UpArrow)) camera->position.z += CAMERA_SPEED * Time::GetElapsedTime();
-		if (Input::GetPress(KeyCode::DownArrow)) camera->position.z -= CAMERA_SPEED * Time::GetElapsedTime();
-		if (Input::GetPress(KeyCode::LeftArrow)) camera->position.x += CAMERA_SPEED * Time::GetElapsedTime();
-		if (Input::GetPress(KeyCode::RightArrow)) camera->position.x -= CAMERA_SPEED * Time::GetElapsedTime();
+		const auto & targetMatrix = getMyScene()->get<Player>()->get<Model>()->getWorldMatrix();
 
+		camera->target = { targetMatrix._41, targetMatrix._42 + HEIGHT, targetMatrix._43 };
+
+		const auto & v = XMFLOAT3 { targetMatrix._31, targetMatrix._32, targetMatrix._33 };
+
+		camera->position = { camera->target.x - DISTANCE * v.x, camera->target.y - DISTANCE * v.y, camera->target.z - DISTANCE * v.z };
 	});
 }
 

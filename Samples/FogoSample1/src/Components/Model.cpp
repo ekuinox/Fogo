@@ -1,7 +1,7 @@
 #include "./Model.h"
 #include "./Camera.h"
-#include <DirectXMath.h>
 #include "CameraController.h"
+#include <DirectXMath.h>
 
 using namespace DirectX;
 using namespace Fogo;
@@ -33,6 +33,20 @@ void Model::render() const {
 	model->projection = camera->getProjection();
 
 	model->render();
+}
+
+void Model::setWorldMatrix(::DirectX::XMFLOAT4X4 & matrix) const{
+	model->world = XMLoadFloat4x4(&matrix);
+}
+
+void Model::setWorldMatrix(::DirectX::XMMATRIX & matrix) const {
+	model->world = matrix;
+}
+
+DirectX::XMFLOAT4X4 Model::getWorldMatrix() const {
+	XMFLOAT4X4 mat;
+	XMStoreFloat4x4(&mat, model->world);
+	return mat;
 }
 
 Model::Model(const char * modelFile, ComPtr<ID3DBlob> vertexShader, ComPtr<ID3DBlob> pixelShader)

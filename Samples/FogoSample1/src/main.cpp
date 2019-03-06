@@ -10,8 +10,8 @@ int main(int argc, char* argv[]) {
 			system.createAs<MainScene, Scene>().makeIndex("main");
 		})
 		.setFirstSceneKey("main")
-		.setWidth(800)
-		.setHeight(640)
+		.setWidth(1280)
+		.setHeight(1080)
 		.setTitle(L"FogoSample1")
 	);
 

@@ -15,5 +15,11 @@ public:
 	DirectX::XMFLOAT3 getPosition() const;
 
 	void setPosition(DirectX::XMFLOAT3 position) const;
+	DirectX::XMFLOAT4X4 getWorldMatrix() const;
+	void setWorldMatrix(DirectX::XMFLOAT4X4 & matrix) const;
+	void setWorldMatrix(DirectX::XMMATRIX & matrix) const;
+
 	DirectX::XMFLOAT3 translation, rotation;
+	
+
 };
