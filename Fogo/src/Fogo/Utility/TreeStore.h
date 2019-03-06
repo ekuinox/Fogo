@@ -151,7 +151,7 @@ namespace Fogo {
 		template <typename Elm = Base>
 		static void Execute(ExecuteFunction<Elm> func)
 		{
-			static_assert(TypeTraitsHelper::isDerived<Elm, Elms...>());
+			static_assert(isDerived<Elm, Elms...>());
 			__execute<Elm, Elms...>(func);
 		}
 	
@@ -159,7 +159,7 @@ namespace Fogo {
 		template <typename Elm = Base>
 		static void Execute(ExecuteFunction<Elm> func, Key parentKey)
 		{
-			static_assert(TypeTraitsHelper::isDerived<Elm, Elms...>());
+			static_assert(isDerived<Elm, Elms...>());
 			__execute<Elm, Elms...>(func, parentKey);
 		}
 	};
