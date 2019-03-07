@@ -34,6 +34,10 @@ CameraController::CameraController() : currentType(CameraType::Main), distanceTo
 			distanceToTarget += Time::GetElapsedTime() * 10.0f;
 		}
 
+		if (Input::GetTrigger(MouseButton::Left)) {
+			distanceToTarget *= -1;
+		}
+
 		const auto camera = get<Camera>(currentType);
 
 		if (!camera) return;

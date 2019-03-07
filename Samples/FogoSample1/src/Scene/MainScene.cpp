@@ -22,21 +22,23 @@ MainScene::MainScene() {
 	
 	const auto & boxes = create<Component>().makeIndex("boxes");
 	for (auto i = 0; i < 10; ++i) {
-		boxes->create<Model>(
+		const auto & box = boxes->create<Model>(
 			"./resources/2.fbx",
 			ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(VertexShader::BOX),
 			ResourceStore::Get<Microsoft::WRL::ComPtr<ID3DBlob>>(PixelShader::BOX)
 		);
 	}
 
-	create<Updater>([&] {
-		if (Input::GetTrigger(KeyCode::Return)) {
+	create<Updater>([this] {
+		static auto isBoxesMoved = false;
+		if (!isBoxesMoved) {
 			if (const auto & boxes = get<Component>("boxes")) {
 				auto n = 0;
 				boxes->execute<Model>([&](Model & model) {
-					model.setPosition({ -50.0f + n++  * 10.0f, 0.0f, 0.0f });
+					model.setPosition({ -100.0f + n++  * 20.0f, 0.0f, 0.0f });
 				});
 			}
+			isBoxesMoved = true;
 		}
 
 		if (Input::GetTrigger(KeyCode::Escape)) {
