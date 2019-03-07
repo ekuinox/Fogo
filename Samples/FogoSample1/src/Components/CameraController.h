@@ -5,6 +5,7 @@
 
 class CameraController : public Fogo::Component {
 	const char * currentType;
+	float distanceToTarget;
 
 public:
 	CameraController();
