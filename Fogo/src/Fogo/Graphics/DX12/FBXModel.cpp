@@ -1,21 +1,22 @@
 #include "./FBXModel.h"
 #include "../../../external/d3dx12.h"
 #include "../../../Fogo.h"
+#include "../../Game/ContainerBase.h"
 #include <fbxsdk.h>
 #include <iostream>
 
 using namespace Fogo;
 using Microsoft::WRL::ComPtr;
 
-std::unordered_map<const char *, std::vector<FBXParser::Mesh>> FBXModel::__meshes_memos = {};
+using MeshesMemoContainer = ContainerBase<const char *, std::vector<FBXParser::Mesh>>;
 
 void FBXModel::loadModel(const char * fileName)  {
-	if (__meshes_memos.count(fileName) == 0) {
+	if (MeshesMemoContainer::shared.count(fileName) == 0) {
 		const auto & meshes = FBXParser().import(fileName).triangulate().parse().loadTextures(__properties.textureDirectory).getMeshes();
-		__meshes_memos[fileName] = meshes;
+		MeshesMemoContainer::shared[fileName] = meshes;
 	}
 
-	for (const auto & mesh : __meshes_memos[fileName]) {
+	for (const auto & mesh : MeshesMemoContainer::shared[fileName]) {
 		__meshes.emplace_back(mesh);
 	}
 }
@@ -377,5 +378,5 @@ void FBXModel::render() const {
 }
 
 void FBXModel::FlushMemos() {
-	__meshes_memos.clear();
+	MeshesMemoContainer::shared.clear();
 }
