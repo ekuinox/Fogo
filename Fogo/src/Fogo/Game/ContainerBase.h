@@ -22,4 +22,15 @@ namespace Fogo {
 
 	template <typename Key, typename Element, typename ... Args>
 	ContainerBase<Key, Element, Args ...> ContainerBase<Key, Element, Args ...>::shared;
+
+	// ContainerBaseかチェックする
+	template <typename IsNotContainerBase>
+	struct IsContainerBase {
+		static constexpr auto value = false;
+	};
+
+	template <typename ... Args>
+	struct IsContainerBase<ContainerBase<Args...>> {
+		static constexpr auto value = true;
+	};
 }
