@@ -94,9 +94,6 @@ namespace Fogo {
 		static Element * Detach(const UUID & uuid);
 
 		// コンテナの中身を開放していく
-		template <typename Element, typename ... Elements>
-		static void Free(const UUID & parentId = rootId);
-
 		static void Free(const UUID & parentId = rootId);
 
 		// コンテナのサイズを知る
@@ -121,13 +118,13 @@ namespace Fogo {
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId) {
 		Container<Element>::shared.insert(std::make_pair(element->uuid, Handler<Element>::Create(element, parentId)));
-		ContainerWatcherMaster::shared->create<Container<Element>, HandlerChecker<Element>>();
+		MakeContainerMaster<Container<Element>>::Entry(element->uuid);
 	}
 
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId, const UUID & uuid) {
 		Container<Element>::shared.insert(std::make_pair(uuid, Handler<Element>::Create(element, parentId)));
-		ContainerWatcherMaster::shared->create<Container<Element>, HandlerChecker<Element>>();
+		MakeContainerMaster<Container<Element>>::Entry(element->uuid);
 	}
 
 	template <typename Element>
@@ -255,36 +252,6 @@ namespace Fogo {
 		}
 
 		return element;
-	}
-
-	template <typename Element, typename ... Elements>
-	void Store::Free(const UUID & parentId) {
-		static_assert(IsCorrectElement<Element>());
-
-		std::vector<UUID> uuids{};
-
-		for (const auto &[uuid, element] : Container<Element>::shared) {
-			if (element.getParentUUID() == parentId) {
-				uuids.emplace_back(uuid);
-			}
-		}
-
-		for (const auto & uuid : uuids) {
-			// 最後の再帰処理で削除する, Store::Freeで呼ぶことで最後にComponentがくる
-			if constexpr (sizeof...(Elements) == 0) {
-				// Componentじゃない場合, Componentは流れてきていないことが多いのでここで削除を回す
-				if constexpr (!std::is_same<Element, Component>()) {
-					Container<Component>::shared.erase(uuid);
-				}
-				Container<Element>::shared[uuid].release();
-			}
-
-			Container<Element>::shared.erase(uuid);
-		}
-
-		if constexpr (sizeof...(Elements) > 0) {
-			Free<Elements...>(parentId);
-		}
 	}
 
 	template <typename Element>

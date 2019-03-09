@@ -1,40 +1,23 @@
 #pragma once
 
-#include <vector>
-#include "./ContainerBase.h"
-
 namespace Fogo {
 
+	template <typename KeyType>
 	class ContainerWatcherInterface {
 	public:
-		virtual void watch() const = 0;
+		virtual void erase(const KeyType & uuid) const = 0;
 	};
 
-	template <typename Container, typename Checker = void>
-	class ContainerWatcher : public ContainerWatcherInterface {
+	template <typename Container>
+	class ContainerWatcher : public ContainerWatcherInterface<typename Container::KeyType> {
 	public:
-		void watch() const override {
-			static_assert(IsContainerBase<Container>::value);
-
-			std::vector<typename Container::KeyType> keys{};
-			
-			for (const auto &[key, value] : Container::shared) {
-				if constexpr (std::is_void<Checker>()) {
-					if (value == nullptr) keys.emplace_back(key);
-				} else {
-					if (!Checker()(value)) keys.emplace_back(key);
-				}
-			}
-
-			for (const auto & key : keys) {
-				Container::shared.erase(key);
-			}
+		void erase(const typename Container::KeyType & uuid) const override {
+			Container::shared.erase(uuid);
 		}
 
 		static ContainerWatcher * shared;
 	};
 
-	template <typename Container, typename Checker>
-	ContainerWatcher<Container, Checker> * ContainerWatcher<Container, Checker>::shared = nullptr;
-
+	template <typename Container>
+	ContainerWatcher<Container> * ContainerWatcher<Container>::shared = new ContainerWatcher<Container>();
 }

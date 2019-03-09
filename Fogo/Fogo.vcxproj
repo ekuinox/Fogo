@@ -75,7 +75,6 @@
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Meta.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
-    <ClCompile Include="src\Fogo\Game\ContainerWatcherMaster.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
     <ClCompile Include="src\Fogo\Game\System.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />

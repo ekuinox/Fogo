@@ -45,7 +45,6 @@ namespace Fogo {
 		template <typename Elm = Element, typename Key>
 		Handler & makeIndex(Key key) {
 			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
-			ContainerWatcherMaster::shared->create<IndexedStore<Key, Elm>>();
 			return *this;
 		}
 

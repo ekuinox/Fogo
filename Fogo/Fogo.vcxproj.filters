@@ -230,9 +230,6 @@
     <ClCompile Include="src\Fogo\Utility\Degree.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\Fogo\Game\ContainerWatcherMaster.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
