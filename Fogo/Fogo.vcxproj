@@ -30,6 +30,8 @@
     <ClInclude Include="src\Fogo\Game\Components\Meta.h" />
     <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
     <ClInclude Include="src\Fogo\Game\ContainerIndexKeyPair.h" />
+    <ClInclude Include="src\Fogo\Game\ContainerWatcherMaster.h" />
+    <ClInclude Include="src\Fogo\Game\ContainetWatcher.h" />
     <ClInclude Include="src\Fogo\Game\Hash.h" />
     <ClInclude Include="src\Fogo\Game\System.h" />
     <ClInclude Include="src\Fogo\Game\Handler.h" />
@@ -73,6 +75,7 @@
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Meta.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
+    <ClCompile Include="src\Fogo\Game\ContainerWatcherMaster.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
     <ClCompile Include="src\Fogo\Game\System.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
