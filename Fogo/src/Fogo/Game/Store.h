@@ -5,6 +5,7 @@
 #include <functional>
 #include "./Handler.h"
 #include "./ContainerBase.h"
+#include "./ContainerWatcherMaster.h"
 #include "../Utility/Result.h"
 
 namespace Fogo {
@@ -121,11 +122,13 @@ namespace Fogo {
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId) {
 		Container<Element>::shared.insert(std::make_pair(element->uuid, Handler<Element>::Create(element, parentId)));
+		ContainerWatcherMaster::shared->create<Container<Element>, HandlerChecker<Element>>();
 	}
 
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId, const UUID & uuid) {
 		Container<Element>::shared.insert(std::make_pair(uuid, Handler<Element>::Create(element, parentId)));
+		ContainerWatcherMaster::shared->create<Container<Element>, HandlerChecker<Element>>();
 	}
 
 	template <typename Element>
