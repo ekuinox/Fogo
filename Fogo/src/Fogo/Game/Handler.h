@@ -87,4 +87,12 @@ namespace Fogo {
 		}
 	};
 
+	// elementがnullptrかチェックする
+	template <typename Element>
+	struct HandlerChecker {
+		bool operator()(const Handler<Element> & handler) const {
+			return &handler != nullptr;
+		}
+	};
+
 }
