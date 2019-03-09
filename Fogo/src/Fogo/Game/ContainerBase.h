@@ -14,6 +14,9 @@ namespace Fogo {
 		ContainerBase() : std::unordered_map<Key, Element, Args ...>({}) { }
 
 	public:
+		using KeyType = Key;
+		using ValueType = Element;
+
 		static ContainerBase shared;
 	};
 
