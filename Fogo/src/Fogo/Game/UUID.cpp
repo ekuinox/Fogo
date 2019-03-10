@@ -2,6 +2,8 @@
 
 using namespace Fogo;
 
+const UUID UUID::InvalidUUID = UUID();
+
 std::size_t UUID::Hash::operator()(const UUID & key) const {
 	return std::hash<Engine::result_type>{}(key.raw);
 }
@@ -14,7 +16,7 @@ UUID::Engine::result_type UUID::Generate() {
 }
 
 UUID::UUID() : raw(Generate()) {
-	
+
 }
 
 bool UUID::operator==(const UUID & rhs) const {

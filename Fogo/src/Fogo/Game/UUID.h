@@ -11,7 +11,7 @@ namespace Fogo {
 		using Engine = std::independent_bits_engine<std::mt19937, 64, std::uint64_t>;
 
 		static Engine::result_type Generate();
-
+		
 		const Engine::result_type raw;
 
 		UUID();
@@ -29,5 +29,7 @@ namespace Fogo {
 		friend std::ostream & operator<<(std::ostream& stream, const UUID & uuid) {
 			return stream << uuid.raw;
 		}
+
+		static const UUID InvalidUUID;
 	};
 }
