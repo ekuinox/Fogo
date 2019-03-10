@@ -33,9 +33,6 @@ namespace Fogo {
 		template <typename Element>
 		static void Insert(Element * element, const UUID & parentId);
 
-		template <typename Element>
-		static void Insert(Element * element, const UUID & parentId, const UUID & uuid);
-
 	public:
 		enum class Error {
 			NotExist, // Element‚ªŽæ“¾‚Å‚«‚È‚©‚Á‚½‚Æ‚«‚É“Š‚°‚é
@@ -118,12 +115,6 @@ namespace Fogo {
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId) {
 		Container<Element>::shared.insert(std::make_pair(element->uuid, Handler<Element>::Create(element, parentId)));
-		MakeContainerMaster<Container<Element>>::Entry(element->uuid);
-	}
-
-	template <typename Element>
-	void Store::Insert(Element * element, const UUID & parentId, const UUID & uuid) {
-		Container<Element>::shared.insert(std::make_pair(uuid, Handler<Element>::Create(element, parentId)));
 		MakeContainerMaster<Container<Element>>::Entry(element->uuid);
 	}
 
