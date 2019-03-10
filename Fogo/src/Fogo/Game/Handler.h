@@ -22,7 +22,7 @@ namespace Fogo {
 
 		}
 
-		Handler() : Handler(nullptr, UUID()) {
+		Handler() : Handler(nullptr, UUID::InvalidUUID) {
 			// ‚È‚ñ‚Å‚¢‚é‚ñ‚±‚ê
 		}
 
