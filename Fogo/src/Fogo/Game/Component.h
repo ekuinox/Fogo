@@ -63,10 +63,6 @@ namespace Fogo {
 		template <typename Element, typename ElementAs, bool Both = true>
 		Handler<ElementAs> & bindAs(Element * element) const;
 
-		//// 子インスタンスをすべて解放する
-		//template <typename Element = Component, typename ... Elements>
-		//void free() const;
-
 		// 子インスタンスの数を取得する
 		template <typename Element = Component>
 		std::size_t getChildrenSize() const;
@@ -116,12 +112,7 @@ namespace Fogo {
 	void Component::execute(const std::function<void(Element&)> func) const {
 		Store::Execute<Element>(func, uuid);
 	}
-
-	//template<typename Element, typename ... Elements>
-	//void Component::free() const {
-	//	Store::Free<Element, Elements ...>(uuid);
-	//}
-
+	
 	template <typename Element>
 	std::size_t Component::getChildrenSize() const {
 		return Store::GetChildrenSize<Element>(uuid);
