@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\PLAYGROUND01\UUID.H" />
     <ClInclude Include="src\Fogo.h" />
     <ClInclude Include="src\Fogo\Debug.h" />
     <ClInclude Include="src\Fogo\Debug\DumpComponent.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
     <ClCompile Include="src\Fogo\Game\System.cpp" />
+    <ClCompile Include="src\Fogo\Game\UUID.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DepthStencilView.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\DrawObject\Plain.cpp" />
     <ClCompile Include="src\Fogo\Graphics\DX12\FBXModel.cpp" />
