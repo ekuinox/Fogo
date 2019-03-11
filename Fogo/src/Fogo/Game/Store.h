@@ -193,8 +193,7 @@ namespace Fogo {
 	Result<Store::Error, Element*> Store::Get(Key key, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			auto & container = ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared;
-			return container.at(ContainerIndexKeyPair<Key> { key, parentId });
+			return ContainerBase<ContainerIndexKeyPair<Key>, Element*, Hash<Key>>::shared.at(ContainerIndexKeyPair<Key> { key, parentId });
 		}
 		catch (std::out_of_range e) {
 			return Error::NotExist;
