@@ -5,7 +5,6 @@
 #include "./ContainerIndexKeyPair.h"
 #include "./ComponentTree.h"
 #include "./Hash.h"
-#include "ContainerWatcherMaster.h"
 
 namespace Fogo {
 
@@ -16,19 +15,18 @@ namespace Fogo {
 		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Elm*, Hash<Key>>;
 		
 		Element * element;
-	//	UUID parentId;
 
 	public:
-		Handler(Element * element/*, const UUID & parentId*/) : element(element)/*, parentId(parentId)*/ {
+		Handler(Element * element) : element(element) {
 
 		}
 
-		Handler() : Handler(nullptr/*, UUID::InvalidUUID*/) {
+		Handler() : Handler(nullptr) {
 			// ‚È‚ñ‚Å‚¢‚é‚ñ‚±‚ê
 		}
 
-		static Handler Create(Element * element/*, const UUID & parentId*/) {
-			return std::move(Handler(element/*, parentId*/));
+		static Handler Create(Element * element) {
+			return std::move(Handler(element));
 		}
 
 		// Œp³Œ³ƒNƒ‰ƒX‚Å‚ÌŽæ“¾
@@ -78,7 +76,7 @@ namespace Fogo {
 		}
 
 		// eUUID‚ð“¾‚é
-		const UUID getParentUUID() const {
+		UUID getParentUUID() const {
 			return *ComponentTree::shared->getParent(element->uuid);
 		}
 
