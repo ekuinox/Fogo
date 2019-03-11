@@ -29,6 +29,7 @@
     <ClInclude Include="src\Fogo\Game\Component.h" />
     <ClInclude Include="src\Fogo\Game\Components\CallableComponents.h" />
     <ClInclude Include="src\Fogo\Game\Components\Meta.h" />
+    <ClInclude Include="src\Fogo\Game\ComponentTree.h" />
     <ClInclude Include="src\Fogo\Game\ContainerBase.h" />
     <ClInclude Include="src\Fogo\Game\ContainerIndexKeyPair.h" />
     <ClInclude Include="src\Fogo\Game\ContainerWatcherMaster.h" />
@@ -76,6 +77,7 @@
     <ClCompile Include="src\Fogo\Game\Component.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Meta.cpp" />
     <ClCompile Include="src\Fogo\Game\Components\Scene.cpp" />
+    <ClCompile Include="src\Fogo\Game\ComponentTree.cpp" />
     <ClCompile Include="src\Fogo\Game\Store.cpp" />
     <ClCompile Include="src\Fogo\Game\System.cpp" />
     <ClCompile Include="src\Fogo\Game\UUID.cpp" />
