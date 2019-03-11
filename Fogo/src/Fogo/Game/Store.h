@@ -267,7 +267,6 @@ namespace Fogo {
 	std::size_t Store::GetChildrenSize(const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 
-
 		const auto & children = ComponentTree::shared->getChildren(parentId);
 
 		if constexpr (std::is_same<Component, Element>()) return children.size();
