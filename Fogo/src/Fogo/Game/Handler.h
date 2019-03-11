@@ -3,6 +3,7 @@
 #include "./UUID.h"
 #include "./ContainerBase.h"
 #include "./ContainerIndexKeyPair.h"
+#include "./ComponentTree.h"
 #include "./Hash.h"
 #include "ContainerWatcherMaster.h"
 
@@ -15,19 +16,19 @@ namespace Fogo {
 		using IndexedStore = ContainerBase<ContainerIndexKeyPair<Key>, Elm*, Hash<Key>>;
 		
 		Element * element;
-		UUID parentId;
+	//	UUID parentId;
 
 	public:
-		Handler(Element * element, const UUID & parentId) : element(element), parentId(parentId) {
+		Handler(Element * element/*, const UUID & parentId*/) : element(element)/*, parentId(parentId)*/ {
 
 		}
 
-		Handler() : Handler(nullptr, UUID::InvalidUUID) {
+		Handler() : Handler(nullptr/*, UUID::InvalidUUID*/) {
 			// なんでいるんこれ
 		}
 
-		static Handler Create(Element * element, const UUID & parentId) {
-			return std::move(Handler(element, parentId));
+		static Handler Create(Element * element/*, const UUID & parentId*/) {
+			return std::move(Handler(element/*, parentId*/));
 		}
 
 		// 継承元クラスでの取得
@@ -38,26 +39,26 @@ namespace Fogo {
 				return *elementAs;
 			}
 			// 格納されていない場合新たに格納して返却
-			return Store::BindAs<Element, ElementAs, false>(element, parentId);
+			return Store::BindAs<Element, ElementAs, false>(element, *ComponentTree::shared->getParent(element->uuid));
 		}
 
 		// インデックスの作成
 		template <typename Elm = Element, typename Key>
 		Handler & makeIndex(Key key) {
-			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, parentId }, element));
+			IndexedStore<Key, Elm>::shared.insert(std::make_pair(ContainerIndexKeyPair<Key> { key, *ComponentTree::shared->getParent(element->uuid) }, element));
 			return *this;
 		}
 
 		// インデックスの削除
 		template <typename Elm = Element, typename Key>
 		Handler & destroyIndex(Key key) {
-			IndexedStore<Key, Elm>::shared.erase(ContainerIndexKeyPair<Key> { key, parentId });
+			IndexedStore<Key, Elm>::shared.erase(ContainerIndexKeyPair<Key> { key, *ComponentTree::shared->getParent(element->uuid) });
 			return *this;
 		}
 
 		// 親の挿げ替え
 		Handler & assign(const UUID & newParentId) {
-			parentId = newParentId;
+			ComponentTree::shared->create(newParentId, element->uuid);
 			return *this;
 		}
 
@@ -78,7 +79,7 @@ namespace Fogo {
 
 		// 親UUIDを得る
 		const UUID getParentUUID() const {
-			return parentId;
+			return *ComponentTree::shared->getParent(element->uuid);
 		}
 
 		// 解放する

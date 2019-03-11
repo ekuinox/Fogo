@@ -5,6 +5,7 @@
 #include <functional>
 #include "./Handler.h"
 #include "./ContainerBase.h"
+#include "./ComponentTree.h"
 #include "./ContainerWatcherMaster.h"
 #include "../Utility/Result.h"
 
@@ -28,7 +29,7 @@ namespace Fogo {
 
 	private:
 		template <typename Element>
-		using Container = ContainerBase<UUID, Handler<Element>, UUID::Hash>;
+		using Container = ContainerBase<UUID, Element*, UUID::Hash>;
 
 		template <typename Element>
 		static void Insert(Element * element, const UUID & parentId);
@@ -48,19 +49,19 @@ namespace Fogo {
 
 		// ポインタをバインドする
 		template <typename Element>
-		static Handler<Element> & Bind(Element * element, const UUID & parentId = rootId);
+		static Handler<Element> Bind(Element * element, const UUID & parentId = rootId);
 
 		// ポインタをバインドする
 		template <typename Element, typename ElementAs, bool Both = true>
-		static Handler<ElementAs> & BindAs(Element * element, const UUID & parentId = rootId);
+		static Handler<ElementAs> BindAs(Element * element, const UUID & parentId = rootId);
 
 		// 構築する
 		template <typename Element, typename ... Args>
-		static Handler<Element> & Create(const UUID & parentId = rootId, Args ... args);
+		static Handler<Element> Create(const UUID & parentId = rootId, Args ... args);
 
 		// 構築する
 		template <typename Element, typename ElementAs, bool Both = true, typename ... Args>
-		static Handler<ElementAs> & CreateAs(const UUID & parentId = rootId, Args ... args);
+		static Handler<ElementAs> CreateAs(const UUID & parentId = rootId, Args ... args);
 
 		// UUIDを用いてComponentを取得する
 		template <typename Element>
@@ -105,16 +106,17 @@ namespace Fogo {
 
 		// コピーを生成する（UUIDは再生成する）
 		template <typename Element>
-		static Handler<Element> & Instantiate(Element & source, const UUID & parentId);
+		static Handler<Element> Instantiate(Element & source, const UUID & parentId);
 
 		template <typename Element>
-		static Handler<Element> & Instantiate(Element & source);
+		static Handler<Element> Instantiate(Element & source);
 
 	};
 
 	template <typename Element>
 	void Store::Insert(Element * element, const UUID & parentId) {
-		Container<Element>::shared.insert(std::make_pair(element->uuid, Handler<Element>::Create(element, parentId)));
+		Container<Element>::shared.insert(std::make_pair(element->uuid, element));
+		ComponentTree::shared->create(parentId, element->uuid);
 		MakeContainerMaster<Container<Element>>::Entry(element->uuid);
 	}
 
@@ -124,7 +126,7 @@ namespace Fogo {
 	}
 
 	template <typename Element>
-	Handler<Element> & Store::Bind(Element * element, const UUID & parentId) {
+	Handler<Element> Store::Bind(Element * element, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
 
 		Insert<Element>(element, parentId);
@@ -133,11 +135,11 @@ namespace Fogo {
 
 		if constexpr (std::is_base_of<Scene, Element>()) Insert<Scene>(element, parentId);
 
-		return Container<Element>::shared.at(element->uuid);
+		return Handler<Element>::Create(element);
 	}
 
 	template<typename Element, typename ElementAs, bool Both>
-	Handler<ElementAs> & Store::BindAs(Element * element, const UUID & parentId) {
+	Handler<ElementAs> Store::BindAs(Element * element, const UUID & parentId) {
 		static_assert(std::is_base_of<ElementAs, Element>());
 		if constexpr (Both) {
 			Bind<Element>(element, parentId);
@@ -147,12 +149,12 @@ namespace Fogo {
 	}
 
 	template <typename Element, typename ... Args>
-	Handler<Element> & Store::Create(const UUID & parentId, Args ... args) {
+	Handler<Element> Store::Create(const UUID & parentId, Args ... args) {
 		return Bind(new Element(args...), parentId);
 	}
 
 	template<typename Element, typename ElementAs, bool Both, typename ...Args>
-	Handler<ElementAs>& Store::CreateAs(const UUID & parentId, Args ...args) {
+	Handler<ElementAs> Store::CreateAs(const UUID & parentId, Args ...args) {
 		static_assert(std::is_base_of<ElementAs, Element>());
 		return BindAs<Element, ElementAs, Both>(new Element(args...), parentId);
 	}
@@ -174,9 +176,11 @@ namespace Fogo {
 
 		std::vector<UUID> uuids {};
 
-		for (const auto &[uuid, element] : Container<Element>::shared) {
-			if (element.getParentUUID() == parentId) uuids.emplace_back(uuid);
-		}
+		for (const auto & child : ComponentTree::shared->getChildren(parentId)) {
+			if (Container<Element>::shared.count(child) != 0) {
+				uuids.emplace_back(child);
+			}
+ 		}
 
 		if (uuids.size() == 1) {
 			return Container<Element>::shared.at(uuids.front());
@@ -201,11 +205,13 @@ namespace Fogo {
 	Result<Store::Error, Handler<Element>> Store::GetParent(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 		try {
-			auto parentId = Container<Component>::shared.at(uuid).getParentUUID();
-			if (parentId == rootId) {
-				return Error::YourParentIsRoot;
+			if (const auto & parentId = ComponentTree::shared->getParent(uuid)) {
+				if (*parentId == rootId) {
+					return Error::YourParentIsRoot;
+				}
+				return Handler<Element>::Create(Container<Element>::shared.at(*parentId));
 			}
-			return Container<Element>::shared.at(parentId);
+			return Error::NotExist;
 		}
 		catch (std::out_of_range e) {
 			return Error::NotExist;
@@ -223,8 +229,10 @@ namespace Fogo {
 	template <typename Element>
 	void Store::Execute(const std::function<void(Element &)> & func, const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
-		for (const auto &[_, element] : Container<Element>::shared) {
-			if (element.getParentUUID() == parentId) func(*element);
+		for (const auto & child : ComponentTree::shared->getChildren(parentId)) {
+			try {
+				func(*Container<Element>::shared.at(child));
+			} catch (...) {}
 		}
 	}
 
@@ -232,6 +240,9 @@ namespace Fogo {
 	Element * Store::Detach(const UUID & uuid) {
 		static_assert(IsCorrectElement<Element>());
 
+		// 機能未実装
+
+		/*
 		const auto element = Container<Element>::shared.at(uuid).element;
 
 		Container<Element>::shared.erase(uuid);
@@ -241,8 +252,10 @@ namespace Fogo {
 		if constexpr (std::is_base_of<Scene, Element>()) {
 			Container<Scene>::shared.erase(uuid);
 		}
-
+		
 		return element;
+		*/
+		return nullptr;
 	}
 
 	template <typename Element>
@@ -253,15 +266,22 @@ namespace Fogo {
 	template <typename Element>
 	std::size_t Store::GetChildrenSize(const UUID & parentId) {
 		static_assert(IsCorrectElement<Element>());
+
+
+		const auto & children = ComponentTree::shared->getChildren(parentId);
+
+		if constexpr (std::is_same<Component, Element>()) return children.size();
+
 		std::size_t size = 0;
-		for (const auto &[_, element] : Container<Element>::shared) {
-			if (element.getParentUUID() == parentId) ++size;
+		for (const auto & child : children) {
+			if (Container<Element>::shared.count(child) != 0) size += 1;
 		}
+
 		return size;
 	}
 
 	template <typename Element>
-	Handler<Element> & Store::Instantiate(Element & source, const UUID & parentId) {
+	Handler<Element> Store::Instantiate(Element & source, const UUID & parentId) {
 		static_assert(std::is_base_of<Component, Element>());
 
 		auto clone = new Element;
@@ -274,8 +294,8 @@ namespace Fogo {
 	}
 
 	template <typename Element>
-	Handler<Element> & Store::Instantiate(Element & source) {
-		return Instantiate(source, (*Get<Component>(source.uuid)).getParentUUID());
+	Handler<Element> Store::Instantiate(Element & source) {
+		return Instantiate(source, ComponentTree::shared->getParent(source.uuid));
 	}
 
 }
