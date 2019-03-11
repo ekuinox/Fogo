@@ -135,7 +135,7 @@ namespace Fogo {
 
 		if constexpr (std::is_base_of<Scene, Element>()) Insert<Scene>(element, parentId);
 
-		return Handler<Element>::Create(element);
+		return Handler<Element>	(element);
 	}
 
 	template<typename Element, typename ElementAs, bool Both>
@@ -208,7 +208,7 @@ namespace Fogo {
 				if (*parentId == rootId) {
 					return Error::YourParentIsRoot;
 				}
-				return Handler<Element>::Create(Container<Element>::shared.at(*parentId));
+				return Handler<Element>(Container<Element>::shared.at(*parentId));
 			}
 			return Error::NotExist;
 		}

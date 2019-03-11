@@ -25,10 +25,6 @@ namespace Fogo {
 			// ‚È‚ñ‚Å‚¢‚é‚ñ‚±‚ê
 		}
 
-		static Handler Create(Element * element) {
-			return std::move(Handler(element));
-		}
-
 		// Œp³Œ³ƒNƒ‰ƒX‚Å‚Ìæ“¾
 		template <typename ElementAs>
 		Handler<ElementAs> as() const {
