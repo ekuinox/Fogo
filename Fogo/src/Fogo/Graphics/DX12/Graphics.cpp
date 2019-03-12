@@ -22,7 +22,7 @@ auto Graphics::createFactory() -> void {
 auto Graphics::createDevice() -> void {
 	ComPtr<IDXGIAdapter3> adapter;
 	ExecOrFail<exception>(factory->EnumAdapters(0, reinterpret_cast<IDXGIAdapter**>(adapter.GetAddressOf())));
-	ExecOrFail<exception>(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1, IID_PPV_ARGS(&device)));
+	ExecOrFail<exception>(D3D12CreateDevice(adapter.Get(), MINIMUM_FEATURE_LEVEL, IID_PPV_ARGS(&device)));
 }
 
 auto Graphics::createCommandQueue() -> void {
