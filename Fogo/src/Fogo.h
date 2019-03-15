@@ -13,13 +13,11 @@ namespace Fogo {
 		Systemにわたすパラメタをメソッドチェーンで指定できるようにするのが目的
 
 		*/
-		std::unordered_map<const char *, Scene*> scenes;
 		std::function<void(System &)> createScenes;
 		Window::Properties window;
 		System::Key first_key;
 
 		Properties & setFirstSceneKey(System::Key newFirstKey) { first_key = newFirstKey; return * this; }
-		Properties & setScenes(const std::unordered_map<const char *, Scene*> & newScenes) { scenes = newScenes; return *this; }
 		Properties & setCreateScenes(const std::function<void(System &)> newCreateScenes) { createScenes = newCreateScenes; return * this; }
 		Properties & setWidth(const UINT & newWidth) { window.setWidth(newWidth); return *this; }
 		Properties & setHeight(const UINT & newHeight) { window.setHeight(newHeight); return *this; }

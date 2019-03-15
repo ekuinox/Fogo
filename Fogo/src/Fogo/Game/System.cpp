@@ -92,29 +92,6 @@ void System::onDestroy() {
 	TaskScheduler::Destroy();
 }
 
-System::System(Key firstKey, std::unordered_map<Key, Scene*> scenes)
-	: __current_key(firstKey), __next_key(firstKey), __is_thread_running(true) {
-	PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
-	PubSub<Event, void>::RegisterSubscriber(Event::End, [&] { onEnd(); });
-	
-	keys.reserve(scenes.size());
-	for (auto & [key, scene] : scenes) {
-		bind<Scene>(scene).makeIndex(key);
-		keys.emplace_back(key);
-	}
-
-	// 最初のシーンを初期化して開始
-	const auto & currentScene = get<Scene>(__current_key);
-	currentScene->initialize();
-	currentScene->start();
-
-	Input::Initialize();
-	TaskScheduler::Create();
-	__thread = std::thread([&] {
-		while (__is_thread_running) { exec(); }
-	});
-}
-
 System::System(const Key & firstKey, const std::function<void(System &)> & createScenes)
 	: __current_key(firstKey), __next_key(firstKey), __is_thread_running(true) {
 	PubSub<Event, void>::RegisterSubscriber(Event::Next, [&] { onNext(); });
@@ -140,10 +117,6 @@ System::System(const Key & firstKey, const std::function<void(System &)> & creat
 
 System::~System() {
 	onDestroy();
-}
-
-void System::Create(Key firstKey, const std::unordered_map<Key, Scene*> & scenes) {
-	if (!__instance) __instance = new System(firstKey, scenes);
 }
 
 void System::Create(const Key & firstKey, const std::function<void(System &)> & createScenes) {
