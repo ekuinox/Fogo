@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\PLAYGROUND01\UUID.H" />
     <ClInclude Include="src\Fogo.h" />
     <ClInclude Include="src\Fogo\Debug.h" />
     <ClInclude Include="src\Fogo\Debug\DumpComponent.h" />

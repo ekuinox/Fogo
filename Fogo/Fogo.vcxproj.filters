@@ -159,9 +159,6 @@
     <ClInclude Include="src\Fogo\Game\ContainerWatcherMaster.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\PLAYGROUND01\UUID.H">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Fogo\Utility\Time.cpp">
