@@ -71,3 +71,13 @@ void Time::CheckTimers()
 	}
 
 }
+
+Time::Counter::Counter()
+	: begun(TimePoint::clock::now())
+{
+}
+
+float Time::Counter::operator()() const
+{
+	return static_cast<float>(duration_cast<nanoseconds>(TimePoint::clock::now() - begun).count()) / nano::den;
+}
