@@ -75,6 +75,10 @@ namespace Fogo {
 		template <typename Element, typename Key>
 		static Result<Error, Element*> Get(Key key, const UUID & parentId);
 
+		// q‚ğ•¡”æ“¾‚·‚é
+		template <typename Element>
+		static std::vector<Handler<Element>> GetChildren(const UUID & parentId);
+
 		// w’è‚µ‚½Component‚Ìe‚ğæ“¾‚·‚é
 		template <typename Element = Component>
 		static Result<Error, Handler<Element>> GetParent(const UUID & uuid);
@@ -198,6 +202,16 @@ namespace Fogo {
 		catch (std::out_of_range e) {
 			return Error::NotExist;
 		}
+	}
+
+	template<typename Element>
+	std::vector<Handler<Element>> Store::GetChildren(const UUID& parentId)
+	{
+		std::vector<Handler<Element>> result{};
+		for (const auto& [_, element] : Container<Element>::shared) {
+			if (element.getParentUUID() == parentId) result.emplace_back(element);
+		}
+		return result;
 	}
 
 	template <typename Element>

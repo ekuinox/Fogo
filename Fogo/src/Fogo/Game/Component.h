@@ -41,6 +41,9 @@ namespace Fogo {
 		template <typename Element>
 		Result<Store::Error, Handler<Element>> get() const;
 
+		template <typename Element>
+		std::vector<Handler<Element>> getMultiple() const;
+
 		// ©•ª‚ğ‚Á‚Ä‚¢‚éScene‚ğæ“¾‚·‚é
 		Result<Store::Error, Handler<Scene>> getMyScene() const;
 		
@@ -81,6 +84,11 @@ namespace Fogo {
 	template <typename Element>
 	Result<Store::Error, Handler<Element>> Component::get(const UUID & uuid) const {
 		return Store::Get<Element>(uuid);
+	}
+
+	template <typename Element>
+	std::vector<Handler<Element>> Component::getMultiple() const {
+		return Store::GetChildren<Element>(uuid);
 	}
 
 	template <typename Element>

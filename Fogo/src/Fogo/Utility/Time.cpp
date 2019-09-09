@@ -57,7 +57,7 @@ void Time::CheckTimers()
 {
 	auto & timers = getInstance().__timers;
 
-	if (timers.size() < 1) return;
+	if (timers.empty()) return;
 
 	std::vector<const char *> finishedTimerKeys = {};
 	for (const auto & [key, timer] : timers) {
@@ -70,4 +70,14 @@ void Time::CheckTimers()
 		timers.erase(key);
 	}
 
+}
+
+Time::Counter::Counter()
+	: begun(TimePoint::clock::now())
+{
+}
+
+float Time::Counter::operator()() const
+{
+	return static_cast<float>(duration_cast<nanoseconds>(TimePoint::clock::now() - begun).count()) / nano::den;
 }

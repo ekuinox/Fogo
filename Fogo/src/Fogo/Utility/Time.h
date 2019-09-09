@@ -40,6 +40,19 @@ namespace Fogo {
 		static float GetElapsedTime();
 		static void RegisterTimer(const char * key, float time, const std::function<void(void)> & func);
 		static void CheckTimers();
+
+
+
+		// ŠÔ·‚ğ‹‚ß‚é
+		class Counter {
+		private:
+			TimePoint begun;
+
+		public:
+			Counter();
+			float operator()() const;
+
+		};
 	};
 
 } // namespace Fogo

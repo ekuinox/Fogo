@@ -31,6 +31,7 @@ namespace Fogo {
 
 	private: // private variables
 		static constexpr unsigned char RENDER_TARGET_VIEW_NUMBER = 2;
+		static constexpr auto MINIMUM_FEATURE_LEVEL = D3D_FEATURE_LEVEL_11_0;
 
 		static Graphics * instance;
 
