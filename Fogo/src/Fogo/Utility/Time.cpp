@@ -57,7 +57,7 @@ void Time::CheckTimers()
 {
 	auto & timers = getInstance().__timers;
 
-	if (timers.size() < 1) return;
+	if (timers.empty()) return;
 
 	std::vector<const char *> finishedTimerKeys = {};
 	for (const auto & [key, timer] : timers) {
