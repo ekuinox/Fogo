@@ -40,9 +40,15 @@
     <ClInclude Include="src\Fogo\Game\UUID.h" />
     <ClInclude Include="src\Fogo\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12DescriptorRangeExtended.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12HeapPropertiesExtended.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12ResourceDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject\Plain.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\DXGIExtendedStructs.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\DXGIExtendedStructs\DXGISampleDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\FBXModel.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\Graphics.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\RenderTargetView.h" />

@@ -159,6 +159,24 @@
     <ClInclude Include="src\Fogo\Game\ContainerWatcherMaster.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12DescriptorRangeExtended.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12HeapPropertiesExtended.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12ResourceDescExtended.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\DXGIExtendedStructs\DXGISampleDescExtended.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Fogo\Graphics\DX12\DXGIExtendedStructs.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Fogo\Utility\Time.cpp">
