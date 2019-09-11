@@ -4,6 +4,8 @@
 #include <vector>
 #include <d3dcompiler.h>
 #include "../Graphics.h"
+#include "../D3D12ExtendedStructs.h"
+#include "../DXGIExtendedStructs.h"
 #include "../../../Utility/HelperFunctions.h"
 #include "../../../Utility/Time.h"
 
@@ -20,25 +22,18 @@ Plain::Plain(
 	__pipeline_state(std::move(pipelineState)),
 	__root_signature(std::move(rootSignature))
 {
-	static constexpr D3D12_HEAP_PROPERTIES HEAP_PROPERTIES {
-		D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_UPLOAD,
-		D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
-		D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN,
-		0,
-		0
-	};
+	static constexpr D3D12_HEAP_PROPERTIES HEAP_PROPERTIES = D3D12HeapPropertiesExtended().withType(D3D12_HEAP_TYPE_UPLOAD);
 
-	static constexpr D3D12_RESOURCE_DESC RESOURCE_DESC {
-		D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_BUFFER,
-		0,
-		256,
-		1,
-		1,
-		1,
-		DXGI_FORMAT::DXGI_FORMAT_UNKNOWN,
-		DXGI_SAMPLE_DESC { 1, 0 },
-		D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_ROW_MAJOR
-	};
+	static constexpr D3D12_RESOURCE_DESC RESOURCE_DESC = D3D12ResourceDescExtended()
+		.withDimension(D3D12_RESOURCE_DIMENSION_BUFFER)
+		.withAlignment(0)
+		.withWidth(256)
+		.withHeight(1)
+		.withDepthOrArraySize(1)
+		.withMipLevels(1)
+		.withFormat(DXGI_FORMAT_UNKNOWN)
+		.withSampleDesc(DXGISampleDescExtended().withCount(1).withQuality(0))
+		.withLayout(D3D12_TEXTURE_LAYOUT_ROW_MAJOR);
 
 	ExecOrFail(device->CreateCommittedResource(
 		&HEAP_PROPERTIES,
