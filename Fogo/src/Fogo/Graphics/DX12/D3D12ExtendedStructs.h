@@ -11,3 +11,6 @@
 #include "./D3D12ExtendedStructs/D3D12RasterizerDescExtended.h"
 #include "./D3D12ExtendedStructs/D3D12BlendDescExtended.h"
 #include "./D3D12ExtendedStructs/D3D12RenderTargetBlendDescExtended.h"
+#include "./D3D12ExtendedStructs/D3D12GraphicsPipelineStateDescExtended.h"
+#include "./D3D12ExtendedStructs/D3D12ShaderBytecodeExtended.h"
+#include "./D3D12ExtendedStructs/D3D12InputLayoutDescExtended.h"

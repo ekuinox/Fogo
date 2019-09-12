@@ -43,13 +43,16 @@
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12BlendDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12DescriptorRangeExtended.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12GraphicsPipelineStateDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12HeapPropertiesExtended.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12InputLayoutDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12RasterizerDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12RenderTargetBlendDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12ResourceDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12RootDescriptorTableExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12RootParameterExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12RootSignatureDescExtended.h" />
+    <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12ShaderBytecodeExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\D3D12ExtendedStructs\D3D12StaticSamplerDescExtended.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DepthStencilView.h" />
     <ClInclude Include="src\Fogo\Graphics\DX12\DrawObject.h" />
