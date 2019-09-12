@@ -3,6 +3,7 @@
 #include "../../../Fogo.h"
 #include "../../Game/ContainerBase.h"
 #include "D3D12ExtendedStructs.h"
+#include "DXGIExtendedStructs.h"
 #include <fbxsdk.h>
 #include <iostream>
 
@@ -96,52 +97,55 @@ void FBXModel::createRootSignature() {
 
 void FBXModel::createPipelineStateObject() {
 	// https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=JA-JP&k=k(d3d12%2FD3D12_RASTERIZER_DESC);k(D3D12_RASTERIZER_DESC);k(DevLang-C%2B%2B);k(TargetOS-Windows)&rd=true
-	D3D12_RASTERIZER_DESC descRasterizer;
-	descRasterizer.FillMode = D3D12_FILL_MODE_SOLID;
-	descRasterizer.CullMode = D3D12_CULL_MODE_NONE;
-	descRasterizer.FrontCounterClockwise = FALSE;
-	descRasterizer.DepthBias = 0;
-	descRasterizer.SlopeScaledDepthBias = 0.0f;
-	descRasterizer.DepthBiasClamp = 0.0f;
-	descRasterizer.DepthClipEnable = TRUE;
-	descRasterizer.MultisampleEnable = FALSE;
-	descRasterizer.AntialiasedLineEnable = FALSE;
-	descRasterizer.ForcedSampleCount = 0;
-	descRasterizer.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-
+	static constexpr D3D12_RASTERIZER_DESC RASTERIZER_DESC = D3D12RasterizerDescExtended()
+		.withFillMode(D3D12_FILL_MODE_SOLID)
+		.withCullMode(D3D12_CULL_MODE_NONE)
+		.withFrontCounterClockwise(FALSE)
+		.withDepthBias(0)
+		.withDepthBiasClamp(0.0f)
+		.withDepthClipEnable(TRUE)
+		.withMultisampleEnable(FALSE)
+		.withAntialiasedLineEnable(FALSE)
+		.withForcedSampleCount(0)
+		.withConservativeRaster(D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF);
+	
 	// https://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=JA-JP&k=k(d3d12%2FD3D12_BLEND_DESC);k(D3D12_BLEND_DESC);k(DevLang-C%2B%2B);k(TargetOS-Windows)&rd=true
-	D3D12_BLEND_DESC descBlend;
-	descBlend.AlphaToCoverageEnable = FALSE;
-	descBlend.IndependentBlendEnable = FALSE;
-	descBlend.RenderTarget[0].BlendEnable = TRUE;
-	descBlend.RenderTarget[0].LogicOpEnable = FALSE;
-	descBlend.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	descBlend.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	descBlend.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	descBlend.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-	descBlend.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-	descBlend.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	descBlend.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_AND;
-	descBlend.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	static constexpr auto BLEND_DESC = D3D12BlendDescExtended()
+		.withAlphaToCoverageEnable(FALSE)
+		.withIndependentBlendEnable(FALSE)
+		.withRenderTarget0(D3D12RenderTargetBlendDescExtended()
+			.withBlendEnable(TRUE)
+			.withLogicOpEnable(FALSE)
+			.withSrcBlend(D3D12_BLEND_SRC_ALPHA)
+			.withDestBlend(D3D12_BLEND_INV_SRC_ALPHA)
+			.withBlendOp(D3D12_BLEND_OP_ADD)
+			.withSrcBlendAlpha(D3D12_BLEND_ONE)
+			.withDestBlendAlpha(D3D12_BLEND_ZERO)
+			.withBlendOpAlpha(D3D12_BLEND_OP_ADD)
+			.withLogicOp(D3D12_LOGIC_OP_AND)
+			.withRenderTargetWriteMask(D3D12_COLOR_WRITE_ENABLE_ALL));
 
 	// パイプラインステートオブジェクト作成
 	// 頂点シェーダとピクセルシェーダがないと、作成に失敗する
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC descPSO;
-	ZeroMemory(&descPSO, sizeof(descPSO));
-	descPSO.InputLayout = { FBXParser::Vertex::INPUT_LAYOUT, ARRAYSIZE(FBXParser::Vertex::INPUT_LAYOUT) };										// インプットレイアウト設定
-	descPSO.pRootSignature = __root_signature.Get();														// ルートシグニチャ設定
-	descPSO.VS = { reinterpret_cast<BYTE*>(__properties.vertexShader->GetBufferPointer()), __properties.vertexShader->GetBufferSize() };	// 頂点シェーダ設定
-	descPSO.PS = { reinterpret_cast<BYTE*>(__properties.pixelShader->GetBufferPointer()), __properties.pixelShader->GetBufferSize() };	// ピクセルシェーダ設定
-	descPSO.RasterizerState = descRasterizer;																// ラスタライザ設定
-	descPSO.BlendState = descBlend;																			// ブレンド設定
-	descPSO.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);									// ステンシルバッファ有効設定
-	descPSO.DSVFormat = DXGI_FORMAT::DXGI_FORMAT_D32_FLOAT;													// DSVフォーマット指定
-	descPSO.SampleMask = UINT_MAX;																			// サンプルマスク設定
-	descPSO.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;									// プリミティブタイプ	
-	descPSO.NumRenderTargets = 1;																			// レンダーターゲット数
-	descPSO.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;														// レンダーターゲットフォーマット
-	descPSO.SampleDesc.Count = 1;																			// サンプルカウント
-	ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&descPSO, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
+	const D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateObjectDesc = D3D12GraphicsPipelineStateDescExtended()
+		.withInputLayout( // インプットレイアウト設定
+			D3D12InputLayoutDescExtended()
+			.withInputElementDescs(FBXParser::Vertex::INPUT_LAYOUT)
+			.withNumElements(ARRAYSIZE(FBXParser::Vertex::INPUT_LAYOUT)))
+		.withRasterizerState(RASTERIZER_DESC) // ラスタライザ設定
+		.withBlendState(BLEND_DESC) // ブレンド設定
+		.withDSVFormat(DXGI_FORMAT_D32_FLOAT) // DSVフォーマット指定
+		.withSampleMask(UINT_MAX) // サンプルマスク設定
+		.withPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE) // プリミティブタイプ	
+		.withNumRenderTargets(1) // レンダーターゲット数
+		.withRTVFormat0(DXGI_FORMAT_B8G8R8A8_UNORM) // レンダーターゲットフォーマット
+		.withSampleDesc(DXGISampleDescExtended().withCount(1).withQuality(0)) // サンプルカウント
+		.withDepthStencilState(CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT)) // ステンシルバッファ有効設定
+		.withRootSignature(__root_signature.Get()) // ルートシグニチャ設定
+		.withVS(D3D12ShaderBytecodeExtended::FromBlob(__properties.vertexShader.Get())) // 頂点シェーダ設定
+		.withPS(D3D12ShaderBytecodeExtended::FromBlob(__properties.pixelShader.Get())); // ピクセルシェーダ設定
+	
+	ExecOrFail(Graphics::GetDevice()->CreateGraphicsPipelineState(&pipelineStateObjectDesc, IID_PPV_ARGS(__pipeline_state_object.GetAddressOf())));
 }
 
 void FBXModel::createDescriptorHeaps() {
