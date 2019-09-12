@@ -8,3 +8,6 @@
 #include "./D3D12ExtendedStructs/D3D12StaticSamplerDescExtended.h"
 #include "./D3D12ExtendedStructs/D3D12RootParameterExtended.h"
 #include "./D3D12ExtendedStructs/D3D12RootSignatureDescExtended.h"
+#include "./D3D12ExtendedStructs/D3D12RasterizerDescExtended.h"
+#include "./D3D12ExtendedStructs/D3D12BlendDescExtended.h"
+#include "./D3D12ExtendedStructs/D3D12RenderTargetBlendDescExtended.h"
