@@ -2,6 +2,7 @@
 #include "../../../external/d3dx12.h"
 #include "../../../Fogo.h"
 #include "../../Game/ContainerBase.h"
+#include "D3D12ExtendedStructs.h"
 #include <fbxsdk.h>
 #include <iostream>
 
@@ -32,56 +33,49 @@ void FBXModel::compileShaders() {
 }
 
 void FBXModel::createRootSignature() {
-	static constexpr D3D12_DESCRIPTOR_RANGE range[2] = {
-		D3D12_DESCRIPTOR_RANGE {
-			D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
-			1,
-			0,
-			0,
-			D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND
-		},
-		D3D12_DESCRIPTOR_RANGE {
-			D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
-			1,
-			0,
-			0,
-			D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND
-		}
+	static constexpr D3D12_DESCRIPTOR_RANGE Ranges[2] = {
+		D3D12DescriptorRangeExtended()
+			.withRangeType(D3D12_DESCRIPTOR_RANGE_TYPE_CBV)
+			.withNumDescriptors(1)
+			.withOffsetInDescriptorsFromTableStart(D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND),
+		D3D12DescriptorRangeExtended()
+			.withRangeType(D3D12_DESCRIPTOR_RANGE_TYPE_SRV)
+			.withNumDescriptors(1)
+			.withOffsetInDescriptorsFromTableStart(D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND)
 	};
 
-	D3D12_ROOT_PARAMETER root_parameters[2];
-
-	root_parameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	root_parameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	root_parameters[0].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE{ 1, &range[0] };
-
-	root_parameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	root_parameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	root_parameters[1].DescriptorTable = D3D12_ROOT_DESCRIPTOR_TABLE{ 1, &range[1] };
-
-	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC{
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,
-		0.0f,
-		16,
-		D3D12_COMPARISON_FUNC_NEVER,
-		D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK,
-		0.0f,
-		D3D12_FLOAT32_MAX,
-		0,
-		0,
-		D3D12_SHADER_VISIBILITY_ALL
+	const D3D12_ROOT_PARAMETER root_parameters[2] = {
+		D3D12RootParameterExtended()
+			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
+			.withShaderVisibility(D3D12_SHADER_VISIBILITY_VERTEX)
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[0])),
+		D3D12RootParameterExtended()
+			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
+			.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL)
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[1])),
 	};
 
-	const D3D12_ROOT_SIGNATURE_DESC root_signature_desc{
-		_countof(root_parameters),
-		root_parameters,
-		1,
-		&SAMPLER_DESC,
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT
-	};
+	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC = D3D12StaticSamplerDescExtended()
+		.withFilter(D3D12_FILTER_MIN_MAG_MIP_LINEAR)
+		.withAddressU(D3D12_TEXTURE_ADDRESS_MODE_WRAP)
+		.withAddressV(D3D12_TEXTURE_ADDRESS_MODE_WRAP)
+		.withAddressW(D3D12_TEXTURE_ADDRESS_MODE_WRAP)
+		.withMipLODBias(0.0f)
+		.withMaxAnisotropy(16)
+		.withComparisonFunc(D3D12_COMPARISON_FUNC_NEVER)
+		.withBorderColor(D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK)
+		.withMinLOD(0.0f)
+		.withMaxLOD(D3D12_FLOAT32_MAX)
+		.withShaderRegister(0)
+		.withRegisterSpace(0)
+		.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL);
+
+	const D3D12_ROOT_SIGNATURE_DESC root_signature_desc = D3D12RootSignatureDescExtended()
+		.withNumParameters(_countof(root_parameters))
+		.withParameters(root_parameters)
+		.withNumStaticSamplers(1)
+		.withStaticSamplers(&SAMPLER_DESC)
+		.withFlags(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	ComPtr<ID3DBlob> blob;
 
