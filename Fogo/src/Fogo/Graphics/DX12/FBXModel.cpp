@@ -33,7 +33,7 @@ void FBXModel::compileShaders() {
 }
 
 void FBXModel::createRootSignature() {
-	static constexpr D3D12_DESCRIPTOR_RANGE Ranges[2] = {
+	static constexpr D3D12_DESCRIPTOR_RANGE RANGES[2] = {
 		D3D12DescriptorRangeExtended()
 			.withRangeType(D3D12_DESCRIPTOR_RANGE_TYPE_CBV)
 			.withNumDescriptors(1)
@@ -63,11 +63,11 @@ void FBXModel::createRootSignature() {
 		D3D12RootParameterExtended()
 			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
 			.withShaderVisibility(D3D12_SHADER_VISIBILITY_VERTEX)
-			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[0])),
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&RANGES[0])),
 		D3D12RootParameterExtended()
 			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
 			.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL)
-			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[1])),
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&RANGES[1])),
 	};
 
 	const D3D12_ROOT_SIGNATURE_DESC root_signature_desc = D3D12RootSignatureDescExtended()
