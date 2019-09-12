@@ -44,17 +44,6 @@ void FBXModel::createRootSignature() {
 			.withOffsetInDescriptorsFromTableStart(D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND)
 	};
 
-	const D3D12_ROOT_PARAMETER root_parameters[2] = {
-		D3D12RootParameterExtended()
-			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
-			.withShaderVisibility(D3D12_SHADER_VISIBILITY_VERTEX)
-			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[0])),
-		D3D12RootParameterExtended()
-			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
-			.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL)
-			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[1])),
-	};
-
 	static constexpr D3D12_STATIC_SAMPLER_DESC SAMPLER_DESC = D3D12StaticSamplerDescExtended()
 		.withFilter(D3D12_FILTER_MIN_MAG_MIP_LINEAR)
 		.withAddressU(D3D12_TEXTURE_ADDRESS_MODE_WRAP)
@@ -69,6 +58,17 @@ void FBXModel::createRootSignature() {
 		.withShaderRegister(0)
 		.withRegisterSpace(0)
 		.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL);
+
+	const D3D12_ROOT_PARAMETER root_parameters[2] = {
+		D3D12RootParameterExtended()
+			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
+			.withShaderVisibility(D3D12_SHADER_VISIBILITY_VERTEX)
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[0])),
+		D3D12RootParameterExtended()
+			.withParameterType(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
+			.withShaderVisibility(D3D12_SHADER_VISIBILITY_ALL)
+			.withDescriptorTable(D3D12RootDescriptorTableExtended().withNumDescriptorRanges(1).withDescriptorRanges(&Ranges[1])),
+	};
 
 	const D3D12_ROOT_SIGNATURE_DESC root_signature_desc = D3D12RootSignatureDescExtended()
 		.withNumParameters(_countof(root_parameters))
